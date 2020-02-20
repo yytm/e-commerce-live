@@ -1,0 +1,95 @@
+<!-- components/live-room/index.wxml -->
+<wxs src="../lib/stringUtil.wxs" module="stringUtil" />
+<view class="live-room-container">
+    <live-pusher wx:if="{{isCaster}}" id="zg-pusher" url="{{mainPusher.url}}" class="push-content" muted="{{mainPusher.isMute}}" waitingImage="{{waitingImage}}" beauty="{{beauty}}" whiteness="{{whiteness}}" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
+    <live-player wx:if="{{!isCaster}}" id="zg-player" url="{{mainPusher.url}}" objectFit="fillCrop" class="play-content" bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStateChange"></live-player>
+    <view wx:if="{{playStreamList.length || subPusher.url}}" class="sub-video" style="top:{{userTop}}px">
+        <live-pusher wx:if="{{!isCaster && subPusher.url}}" url="{{subPusher.url}}" autopush="{{true}}" width="90" height="120" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
+        <view wx:if="{{playStreamList.length}}" class="play-container" wx:for="{{playStreamList}}" wx:key="streamID">
+            <live-player url="{{item.playUrl}}" sid="{{item.streamID}}" autoplay="{{true}}" width="90" height="120">
+            </live-player>
+            <image wx:if="{{isCaster}}" class="close-icon" data-userid="{{item.anchorID}}" bindtap="endLive" src="../images/close-play.png"></image>
+        </view>
+    </view>
+    <view class="user-info" wx:if="{{userTop > 0}}" style="top:{{userTop}}px">
+        <image class="avatar" src="{{avatarUrl}}" bindload="" binderror=""></image>
+        <view class="user-text">
+            <view class="">{{stringUtil.substr(nickName,8)}}</view>
+            <view class="user-count">{{userCount - 1}}观看</view>
+        </view>
+    </view>
+    <view class="new-msg">
+        <view class="new-one" style="bottom:{{newBot}}rpx" wx:if="{{newestName}}">
+            {{stringUtil.substr(newestName, 12)}} 进入了直播间
+        </view>
+        <scroll-view class='message-view' style="bottom:{{meBot}}rpx" scroll-into-view='{{scrollToView}}' scroll-y='true' bind:tap="clickMessage" bindscroll="scrollMessage">
+            <view class='message-detail' wx:for="{{messageList}}" wx:key="index" id="{{item.id}}">
+                <view class="msg-text">
+                    <span style="color:{{item.color}}">{{item.name}}</span>
+                    {{item.content}}
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+    <view class="modal-hide" bind:tap="clickFull"></view>
+    <view class="bot-bg" style="height:{{meBot}}rpx"></view>
+    <view wx:if="{{!showBeauty}}" class="mmprise" style="bottom:{{mmBot}}rpx">
+        <view wx:if="{{!inputShow}}" class="mmprise-con">
+            <view class='merchandise-img' bindtap="showMerchandise">
+                <image src='../images/merchandise.png'></image>
+            </view>
+            <view class='input-button' catchtap="showInput">
+                {{loginType=="anchor"? '跟观众聊聊什么' : '跟主播聊聊什么？'}}
+                <!-- <input placeholder="我要说点什么" placeholder-style='color: #b3b3b3; font-size: 14px;'
+                    bindinput="bindMessageInput"
+                    confirm-type='send' bindconfirm="onComment"/> -->
+            </view>
+            <view wx:if="{{loginType==='anchor'}}" class="operate">
+                <view class='img-box' bindtap="switchCamera">
+                    <image class="img" src='../images/switchCamera.png'></image>
+                </view>
+                <view class='img-box' bindtap="enableMute">
+                    <image class="img" src='../images/{{mainPusher.isMute ? "mute" : "noMute"}}.png'></image>
+                </view>
+                <view class='img-box' bindtap="toggleShowBeauty">
+                    <image class="img" src='../images/beauty-setting.png'></image>
+                </view>
+            </view>
+            <view wx:if="{{loginType==='audience'}}" class="operate">
+                <view class='img-box' bindtap="requestJoinLive">
+                    <!-- <image class="img" src='../images/{{beginToPublish ? "noJoin" : (reachStreamLimit == true ? "noJoin" : (isPublishing == true ? "endJoin" : "join"))}}.png'></image> -->
+                    <image class="img" src='../images/{{isPublishing == true ? "endJoin" : "join"}}.png'></image>
+                </view>
+            </view>
+        </view>
+        <view wx:else class="mmprise-con">
+            <view class='message-input' style='bottom:{{inputBottom}}px'>
+                <view class="input-conteiner">
+                    <input class="input-content" value="{{inputMessage}}" placeholder="我要说点什么" placeholder-style='color: #C0C0C0; font-size: 28rpx;' bindinput="bindMessageInput" focus="auto" bindfocus="foucus" bindblur="blur" cursor-spacing="15" adjust-position='{{false}}' confirm-hold='{{keyboardHold}}' hold-keyboard='{{keyboardHold}}' confirm-type='send' bindconfirm="onComment" />
+                    <image hidden="{{clearHide}}" class="clear-input" src="../images/clear-input.png" catch:tap="clearInput"></image>
+                </view>
+                <view class="send-btn" bindtap="onComment">发送</view>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{showBeauty}}" class='moreTool'>
+        <view class="moreToolHeader">
+            <view class="head-left">
+                <image class="beauty-icon" mode="aspectFit" src="../images/beauty-icon.png" />
+                <view class="beauty-text">美颜设置</view>
+            </view>
+            <image class="icon moreToolHeaderIco" mode="aspectFit" src="../images/beauty-close.png" bindtap="toggleShowBeauty" />
+        </view>
+        <view class="moreToolBody">
+            <view class="beauty-item">
+                <view class="beautyLabel">美颜</view>
+                <slider block-size="16" backgroundColor="rgba(255, 255, 255, 0.4)" activeColor="#fff" min="0" max="9" step="1" value="{{beauty}}" class="beauty-slide" show-value bindchange="handleChangeBeauty" />
+            </view>
+            <view class="beauty-item">
+                <view class="beautyLabel">美白</view>
+                <slider block-size="16" backgroundColor="rgba(255, 255, 255, 0.4)" activeColor="#fff" min="0" max="9" value="{{whiteness}}" class="beauty-slide" show-value bindchange="handleChangeWhiteness" />
+            </view>
+        </view>
+    </view>
+    <modal isShowModal="{{isShowModal}}" top="{{userTop}}" showDesc="{{showDesc}}" hasConfirm="{{hasConfirm}}" hasCancel="{{hasCancel}}" confirmText="{{confirmText}}" cancelText="{{cancelText}}" bindconfirm="confirm" bindcancel="cancel"></modal>
+</view>

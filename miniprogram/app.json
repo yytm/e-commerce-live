@@ -1,0 +1,29 @@
+{
+  "pages": [
+    "pages/main/index",
+    "pages/roomList/index",
+    "pages/index/index",
+    "pages/web/index",
+    "pages/room/index",
+    "pages/login/index",
+    "pages/register/index"
+  ],
+  "plugins": {
+    "zego-e-commerce": {
+      "version": "1.0.2",
+      "provider": "wx2b8909dae7727f25"
+    }
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  },
+  "navigateToMiniProgramAppIdList": [
+    "wx2b8909dae7727f25"
+  ],
+  "cloud": true,
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
