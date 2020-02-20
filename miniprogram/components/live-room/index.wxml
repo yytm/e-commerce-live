@@ -1,12 +1,12 @@
 <!-- components/live-room/index.wxml -->
 <wxs src="../lib/stringUtil.wxs" module="stringUtil" />
 <view class="live-room-container">
-    <live-pusher wx:if="{{isCaster}}" id="zg-pusher" url="{{mainPusher.url}}" class="push-content" muted="{{mainPusher.isMute}}" waitingImage="{{waitingImage}}" beauty="{{beauty}}" whiteness="{{whiteness}}" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
-    <live-player wx:if="{{!isCaster}}" id="zg-player" url="{{mainPusher.url}}" objectFit="fillCrop" class="play-content" bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStateChange"></live-player>
+    <live-pusher wx:if="{{isCaster}}" id="zg-pusher" url="{{mainPusher.url}}" class="push-content" muted="{{mainPusher.isMute}}" waiting-image="{{waitingImage}}" beauty="{{beauty}}" whiteness="{{whiteness}}" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
+    <live-player wx:if="{{!isCaster && mainPusher.url}}" id="{{mainPusher.streamID}}" src="{{mainPusher.url}}" object-fit="fillCrop" class="play-content" bindstatechange="onPlayStateChange" bindnetstatus="onPlayNetStateChange"></live-player>
     <view wx:if="{{playStreamList.length || subPusher.url}}" class="sub-video" style="top:{{userTop}}px">
-        <live-pusher wx:if="{{!isCaster && subPusher.url}}" url="{{subPusher.url}}" autopush="{{true}}" width="90" height="120" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
+        <live-pusher wx:if="{{!isCaster && subPusher.url}}" url="{{subPusher.url}}" autopush="{{true}}" class="small-video" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
         <view wx:if="{{playStreamList.length}}" class="play-container" wx:for="{{playStreamList}}" wx:key="streamID">
-            <live-player url="{{item.playUrl}}" sid="{{item.streamID}}" autoplay="{{true}}" width="90" height="120">
+            <live-player src="{{item.playUrl}}" id="{{item.streamID}}" autoplay="{{true}}" class="small-video">
             </live-player>
             <image wx:if="{{isCaster}}" class="close-icon" data-userid="{{item.anchorID}}" bindtap="endLive" src="../images/close-play.png"></image>
         </view>

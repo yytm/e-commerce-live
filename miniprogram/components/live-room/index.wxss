@@ -4,7 +4,7 @@
     width: 100vw;
     height: 100vh;
 }
-.push-content {
+.push-content, .play-content {
     width: 100vw;
     height: 100vh;
 }
@@ -278,6 +278,10 @@
     z-index: 3;
     padding-top: 10rpx;
     padding-right: 10rpx;
+}
+.small-video {
+    width: 90px;
+    height: 120px;
 }
 .play-container {
     width: 190rpx;

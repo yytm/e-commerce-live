@@ -859,7 +859,7 @@ Component({
         });
         console.log(founded);
         if (!founded) return;
-        console.log('pusherID', self.data.mainPusher.pusherID);
+        console.log('pusherID', streamInfo.anchorID, self.data.mainPusher.pusherID);
         if (streamInfo.anchorID === self.data.mainPusher.pusherID) {
           self.setData({
             mainPusher: {
@@ -871,7 +871,8 @@ Component({
               }
             }
           }, () => {
-            this.data.playerContext = wx.createLivePlayerContext(streamInfo.streamID);
+            this.data.playerContext = wx.createLivePlayerContext(streamInfo.streamID, self);
+            console.log(self.data.mainPusher, this.data.playerContext)
             this.data.playerContext.play();
           })
         } else {
