@@ -16,12 +16,12 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    zegoAppID: {
+    sdkAppID: {
       type: Number,
-      value: 1739272706,
+      value: 0,
       observer: function (newVal, oldVal) {
-        // this.data.zegoAppID = newVal;
-        // console.log('zegoAppID')
+        // this.data.sdkAppID = newVal;
+        // console.log('sdkAppID')
       }
     },
     logServerURL: {
@@ -167,7 +167,7 @@ Component({
     }
   },
   ready: function () {
-    console.log('ready', this.data.zegoAppID, this.data);
+    console.log('ready', this.data.sdkAppID, this.data);
     this.getUserInfo();
 
     // iphoneX 等机型
@@ -210,12 +210,12 @@ Component({
 
     zg = new ZegoClient();
     zg.config({
-      appid: this.data.zegoAppID, // 必填，应用id，由即构提供
+      appid: this.data.sdkAppID, // 必填，应用id，由即构提供
       idName: this.data.userID, // 必填，用户自定义id，全局唯一
       nickName: this.data.userName, // 必填，用户自定义昵称
       remoteLogLevel: 2, // 日志上传级别，建议取值不小于 logLevel
       logLevel: 0, // 日志级别，debug: 0, info: 1, warn: 2, error: 3, report: 99, disable: 100（数字越大，日志越少）
-      server: 'wss://wsliveroom' + this.data.zegoAppID + '-api.zego.im:8282/ws', // 必填，服务器地址，由即构提供
+      server: 'wss://wsliveroom' + this.data.sdkAppID + '-api.zego.im:8282/ws', // 必填，服务器地址，由即构提供
       logUrl: this.data.logServerURL, // 必填，log 服务器地址，由即构提供
       audienceCreateRoom: true // false观众不允许创建房间
     });
@@ -227,7 +227,7 @@ Component({
     );
 
     // 进入房间，自动登录
-    // getLoginToken(this.data.userID, this.data.zegoAppID).then(token => {
+    // getLoginToken(this.data.userID, this.data.sdkAppID).then(token => {
     //   console.log('tokenn', token);
     //   this.setData({
     //     token

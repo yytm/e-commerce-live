@@ -1,18 +1,29 @@
 // miniprogram/pages/register/index.js
+const app = getApp();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    userInfo: null,
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    inviCode: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    app.globalData.userInfo && this.setData({
+      userInfo: app.globalData.userInfo
+    })
+    const { role } = options;
+    console.log(role);
+    this.setData({
+      role
+    })
   },
 
   /**
@@ -60,7 +71,45 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      console.log(res.target)
+    }
+    return {
+      title: '自定义转发标题',
+      path: '/pages/register/index?role=anchor'
+    }
+  },
 
+  bindGetUserInfo(e) {
+    console.log(e, e.detail.userInfo);
+    if (e.detail.userInfo) {
+      app.globalData.userInfo = e.detail.userInfo;
+      this.setData({
+        userInfo: e.detail.userInfo
+      })
+      const admins = ['Cloud', 'zhc'];
+      if (admins.indexOf(this.data.userInfo.nickName) >= -1) {
+
+      }
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '需获取信息用于登录，请重新登录',
+      })
+    }
+  },
+
+  bindKeyInput(e) {
+    this.setData({
+      inviCode: e.detail.value
+    })
+  },
+  authorize() {
+    // 
+    console.log('authorize');
+    wx.navigateTo({
+      url: '/pages/roomList/index'
+    })
   }
 })

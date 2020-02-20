@@ -1,7 +1,14 @@
 /* pages/index/index.wxss */
 /* pages/audience/index.wxss */
 
-
+.nav {
+  width: 60px;
+  height: 20px;
+  background-color: #F2034C;
+  margin-left: 8vw;
+  margin-top: 2vw;
+  text-align: center;
+}
 .list-box {
   background-color: #0d70ff;
   color: #fff;

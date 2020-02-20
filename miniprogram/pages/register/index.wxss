@@ -1,1 +1,25 @@
 /* miniprogram/pages/register/index.wxss */
+.user-container {
+    padding: 20rpx 20rpx 0;
+}
+.user-info {
+    display: flex;
+    justify-content: flex-start;
+}
+.user-info .avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    margin-right: 16rpx;
+}
+.user-text {
+    margin-right: 30rpx;
+    font-weight: 500;
+}
+.invi-code {
+    width: 160px;
+    height: 40px;
+    margin: auto;
+    line-height: 40px;
+    border-bottom: 1px solid rgba(13, 112, 255, 0.5);
+}

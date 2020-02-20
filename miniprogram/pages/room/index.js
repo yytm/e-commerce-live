@@ -1,8 +1,7 @@
 // miniprogram/pages/live/index.js
-var plugin = requirePlugin("zego-e-commerce");
 let { sharePage } = require("../../utils/util.js");
 let { getLoginToken } = require("../../utils/server.js");
-
+let { sdkAppID } = getApp().globalData;
 let liveRoom;
 let merT = null;
 
@@ -12,7 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    zegoAppID: 1739272706,
+    sdkAppID: 1739272706,
     roomID: "",
     logServerURL: "https://wsslogger-demo.zego.im/httplog",
     loginType: "",
@@ -69,15 +68,13 @@ Page({
     let timestamp = new Date().getTime();
     const userID = "xcxU" + timestamp;
     this.setData({
+      sdkAppID,
       roomID,
       roomName,
       loginType,
       roomShowName,
       userID
     });
-    
-    console.log('plugin', plugin);
-    plugin.sayHello();
 
     let systemInfo = wx.getSystemInfoSync();
     let rect = wx.getMenuButtonBoundingClientRect();
@@ -96,7 +93,7 @@ Page({
    */
   onReady: function () {
     liveRoom = this.selectComponent('#live-room');
-    getLoginToken(this.data.userID, this.data.zegoAppID).then(token => {
+    getLoginToken(this.data.userID, this.data.sdkAppID).then(token => {
       console.log('token', token)
       this.setData({
         token

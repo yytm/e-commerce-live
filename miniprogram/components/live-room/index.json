@@ -1,8 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "zego-pusher": "plugin://zego-e-commerce/zego-pusher",
-    "zego-player": "plugin://zego-e-commerce/zego-player",
     "modal": "/components/custom-modal/index"
   }
 }

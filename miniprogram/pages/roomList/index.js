@@ -1,6 +1,7 @@
 
 let requestRoomListUrl = 'https://liveroom1739272706-api.zego.im/demo/roomlist?appid=1739272706';
 
+const { BaseUrl, wxAppID, sdkAppID } = getApp().globalData;
 
 Page({
   data: {
@@ -11,9 +12,10 @@ Page({
 
     userInfo: {},
     hasUserInfo: false,
+    role: ''
   },
   onLoad: function () {
-
+    this.getRole();
     let userInfo = wx.getStorageSync("userInfo");
     if (userInfo){
       this.setData({
@@ -208,6 +210,58 @@ Page({
       },
       fail: function(e) {
         console.error('getUserInfo fail', e);
+      }
+    })
+  },
+
+  getRole() {
+    let self = this;
+    // 登录
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        const wx_appid = wx.getAccountInfoSync().miniProgram.appId || wxAppID;
+        console.log(res, BaseUrl, wxAppID);
+        // wx.request({
+        //   url: BaseUrl + '/app/login',
+        //   method: 'POST',
+        //   data: {
+        //       "wx_appid": wx_appid,
+        //       "wx_code": res.code,
+        //       "zg_appid": sdkAppID,
+        //   },
+        //   success(result) {
+        //     if (result.ret && result.ret.code == 0) {
+        //       const _role = '';
+        //       switch(result.role) {
+        //         case 1: {
+        //           role = 'admin';
+        //           break;
+        //         }
+        //         case 2: {
+        //           role = 'anchor';
+        //           break;
+        //         }
+        //         case 4: {
+        //           role = 'audience';
+        //           break;
+        //         }
+        //         default: {
+        //           role = 'audience';
+        //         }
+        //       }
+        //       self.setData({
+        //         role
+        //       });
+        //     }
+        //   },
+        //   fail(e) {
+
+        //   }
+        // })
+        self.setData({
+          role: 'admin'
+        })
       }
     })
   }

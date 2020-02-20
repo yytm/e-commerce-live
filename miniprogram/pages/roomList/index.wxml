@@ -1,6 +1,7 @@
 
 <view>
-      <scroll-view class="rooms" scroll-y="true" >
+    <navigator class="nav" url="../register/index?role=admin" hover-class="navigator-hover" open-type="navigate">绑定</navigator>
+    <scroll-view class="rooms" scroll-y="true" >
         <view class="room-list">
             <button class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" data-name="{{item.room_name}}"
                 data-id="{{item.room_id}}" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo">
@@ -14,14 +15,16 @@
         </view>
 
     </scroll-view>
-      <view class='bottom-input'>
+    <view>
+        <view class='bottom-input'>
           <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入房间 ID"
               placeholder-style='color: #b3b3b3; font-size: 14px;'/>
-      </view>
+        </view>
 
-      <view class='bottom-btn'>
-          <button class='create-button' data-id="create" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo" hover-class="none">创建房间</button>
-      </view>
+        <view class='bottom-btn'>
+            <button class='create-button' data-id="create" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo" hover-class="none">创建房间</button>
+        </view>
+    </view>
+      
 
   </view>
-<!-- <hello-list items="{{ items }}" /> -->

@@ -1,13 +1,7 @@
 //app.js
 App({
   onLaunch: function () {
-    // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res);
-      }
-    })
+
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -24,28 +18,16 @@ App({
               if (this.userInfoReadyCallback) {
                 this.userInfoReadyCallback(res)
               }
-              // this.checkAdmin();
             }
           })
-        } else {
-          // wx.navigateTo({
-          //   url: '/pages/login/index'
-          // })
-        }
+        } 
       }
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    BaseUrl: 'https://',
+    wxAppID: 'wxda1343baad77dc86',
+    sdkAppID: '1739272706'
   },
-  checkAdmin() {
-    // wx.request({
-
-    // })
-    if (true) {
-      wx.navigateTo({
-        url: '/pages/login/index'
-      })
-    }
-  }
 })
