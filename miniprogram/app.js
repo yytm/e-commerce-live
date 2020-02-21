@@ -28,6 +28,6 @@ App({
     userInfo: null,
     BaseUrl: 'https://',
     wxAppID: 'wxda1343baad77dc86',
-    sdkAppID: '1739272706'
+    sdkAppID: 1739272706
   },
 })
