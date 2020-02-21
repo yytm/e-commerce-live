@@ -1,9 +1,9 @@
 <!--miniprogram/pages/live/index.wxml-->
-<zego-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}">
+<custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}">
     <view class="room-title">{{roomShowName}}</view>
-</zego-nav>
+</custom-nav>
 <view class="live-container">
-    <live id="live-room" navBarHeight="{{navBarHeight}}" sdkAppID="{{sdkAppID}}" userID="{{userID}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
+    <live id="live-room" navBarHeight="{{navBarHeight}}" liveAppID="{{liveAppID}}" userID="{{userID}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
     <view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
         <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
         <view class="bottom-dialog-body bottom-pos" animation="{{animationData}}">

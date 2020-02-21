@@ -1,30 +1,38 @@
-
 <view>
-    <navigator class="nav" url="../register/index?role=admin" hover-class="navigator-hover" open-type="navigate">绑定</navigator>
-    <scroll-view class="rooms" scroll-y="true" >
-        <view class="room-list">
-            <button class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" data-name="{{item.room_name}}"
-                data-id="{{item.room_id}}" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo">
-                <!-- <view> -->
-                    直播间名称:{{item.room_show_name}}
-                <!-- </view> -->
-                <!-- <view>
-                    直播间ID:{{item.room_id}}
-                </view> -->
-            </button>
-        </view>
-
-    </scroll-view>
-    <view>
-        <view class='bottom-input'>
-          <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入房间 ID"
-              placeholder-style='color: #b3b3b3; font-size: 14px;'/>
-        </view>
-
-        <view class='bottom-btn'>
-            <button class='create-button' data-id="create" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo" hover-class="none">创建房间</button>
+    <view wx:if="{{userInfo}}">
+        <navigator wx:if="{{role==='admin'}}" class="nav" url="../register/index?role=admin" hover-class="navigator-hover" open-type="navigate">
+            绑定
+        </navigator>
+        <scroll-view class="rooms" scroll-y="true">
+            <view class="room-list">
+                <button 
+                    class="room-list-item" 
+                    wx:for="{{roomList}}" 
+                    wx:key="room_id" 
+                    data-name="{{item.room_name}}" 
+                    data-id="{{item.room_id}}" 
+                    data-anchor-id="{{item.anchor_id_name}}" 
+                    data-anchor-name="{{item.anchor_nick_name}}" 
+                    data-room-img="{{item.room_img}}"
+                    bindtap="onClickItem">
+                        直播间名称:{{item.room_show_name}}
+                </button>
+            </view>
+        </scroll-view>
+        <view>
+            <view class='bottom-input'>
+                <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入房间 ID" placeholder-style='color: #b3b3b3; font-size: 14px;' />
+            </view>
+            <view class='bottom-btn'>
+                <button class='create-button' data-id="create" hover-class="none" bind:tap="createRoom">
+                    创建房间
+                </button>
+            </view>
         </view>
     </view>
-      
+    <view wx:else class="">
+        <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">登录</button>
+        <view wx:else class="">请升级微信版本</view>
+    </view>
 
-  </view>
+</view>

@@ -1,7 +1,8 @@
 // miniprogram/pages/live/index.js
 let { sharePage } = require("../../utils/util.js");
 let { getLoginToken } = require("../../utils/server.js");
-let { sdkAppID } = getApp().globalData;
+let { liveAppID, BaseUrl } = getApp().globalData;
+
 let liveRoom;
 let merT = null;
 
@@ -11,7 +12,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    sdkAppID: 1739272706,
+    liveAppID: 1739272706,
     roomID: "",
     logServerURL: "https://wsslogger-demo.zego.im/httplog",
     loginType: "",
@@ -68,7 +69,7 @@ Page({
     let timestamp = new Date().getTime();
     const userID = "xcxU" + timestamp;
     this.setData({
-      sdkAppID,
+      liveAppID,
       roomID,
       roomName,
       loginType,
@@ -93,12 +94,13 @@ Page({
    */
   onReady: function () {
     liveRoom = this.selectComponent('#live-room');
-    getLoginToken(this.data.userID, this.data.sdkAppID).then(token => {
-      console.log('token', token)
-      this.setData({
-        token
-      });
-    })
+    // getLoginToken(this.data.userID, this.data.liveAppID).then(token => {
+    //   console.log('token', token)
+    //   this.setData({
+    //     token
+    //   });
+    // });
+    this.getRoomToken(this.data.userID, this.data.liveAppID);
   },
 
   /**
@@ -293,5 +295,68 @@ Page({
         url: toUrl,
       });
     }
-  }
+  },
+
+  getRoomToken(userID, appID) {
+    let self = this;
+    wx.request({
+      url: BaseUrl + '/app/get_room_token',
+      method: 'POST',
+      data: {
+        'session_id': wx.getStorageSync('sessionId'),
+        'live_appid': appID,
+        'user_name': userID
+      },
+      success: function(res) {
+        if (res.data.ret && res.data.ret.code === 0) {
+          const token = res.data['room_token'];
+          self.setData({
+            token
+          })
+        }
+      },
+      fail: function(e) {
+        console.error(e);
+      }
+    })
+  },
+
+  getGoods() {
+    let self = this;
+    wx.request({
+      url: BaseUrl + '/app/list_goods',
+      method: 'POST',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "page": 1,
+        "count": 10,
+      },
+      success: function(res) {
+        console.log(res);
+        if (res.ret && res.ret.code === 0) {
+          const merchandises = res['goods_list'].map(item => {
+            return {
+              id: item['goods_id'],
+              num: item['goods_no'],
+              name: item['goods_desc'],
+              link: {
+                url: item['goods_url']
+              },
+              price: item['price'],
+              img: item['goods_img']
+            }
+          });
+          self.setData({
+            merchandises
+          })
+        }
+      },
+      fail: function(e) {
+        console.error(e);
+      }
+    })
+  },
+
 })

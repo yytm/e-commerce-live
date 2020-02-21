@@ -1,6 +1,6 @@
 /* miniprogram/pages/register/index.wxss */
 .user-container {
-    padding: 20rpx 20rpx 0;
+    padding: 40rpx 40rpx 0;
 }
 .user-info {
     display: flex;
@@ -16,10 +16,40 @@
     margin-right: 30rpx;
     font-weight: 500;
 }
+.operate {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 400rpx;
+}
+.invi-btn {
+    width: 240rpx;
+    margin: 0;
+
+}
+.invi-btn button {
+    width: 100%;
+    background-color: #F2034C;
+    font-size: 32rpx;
+}
 .invi-code {
+    display: flex;
+    align-items: center;
+    margin-top: 20rpx;
+}
+.invi-code input{
     width: 160px;
     height: 40px;
     margin: auto;
     line-height: 40px;
-    border-bottom: 1px solid rgba(13, 112, 255, 0.5);
+    border-bottom: 1px solid #F2034C;
+    flex: 1;
+}
+.submit-btn {
+    width: 180rpx;
+}
+.submit-btn button {
+    width: 100%;
+    font-size: 32rpx;
+    background-color: #F2034C;
 }

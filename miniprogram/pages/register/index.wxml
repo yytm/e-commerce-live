@@ -6,10 +6,19 @@
             {{userInfo.nickName}}
         </text>
     </view>
-    <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
-    <input class="invi-code" value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
-              placeholder-style='color: #b3b3b3; font-size: 14px;'/>
-    <button bindtap="authorize">提交</button>
+    <view class="operate">
+        <view class="invi-btn">
+            <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
+        </view>
+        <view class="invi-code">
+            <input value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
+                    placeholder-style='color: #b3b3b3; font-size: 14px;'/>
+            <view class="submit-btn">
+                <button bindtap="authorize">提交</button>
+            </view>
+        </view>
+    </view>
+    
 </view>
 <view wx:else class="">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">登录</button>

@@ -1,7 +1,7 @@
 {
   "usingComponents": {
     "live": "/components/live-room/index",
-    "zego-nav":"/components/zego-nav/zego-nav"
+    "custom-nav":"/components/custom-nav/index"
   },
   "navigationStyle": "custom"
 }

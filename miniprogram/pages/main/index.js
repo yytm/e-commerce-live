@@ -22,6 +22,7 @@ Page({
                 title: "电商直播",
                 navigateTo: "../roomList/index"
             },
+            
             // {
             //     icon: "../../resource/interactionLive.png",
             //     subtitle: 'test',
@@ -70,18 +71,18 @@ Page({
         var type = 'liveroomlist';
         if (type == 'liveroomlist') {
             // 从列表页分享出的卡片进入
-            wx.navigateTo({
-                url: '/pages/liveroom/roomlist/roomlist',
-            });
+            // wx.navigateTo({
+            //     url: '/pages/liveroom/roomlist/roomlist',
+            // });
         } else if (type == 'liveroom') {
             // 从互动直播页分享出的卡片进入
             var roomID = options.roomID;
             var loginType = options.loginType;
-            var url = '/pages/liveroom/room/room?roomId=' + roomID + '&roomName=' + roomID + '&loginType=' + loginType;
-            console.log(">>>[main onLoad] try navigate to: ", url);
-            wx.navigateTo({
-                url: url,
-            });
+            // var url = '/pages/liveroom/room/room?roomId=' + roomID + '&roomName=' + roomID + '&loginType=' + loginType;
+            // console.log(">>>[main onLoad] try navigate to: ", url);
+            // wx.navigateTo({
+            //     url: url,
+            // });
         }
 
     },

@@ -62,6 +62,64 @@ function getLoginToken(userID, appid) {
     }
 }
 
+
+function loginApp(code, nickName) {
+    const _wxAppID = wx.getAccountInfoSync().miniProgram.appId || wxAppID;
+    const { BaseUrl, wxAppID, liveAppID } = getApp().globalData;
+
+    return new Promise((res, rej) => {
+      wx.request({
+        url: BaseUrl + '/app/login',
+        method: 'POST',
+        data: {
+          "wx_appid": _wxAppID,
+          "wx_code": code,
+          "live_appid": liveAppID,
+          "nickname": nickName
+        },
+        success(result) {
+          console.log('result', result);
+          if (result.statusCode !== 200) return;
+          if (result.data.ret && result.data.ret.code == 0) {
+            let _role = '';
+            wx.setStorageSync('sessionId', result.data['session_id']);
+            wx.setStorageSync('uid', result.data['uid']);
+            wx.setStorageSync('nickname', result.data['nickname']);
+            // wx.setStorageSync('avatar', result.data['avatar']);
+            switch (result.data.role) {
+              case 1: {
+                _role = 'admin';
+                break;
+              }
+              case 2: {
+                _role = 'anchor';
+                break;
+              }
+              case 4: {
+                _role = 'audience';
+                break;
+              }
+              default: {
+                _role = 'audience';
+                break;
+              }
+            }
+            // console.log('role', _role);
+            wx.setStorageSync('role', _role);
+            res(_role);
+          } else {
+            rej()
+          }
+        },
+        fail(e) {
+          console.error('fail ', e);
+          rej();
+        }
+      })
+    })
+
+}
 module.exports = {
     getLoginToken,
+    loginApp
 };

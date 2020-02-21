@@ -26,8 +26,8 @@ App({
   },
   globalData: {
     userInfo: null,
-    BaseUrl: 'https://',
+    BaseUrl: 'http://shop-backend-test.yunyikao.com',
     wxAppID: 'wxda1343baad77dc86',
-    sdkAppID: 1739272706
+    liveAppID: 1739272706
   },
 })
