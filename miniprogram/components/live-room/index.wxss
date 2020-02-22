@@ -170,7 +170,7 @@
     width: 96rpx;
     height: 126rpx;
 }
-.merchandise-img image {
+.merchandise-image {
     width: 100%;
     height: 100%;
 }

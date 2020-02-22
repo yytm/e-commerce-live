@@ -36,7 +36,7 @@
     <view wx:if="{{!showBeauty}}" class="mmprise" style="bottom:{{mmBot}}rpx">
         <view wx:if="{{!inputShow}}" class="mmprise-con">
             <view class='merchandise-img' bindtap="showMerchandise">
-                <image src='../images/merchandise.png'></image>
+                <image class="merchandise-image" src='../images/merchandise.png'></image>
             </view>
             <view class='input-button' catchtap="showInput">
                 {{loginType=="anchor"? '跟观众聊聊什么' : '跟主播聊聊什么？'}}

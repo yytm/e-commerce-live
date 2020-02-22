@@ -19,11 +19,26 @@ Page({
     app.globalData.userInfo && this.setData({
       userInfo: app.globalData.userInfo
     });
+    wx.getUserInfo({
+      success: res => {
+        // 可以将 res 发送给后台解码出 unionId
+        app.globalData.userInfo = res.userInfo
+
+        this.setData({
+          userInfo: res.userInfo
+        })
+        // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+        // 所以此处加入 callback 以防止这种情况
+        if (this.userInfoReadyCallback) {
+          this.userInfoReadyCallback(res)
+        }
+      }
+    })
     const { role } = options;
     console.log(role);
     this.setData({
       role
-    })
+    });
   },
 
   /**
@@ -77,7 +92,8 @@ Page({
     }
     return {
       title: '自定义转发标题',
-      path: '/pages/register/index?role=anchor'
+      path: '/pages/register/index?role=anchor',
+      imageUrl: '../../resource/invi.png',
     }
   },
 
@@ -107,7 +123,9 @@ Page({
   },
   authorize() {
     console.log('authorize');
+    let self = this;
     const code = this.data.inviCode;
+
     wx.request({
       url: BaseUrl + '/app/register_anchor',
       method: 'POST',
@@ -134,6 +152,13 @@ Page({
           }, 2000);
         } else if (result.ret.code === 4) {
           console.error('param error');
+          wx.showModal({
+            title: '提示',
+            content: '绑定失败，请重新操作'
+          });
+          self.setData({
+            inviCode: ''
+          })
         } else if (result.ret.code === 1002) {
           wx.showModal({
             title: '警告',

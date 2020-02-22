@@ -128,7 +128,8 @@ Page({
               return;
             }
           }
-          const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType;
+          const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
+          // + '&roomImg=' + roomImg;
 
           wx.navigateTo({
             url: url,
@@ -177,7 +178,8 @@ Page({
      */
   onPullDownRefresh() {
     console.log('>>>[liveroom-roomList] onPullDownRefresh');
-    this.fetchRoomList();
+    // this.fetchRoomList();
+    this.getRoomList();
   },
   stopRefresh() {
     wx.hideLoading();
@@ -200,7 +202,7 @@ Page({
       loginType: 'audience'
     }, function () {
       // const url = '../play-room/index?roomID=' + id + '&roomName=' + id + '&loginType=audience';
-      const url = '../room/index?roomID=' + id + '&roomName=' + id + '&anchorID=' + anchorId + '&anchorName=' + anchorName +  '&loginType=audience';
+      const url = '../room/index?roomID=' + id + '&roomName=' + id + '&anchorID=' + anchorId + '&anchorName=' + anchorName + '&roomImg=' + roomImg + '&loginType=audience';
 
       wx.navigateTo({
         url: url

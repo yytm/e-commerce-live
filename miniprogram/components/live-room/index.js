@@ -1,6 +1,6 @@
 // components/live-room/index.js
 let { ZegoClient } = require('../lib/jZego-wx-1.4.0.js');
-
+const app = getApp();
 let zg;
 let networkOk = true;
 let isLogout = false;
@@ -265,7 +265,7 @@ Component({
    */
   methods: {
     getUserInfo() {
-      let userInfo = wx.getStorageSync('userInfo');
+      let userInfo = app.globalData.userInfo;
       console.log('getUserInfo', userInfo);
       if (userInfo) {
         this.setData({
@@ -1486,10 +1486,10 @@ Component({
         ', message:' +
         e.detail.message
       );
-      zg.updatePlayerState(e.detail.streamID, e);
+      zg.updatePlayerState(e.target.id, e);
     },
     onPlayNetStateChange(e) {
-      zg.updatePlayerNetStatus(e.detail.streamID, e);
+      zg.updatePlayerNetStatus(e.target.id, e);
     },
     onPushError: function (ev) {
       console.error(ev);

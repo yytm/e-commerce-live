@@ -25,6 +25,7 @@ Page({
     hideModal:true, //模态框的状态  true-隐藏  false-显示
     animationData:{},
 
+    uid: -1,
     merchandises: [
       {
         name: 'Givenchy/纪梵希高定香榭天鹅绒唇膏',
@@ -67,14 +68,22 @@ Page({
     const { roomID, roomName, loginType } = options;
     const roomShowName = roomID.slice(2);
     let timestamp = new Date().getTime();
-    const userID = "xcxU" + timestamp;
+    let userID;
+    if (loginType === 'anchor') {
+      userID = 'anchor' + wx.getStorageSync('uid');
+      this.data.uid = wx.getStorageSync('uid');
+    } else if (loginType === 'audience') {
+      userID = "xcxU" + timestamp;
+      console.log('anchor', options.anchorID, typeof options.anchorID);
+      this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
+    }
     this.setData({
       liveAppID,
       roomID,
       roomName,
       loginType,
       roomShowName,
-      userID
+      userID,
     });
 
     let systemInfo = wx.getSystemInfoSync();
@@ -101,6 +110,7 @@ Page({
     //   });
     // });
     this.getRoomToken(this.data.userID, this.data.liveAppID);
+    this.getGoods();
   },
 
   /**
@@ -142,7 +152,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-    const imgUrl = "/resource/share.png";
+    const imgUrl = this.data.roomImg || "/resource/share.png";
     let obj = sharePage(imgUrl, {
         roomID: this.data.roomID,
         loginType: 'audience'
@@ -329,14 +339,16 @@ Page({
       data: {
         "session_id": wx.getStorageSync('sessionId'),
         "live_appid": liveAppID,
-        "uid": wx.getStorageSync('uid'),
+        "uid": self.data.uid,
         "page": 1,
         "count": 10,
       },
       success: function(res) {
-        console.log(res);
-        if (res.ret && res.ret.code === 0) {
-          const merchandises = res['goods_list'].map(item => {
+        if (res.statusCode !== 200) return;
+        console.log('goods', res);
+        const result = res.data;
+        if (result.ret && result.ret.code === 0 && result.goods_count > 0) {
+          const merchandises = result['goods_list'].map(item => {
             return {
               id: item['goods_id'],
               num: item['goods_no'],

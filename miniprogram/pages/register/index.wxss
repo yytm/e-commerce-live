@@ -25,7 +25,7 @@
 .invi-btn {
     width: 240rpx;
     margin: 0;
-
+    display: flex;
 }
 .invi-btn button {
     width: 100%;
@@ -47,6 +47,7 @@
 }
 .submit-btn {
     width: 180rpx;
+    display: flex;
 }
 .submit-btn button {
     width: 100%;
