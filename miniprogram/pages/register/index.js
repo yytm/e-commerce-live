@@ -1,6 +1,8 @@
 // miniprogram/pages/register/index.js
 const app = getApp();
-const { BaseUrl, liveAppID } = app.globalData;
+const { BaseUrl, liveAppID, wxAppID } = app.globalData;
+let { loginApp } = require("../../utils/server.js");
+
 Page({
 
   /**
@@ -124,15 +126,36 @@ Page({
   authorize() {
     console.log('authorize');
     let self = this;
-    const code = this.data.inviCode;
+    // const code = this.data.inviCode;
+    const sessionId = wx.getStorageSync('sessionId');
+    console.log(sessionId);
+    if (!sessionId) {
+      wx.login({
+        success: res => {
+          // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          console.log(res, BaseUrl, wxAppID);
+          // console.log(loginApp(res.code, self.data.userInfo.nickName))
+           loginApp(res.code, self.data.userInfo.nickName).then(role => {
+             console.log('role', role);
+            //  self.setData({ role });
+            self.setAnchor();
+           });
+        }
+      })
+    }
 
+    self.setAnchor();
+  },
+
+  setAnchor() {
+    let self = this;
     wx.request({
       url: BaseUrl + '/app/register_anchor',
       method: 'POST',
       data: {
         "session_id": wx.getStorageSync('sessionId'),
         "live_appid": liveAppID,
-        "code": code,
+        "code": this.data.inviCode,
       },
       success(res) {
         console.log(res);
@@ -170,8 +193,6 @@ Page({
         console.error(e);
       }
     })
-
-  },
-
+  }
 
 })

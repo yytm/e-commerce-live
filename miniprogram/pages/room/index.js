@@ -165,6 +165,11 @@ Page({
     console.log('onRoomEvent', ev);
     let { tag, content } = ev.detail;
     switch (tag) {
+      case 'onRoomCreate': {
+        console.log('onRoomCreate', content);
+        this.setRoom(content);
+        break;
+      }
       case 'onMerchandise': {
         console.log('onMerchandise', content);
         this.showModal();
@@ -213,6 +218,30 @@ Page({
         break;
       }
     }
+  },
+
+  setRoom(content) {
+    const { liveAppID, roomID } = content;
+    wx.request({
+      url: BaseUrl + '/app/set_room',
+      method: 'POST',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "room_id": roomID,
+      },
+      success(res) {
+        if (res.statusCode === 200) {
+          if (res.data.ret.code === 0) {
+            console.log('set room succeed');
+          }
+        }
+      },
+      fail(e) {
+        console.error('fail ', e);
+      }
+    })
   },
 
   pushMer(e) {

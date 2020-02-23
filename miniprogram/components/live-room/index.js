@@ -672,7 +672,15 @@ Component({
             );
             zg.setPreferPublishSourceType(self.data.preferPublishSourceType);
             zg.startPublishingStream(self.data.publishStreamID);
-
+            const content = {
+              liveAppID: self.data.liveAppID,
+              roomID: self.data.roomID
+            };
+            self.triggerEvent('RoomEvent', {
+              tag: 'onRoomCreate',
+              // code: 0,
+              content
+            });
           } else { 
 
             // 房间内已经有流，拉流

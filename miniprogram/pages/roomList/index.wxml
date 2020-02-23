@@ -19,7 +19,7 @@
                 </button>
             </view>
         </scroll-view>
-        <view>
+        <view wx:if="{{role==='admin' || role === 'anchor'}}">
             <view class='bottom-input'>
                 <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入房间 ID" placeholder-style='color: #b3b3b3; font-size: 14px;' />
             </view>
