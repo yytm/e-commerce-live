@@ -11,7 +11,8 @@ Page({
   data: {
     userInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    inviCode: ''
+    inviCode: '',
+    role: '',
   },
 
   /**
@@ -28,7 +29,9 @@ Page({
 
         this.setData({
           userInfo: res.userInfo
-        })
+        });
+        this.goToAnchor();
+
         // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
         // 所以此处加入 callback 以防止这种情况
         if (this.userInfoReadyCallback) {
@@ -54,7 +57,12 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    const _role = wx.getStorageSync('role');
+    if (_role === 'anchor') {
+      wx.redirectTo({
+        url: '/pages/roomList/index'
+      });
+    }
   },
 
   /**
@@ -94,10 +102,7 @@ Page({
       this.setData({
         userInfo: e.detail.userInfo
       })
-      const admins = ['Cloud', 'zhc'];
-      if (admins.indexOf(this.data.userInfo.nickName) >= -1) {
-
-      }
+      this.goToAnchor();
     } else {
       wx.showModal({
         title: '提示',
@@ -118,18 +123,21 @@ Page({
     const sessionId = wx.getStorageSync('sessionId');
     console.log(sessionId);
     if (!sessionId) {
-      wx.login({
-        success: res => {
-          // 发送 res.code 到后台换取 openId, sessionKey, unionId
-          console.log(res, BaseUrl, wxAppID);
-          // console.log(loginApp(res.code, self.data.userInfo.nickName))
-           loginApp(res.code, self.data.userInfo.nickName).then(role => {
-             console.log('role', role);
-            //  self.setData({ role });
-            self.setAnchor();
-           });
-        }
+      self.judgeIdentity(() => {
+        self.setAnchor();
       })
+      // wx.login({
+      //   success: res => {
+      //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      //     console.log(res, BaseUrl, wxAppID);
+      //     // console.log(loginApp(res.code, self.data.userInfo.nickName))
+      //      loginApp(res.code, self.data.userInfo.nickName).then(role => {
+      //        console.log('role', role);
+      //       //  self.setData({ role });
+      //       self.setAnchor();
+      //      });
+      //   }
+      // })
     }
 
     self.setAnchor();
@@ -154,13 +162,13 @@ Page({
           wx.showToast({
             title: '绑定成功，你已经是主播了',
             icon: 'none',
-            duration: 2000
+            duration: 500
           });
           setTimeout(() => {
-            wx.navigateTo({
+            wx.redirectTo({
               url: '/pages/roomList/index'
             });
-          }, 2000);
+          }, 500);
         } else if (result.ret.code === 4) {
           console.error('param error');
           wx.showModal({
@@ -181,6 +189,32 @@ Page({
         console.error(e);
       }
     })
+  },
+
+  judgeIdentity(callback) {
+    let self = this;
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        console.log(res, BaseUrl, wxAppID);
+        // console.log(loginApp(res.code, self.data.userInfo.nickName))
+         loginApp(res.code, self.data.userInfo.nickName).then(role => {
+           console.log('role', role);
+           callback();
+         });
+      }
+    })
+  },
+
+  goToAnchor() {
+    this.judgeIdentity(() => {
+      const _role = wx.getStorageSync('role');
+      if (_role === 'anchor') {
+        wx.redirectTo({
+          url: '/pages/roomList/index'
+        });
+      }
+    });
   }
 
 })

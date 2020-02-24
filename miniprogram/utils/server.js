@@ -84,7 +84,7 @@ function loginApp(code, nickName) {
             let _role = '';
             wx.setStorageSync('sessionId', result.data['session_id']);
             wx.setStorageSync('uid', result.data['uid']);
-            wx.setStorageSync('nickname', result.data['nickname']);
+            wx.setStorageSync('nickName', result.data['nickname']);
             // wx.setStorageSync('avatar', result.data['avatar']);
             switch (result.data.role) {
               case 1: {

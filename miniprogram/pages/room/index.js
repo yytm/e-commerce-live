@@ -22,8 +22,8 @@ Page({
     hasUserInfo: false,
 
 
-    hideModal:true, //模态框的状态  true-隐藏  false-显示
-    animationData:{},
+    hideModal: true, //模态框的状态  true-隐藏  false-显示
+    animationData: {},
 
     uid: -1,
     merchandises: [
@@ -45,9 +45,16 @@ Page({
         img: '../../resource/m1.png',
         price: '1599',
         id: 1,
+        // link: {
+        //   appId: 'wx2b8909dae7727f25',
+        //   path: "pages/liveroom/roomlist/roomlist",
+        // }
         link: {
-          appId: 'wx2b8909dae7727f25',
-          path: "pages/liveroom/roomlist/roomlist",
+          appId: '0',
+          path: "../web/index",
+          extraData: {
+            url: "https://shop-ecommerce.yunyikao.com/product1.html"
+          }
         }
       },
       {
@@ -55,6 +62,13 @@ Page({
         img: '../../resource/m2.png',
         price: '749',
         id: 2,
+        link: {
+          appId: '0',
+          path: "../web/index",
+          extraData: {
+            url: "https://shop-ecommerce.yunyikao.com/product2.html"
+          }
+        }
       },
     ],
     pushInx: -1,
@@ -93,8 +107,8 @@ Page({
     let navBarHeight = gap + rect.bottom;
     console.log('navBarHeight', rect, navBarHeight);
     this.setData({
-        navBarHeight,
-        statusBarHeight: systemInfo.statusBarHeight
+      navBarHeight,
+      statusBarHeight: systemInfo.statusBarHeight
     });
   },
 
@@ -117,7 +131,14 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    wx.setKeepScreenOn({
+      keepScreenOn: true,
+      success: (result) => {
+        console.log('setKeepScreenOn', result);
+      },
+      fail: () => { },
+      complete: () => { }
+    });
   },
 
   /**
@@ -152,14 +173,16 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
+    let self = this;
     const imgUrl = wx.getStorageSync('roomImg') || "/resource/share.png";
     let obj = sharePage(imgUrl, {
-        roomID: this.data.roomID,
-        loginType: 'audience'
+      roomID: this.data.roomID,
+      loginType: 'audience',
+      anchorID: 'anchor' + self.data.uid
     });
-    console.log('onShareAppMessage',obj);
+    console.log('onShareAppMessage', obj);
     return obj;
-},
+  },
 
   onRoomEvent(ev) {
     console.log('onRoomEvent', ev);
@@ -189,7 +212,7 @@ Page({
       }
       case 'onRecvMer': {
         console.log('onRecvMer', content);
-        const {indx, merTime, merBot} = content;
+        const { indx, merTime, merBot } = content;
         merT && clearTimeout(merT);
         this.setData({
           pushInx: indx,
@@ -211,7 +234,7 @@ Page({
           title: '商品推送成功',
           icon: 'none'
         });
-        
+
       }
       default: {
         // console.log('onRoomEvent default: ', e);
@@ -245,12 +268,12 @@ Page({
   },
 
   pushMer(e) {
-    const {currentTarget:{dataset:{indx}}} = e;
+    const { currentTarget: { dataset: { indx } } } = e;
     console.log(indx);
     liveRoom.pushMer(indx);
   },
   // 显示遮罩层 
-  showModal: function() {
+  showModal: function () {
     var that = this;
     that.setData({
       hideModal: false
@@ -260,13 +283,13 @@ Page({
       timingFunction: 'linear', //动画的效果 默认值是linear 
     })
     this.animation = animation
-    setTimeout(function() {
+    setTimeout(function () {
       that.fadeIn(); //调用显示动画 
     }, 10)
   },
- 
+
   // 隐藏遮罩层 
-  hideModal: function() {
+  hideModal: function () {
     console.log('hideModal');
     var that = this;
     // var animation = wx.createAnimation({
@@ -276,21 +299,21 @@ Page({
     // this.animation = animation
     // that.fadeDown(); //调用隐藏动画 
     // setTimeout(function() {
-      that.setData({
-        hideModal: true
-      })
-      that.fadeDown();
+    that.setData({
+      hideModal: true
+    })
+    that.fadeDown();
     // }, 720) //先执行下滑动画，再隐藏模块 
   },
- 
+
   //动画集 
-  fadeIn: function() {
+  fadeIn: function () {
     this.animation.translateY(0).step()
     this.setData({
       animationData: this.animation.export() //动画实例的export方法导出动画数据传递给组件的animation属性 
     })
   },
-  fadeDown: function() {
+  fadeDown: function () {
     console.log(this.animation);
     this.animation.translateY(450).step()
     this.setData({
@@ -298,7 +321,7 @@ Page({
     })
   },
   clickMech(e) {
-    const mer = this.data.merchandises.find(item => item.id == [e.currentTarget.id])
+    const mer = this.data.merchandises.find(item => item.id == e.currentTarget.id)
     if (!mer || !mer.link) return;
     const link = mer.link;
     if (link.appId === '0') {
@@ -325,17 +348,20 @@ Page({
         }
       })
     }
-    
+
   },
   clickPush() {
     console.log(this.data.pushInx)
-    if (this.data.pushInx == 0) {
-      var link = this.data.merchandises[this.data.pushInx].link;
-      const toUrl = link.path + '?url=' + link.extraDatas.url
-      wx.navigateTo({
-        url: toUrl,
-      });
-    }
+
+    console.log(this.data.merchandises);
+    const mer = this.data.merchandises.find(item => item.id == this.data.pushInx)
+    if (!mer || !mer.link) return;
+    var link = mer.link;
+    console.log('link', link);
+    const toUrl = link.path + '?url=' + link.extraData.url
+    wx.navigateTo({
+      url: toUrl,
+    });
   },
 
   getRoomToken(userID, appID) {
@@ -348,7 +374,7 @@ Page({
         'live_appid': appID,
         'user_name': userID
       },
-      success: function(res) {
+      success: function (res) {
         if (res.data.ret && res.data.ret.code === 0) {
           const token = res.data['room_token'];
           self.setData({
@@ -356,7 +382,7 @@ Page({
           })
         }
       },
-      fail: function(e) {
+      fail: function (e) {
         console.error(e);
       }
     })
@@ -374,7 +400,7 @@ Page({
         "page": 1,
         "count": 10,
       },
-      success: function(res) {
+      success: function (res) {
         if (res.statusCode !== 200) return;
         console.log('goods', res);
         const result = res.data;
@@ -401,7 +427,7 @@ Page({
           })
         }
       },
-      fail: function(e) {
+      fail: function (e) {
         console.error(e);
       }
     })

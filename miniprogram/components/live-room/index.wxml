@@ -6,7 +6,7 @@
     <view wx:if="{{playStreamList.length || subPusher.url}}" class="sub-video" style="top:{{userTop}}px">
         <live-pusher wx:if="{{!isCaster && subPusher.url}}" url="{{subPusher.url}}" autopush="{{true}}" class="small-video" bindstatechange="onPushStateChange" bindnetstatus="onPushNetStateChange"></live-pusher>
         <view wx:if="{{playStreamList.length}}" class="play-container" wx:for="{{playStreamList}}" wx:key="streamID">
-            <live-player src="{{item.playUrl}}" id="{{item.streamID}}" autoplay="{{true}}" class="small-video">
+            <live-player src="{{item.playUrl}}" id="{{item.streamID}}" autoplay="{{true}}" object-fit="fillCrop" class="small-video">
             </live-player>
             <image wx:if="{{isCaster}}" class="close-icon" data-userid="{{item.anchorID}}" bindtap="endLive" src="../images/close-play.png"></image>
         </view>

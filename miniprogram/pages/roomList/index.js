@@ -43,7 +43,7 @@ Page({
       console.log(res.target)
     }
     return {
-      title: '自定义转发标题',
+      title: app.globalData.userInfo.nickName + '邀请你注册',
       path: '/pages/register/index?role=anchor',
       imageUrl: '../../resource/invi.png',
     }
