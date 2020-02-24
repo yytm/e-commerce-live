@@ -19,7 +19,7 @@
                     <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item">
                         <image class="" src="{{item.img}}"></image>
                         <view class="merchandise-detail">
-                            <text class="merchandise-text" id="{{index}}" bindtap="clickMech">
+                            <text class="merchandise-text" id="{{item.id}}" bindtap="clickMech">
                                 {{item.name}}
                             </text>
                             <view class="merchandise-action">

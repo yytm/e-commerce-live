@@ -7,9 +7,9 @@
         </text>
     </view>
     <view class="operate">
-        <view class="invi-btn">
+        <!-- <view class="invi-btn">
             <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
-        </view>
+        </view> -->
         <view class="invi-code">
             <input value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
                     placeholder-style='color: #b3b3b3; font-size: 14px;'/>

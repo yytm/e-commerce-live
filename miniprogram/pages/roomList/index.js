@@ -35,7 +35,19 @@ Page({
     // this.fetchRoomList();
     this.getRoomList();
   },
-
+/**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      console.log(res.target)
+    }
+    return {
+      title: '自定义转发标题',
+      path: '/pages/register/index?role=anchor',
+      imageUrl: '../../resource/invi.png',
+    }
+  },
   bindGetUserInfo(e) {
     console.log(e, e.detail.userInfo);
     if (e.detail.userInfo) {

@@ -22,7 +22,7 @@
     justify-content: flex-start;
     margin-top: 400rpx;
 }
-.invi-btn {
+/* .invi-btn {
     width: 240rpx;
     margin: 0;
     display: flex;
@@ -31,7 +31,7 @@
     width: 100%;
     background-color: #F2034C;
     font-size: 32rpx;
-}
+} */
 .invi-code {
     display: flex;
     align-items: center;

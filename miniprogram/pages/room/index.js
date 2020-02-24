@@ -152,7 +152,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-    const imgUrl = this.data.roomImg || "/resource/share.png";
+    const imgUrl = wx.getStorageSync('roomImg') || "/resource/share.png";
     let obj = sharePage(imgUrl, {
         roomID: this.data.roomID,
         loginType: 'audience'
@@ -298,10 +298,12 @@ Page({
     })
   },
   clickMech(e) {
-    const link = this.data.merchandises[e.currentTarget.id].link;
-    if (!link) return;
+    const mer = this.data.merchandises.find(item => item.id == [e.currentTarget.id])
+    if (!mer || !mer.link) return;
+    const link = mer.link;
     if (link.appId === '0') {
-      const toUrl = link.path + "?webUrl=" + link.extraData.url
+      const toUrl = link.path + "?url=" + link.extraData.url;
+      console.log('toUrl', toUrl);
       wx.navigateTo({
         url: toUrl,
       });
@@ -383,7 +385,12 @@ Page({
               num: item['goods_no'],
               name: item['goods_desc'],
               link: {
-                url: item['goods_url']
+                // url: item['goods_url']
+                appId: '0',
+                path: "../web/index",
+                extraData: {
+                  url: item['goods_url']
+                }
               },
               price: item['price'],
               img: item['goods_img']

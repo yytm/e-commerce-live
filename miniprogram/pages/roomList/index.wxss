@@ -1,5 +1,8 @@
 /* pages/index/index.wxss */
 /* pages/audience/index.wxss */
+.room-list-container {
+  padding: 10px 20px 0;
+}
 
 .nav {
   width: 60px;
@@ -8,6 +11,17 @@
   margin-left: 8vw;
   margin-top: 2vw;
   text-align: center;
+}
+.invi-btn {
+  width: 240rpx;
+  margin: 0;
+  display: flex;
+}
+.invi-btn button {
+  width: 100%;
+  background-color: #F2034C;
+  font-size: 32rpx;
+  color: #fff;
 }
 .list-box {
   background-color: #0d70ff;
@@ -34,25 +48,25 @@
 }
 
 .room-list {
-  margin: 2vh 5vh;
+  margin: 2vh 0;
 
 }
 
 .room-list-item {
   height: 8vh;
   line-height: 8vh;
-  background-color: #F2034C;
   font-size: 15px;
-  color: #fff;
-  margin: 20px 0;
-  width: 280px !important;
+  margin: 10rpx 0;
+  width: 100%;
   padding: 0;
   /* padding:25rpx 40rpx; */
   /* margin-top: 2vh; */
 }
 
-.room-list-item view {
-  height: 50%;
+.room-list-item button {
+  width: 100%;
+  color: #fff;
+  background-color: #F2034C;
 }
 
 .bottom-input {

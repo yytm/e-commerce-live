@@ -14,6 +14,7 @@
 .merchandise-container {
     position: absolute;
     width: 702rpx;
+    height: 814rpx;
     /* height: 400rpx; */
     /* bottom: 20rpx; */
     background-color: #fff;
@@ -49,6 +50,8 @@
   }
   .merchandise-list {
     padding: 0 40rpx;
+    overflow: auto;
+    height: 728rpx;
   }
   .merchandise-item {
     height: 240rpx;
