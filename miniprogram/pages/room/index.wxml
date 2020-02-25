@@ -18,18 +18,18 @@
                 <scroll-view class="merchandise-list" scroll-y='true'>
                     <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item">
                         <image class="" src="{{item.img}}"></image>
-                        <view class="merchandise-detail">
-                            <text class="merchandise-text" id="{{item.id}}" bindtap="clickMech">
+                        <view class="merchandise-detail" id="{{item.id}}" bindtap="clickMech">
+                            <text class="merchandise-text">
                                 {{item.name}}
                             </text>
                             <view class="merchandise-action">
                                 <text class="m-price">¥{{item.price}}</text>
-                                <view wx:if="{{loginType === 'anchor'}}" data-indx="{{item.id}}" class="shop-cart" bind:tap="pushMer">
+                                <view wx:if="{{loginType === 'anchor'}}" data-indx="{{item.id}}" class="shop-cart" catchtap="pushMer">
                                     推送商品
                                 </view>
-                                <view wx:if="{{loginType === 'audience'}}" class="shop-cart">
+                                <!-- <view wx:if="{{loginType === 'audience'}}" class="shop-cart">
                                     加入购物车
-                                </view>
+                                </view> -->
                             </view>
                         </view>
                     </view>

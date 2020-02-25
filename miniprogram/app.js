@@ -28,6 +28,6 @@ App({
     userInfo: null,
     BaseUrl: 'https://shop-backend.yunyikao.com',
     wxAppID: 'wxda1343baad77dc86',
-    liveAppID: 1739272706
+    liveAppID: 1739272706 
   },
 })

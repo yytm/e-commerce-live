@@ -141,8 +141,7 @@ Component({
     waitingImage: 'https://storage.zego.im/downloads/pause_publish.png',
     avatarUrl: '',
     nickName: '',
-    playUrl: '',
-    sid: '',
+
     isFull: false,
     showBeauty: false,
     isConnecting: false,
@@ -919,7 +918,7 @@ Component({
         '>>>[liveroom-room] startPlayingStream, preferPlaySourceType: ',
         self.data.preferPlaySourceType
       );
-      console.error('startPlayingStreamList', self.data.sid, self.data.playStreamList);
+      console.error('startPlayingStreamList', self.data.playStreamList);
 
       if (self.data.loginType === 'anchor') {
         if (self.data.playStreamList.length) return;
@@ -929,13 +928,9 @@ Component({
           zg.startPlayingStream(streamID);
         }
       } else if (self.data.loginType === 'audience') {
-        // if (self.data.sid == '') {
-        //   const streamId = streamList[0].stream_id;
+ 
+        isLogout = streamList.find(item => item.stream_id === self.data.mainPusher.streamID);
 
-        //   zg.startPlayingStream(streamId);
-        // } else {
-        //   isLogout = streamList.find(item => item.stream_id === self.data.sid);
-        // }
         // 获取每个 streamID 对应的拉流 url
         for (let i = 0; i < streamList.length; i++) {
           let streamID = streamList[i].stream_id;

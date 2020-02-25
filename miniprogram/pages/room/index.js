@@ -178,6 +178,7 @@ Page({
     const imgUrl = wx.getStorageSync('roomImg') || "/resource/share.png";
     let obj = sharePage(imgUrl, {
       roomID: this.data.roomID,
+      roomName: this.data.roomName,
       loginType: 'audience',
       anchorID: 'anchor' + self.data.uid
     });

@@ -1,5 +1,4 @@
 
-// let requestRoomListUrl = 'https://liveroom1739272706-api.zego.im/demo/roomlist?appid=1739272706';
 
 let { loginApp } = require("../../utils/server.js");
 const app = getApp();
@@ -32,7 +31,6 @@ Page({
     // }
   },
   onShow: function () {
-    // this.fetchRoomList();
     this.getRoomList();
   },
 /**
@@ -89,36 +87,6 @@ Page({
     self.setData({
       loginType: 'anchor'
     });
-    // this.getUserInfo();
-    // wx.request({
-    //   url: requestRoomListUrl,
-    //   method: "GET",
-    //   success(res) {
-    //     console.log(">>>[liveroom-roomList] fetchRoomList before create room, result is: ");
-    //     if (res.statusCode === 200) {
-    //       var roomList = res.data.data.room_list;
-    //       // self.setData({
-    //       //     roomList: roomList
-    //       // })
-
-    //       for (var index in roomList) {
-    //         if (roomList[index].room_id === self.data.roomID) {
-    //           wx.showToast({
-    //             title: '创建失败，相同 ID 房间已存在，请重新创建',
-    //             icon: 'none',
-    //             duration: 3000
-    //           });
-    //           return;
-    //         }
-    //       }
-    //       const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType;
-
-    //       wx.navigateTo({
-    //         url: url,
-    //       });
-    //     }
-    //   }
-    // });
     wx.request({
       url: BaseUrl + '/app/get_room_list',
       method: 'POST',
@@ -190,7 +158,6 @@ Page({
      */
   onPullDownRefresh() {
     console.log('>>>[liveroom-roomList] onPullDownRefresh');
-    // this.fetchRoomList();
     this.getRoomList();
   },
   stopRefresh() {
@@ -257,42 +224,6 @@ Page({
     })
   },
 
-  // 获取房间列表
-  fetchRoomList() {
-    let self = this;
-    console.log(">>>[liveroom-roomList] begin to fetchRoomList");
-    wx.showLoading({
-      title: '获取房间列表'
-    })
-    wx.request({
-      url: requestRoomListUrl,
-      method: "GET",
-      success(res) {
-        self.stopRefresh();
-        console.log(">>>[liveroom-roomList] fetchRoomList, result is: ");
-        if (res.statusCode === 200) {
-          console.log(res.data);
-          const roomList = res.data.data.room_list.
-            filter(item => item.room_id.startsWith('e-')).
-            map(item => {
-              item.room_show_name = item.room_id.slice(2);
-              console.log('show_name', item.room_show_name);
-              return item;
-            });
-          console.log('roomList', roomList);
-          self.setData({
-            roomList
-          });
-        } else {
-          wx.showToast({
-            title: '获取房间列表失败，请稍后重试',
-            icon: 'none',
-            duration: 2000
-          })
-        }
-      }
-    })
-  },
   onGotUserInfo: function (e) {
     let userInfo = e.detail.userInfo || {};
     const { currentTarget: { dataset: { id } } } = e;
