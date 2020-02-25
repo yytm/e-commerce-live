@@ -12,8 +12,7 @@
                         wx:for="{{roomList}}" 
                         wx:key="room_id" 
                         hover-class="none" 
-                        hover-stop-propagation="false">
-                    <button     
+                        hover-stop-propagation="false"
                         data-name="{{item.room_name}}" 
                         data-id="{{item.room_id}}" 
                         data-anchor-id="{{item.anchor_id_name}}" 
@@ -21,7 +20,6 @@
                         data-room-img="{{item.room_img}}"
                         bindtap="onClickItem">
                             直播间名称:{{item.room_show_name}}
-                    </button>
                 </view>
             </view>
         </scroll-view>

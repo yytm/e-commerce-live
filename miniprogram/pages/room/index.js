@@ -72,6 +72,7 @@ Page({
       },
     ],
     pushInx: -1,
+    pushMer: {}
   },
 
   /**
@@ -214,13 +215,16 @@ Page({
         console.log('onRecvMer', content);
         const { indx, merTime, merBot } = content;
         merT && clearTimeout(merT);
+        const pushMer = this.data.merchandises.find(item => item.id == indx);
         this.setData({
           pushInx: indx,
-          merBot: merBot
+          merBot: merBot,
+          pushMer
         });
         merT = setTimeout(() => {
           this.setData({
             pushInx: -1,
+            pushMer: {},
             merBot: merBot
           });
           clearTimeout(merT);

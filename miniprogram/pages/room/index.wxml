@@ -38,10 +38,10 @@
         </view>
     </view>
     <view class="push-mer" wx:if="{{pushInx >= 0}}" style="bottom:{{merBot}}rpx;" bindtap="clickPush">
-        <image class="push-mer-img" src="{{merchandises[pushInx].img}}"></image>
+        <image class="push-mer-img" src="{{pushMer.img}}"></image>
         <view class="push-mer-detail">
-            <text class="push-mer-text">{{merchandises[pushInx].name}}</text>
-            <text class="push-mer-price">¥{{merchandises[pushInx].price}}</text>
+            <text class="push-mer-text">{{pushMer.name}}</text>
+            <text class="push-mer-price">¥{{pushMer.price}}</text>
         </view>
     </view>
 </view>

@@ -1004,7 +1004,8 @@ Component({
               break;
             }
           }
-          playingList = playingList.filter(item => item.stream_id === streamID);
+          playingList = playingList.filter(item => item.stream_id !== streamID);
+
           self.setData({
             playStreamList
           }, function () {
