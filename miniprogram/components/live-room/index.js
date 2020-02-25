@@ -243,6 +243,17 @@ Component({
       keepScreenOn: true
     });
   },
+  lifetimes: {
+    attached() {
+      console.log('live-room attached');
+    },
+    detached() {
+      console.log('live-room detached');
+      if (zg) {
+        this.logoutRoom();
+      }
+    }
+  },
   pageLifetimes: {
     show: function () {
       // 页面被展示
