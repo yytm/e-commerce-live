@@ -52,6 +52,12 @@
     padding: 0 40rpx;
     overflow: auto;
     height: 728rpx;
+    box-sizing: border-box;
+  }
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
   }
   .merchandise-item {
     height: 240rpx;

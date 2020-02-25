@@ -437,4 +437,14 @@ Page({
     })
   },
 
+  back() {
+    if(getCurrentPages().length>1){
+        wx.navigateBack();
+    }else{
+        wx.redirectTo({
+            url:'/pages/roomList/index'
+        });
+    }
+  }
+
 })

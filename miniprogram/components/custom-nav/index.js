@@ -36,13 +36,10 @@ Component({
     methods: {
         back() {
             console.log('back');
-            if(getCurrentPages().length>1){
-                wx.navigateBack();
-            }else{
-                wx.navigateTo({
-                    url:'/pages/main/main'
-                });
-            }
+            console.log('pages', getCurrentPages());
+            this.triggerEvent('Back', {
+
+            })
         },
     }
 });

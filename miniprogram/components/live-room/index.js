@@ -986,7 +986,9 @@ Component({
             },
           });
           isLogout = true;
+          console.log('isLogout', isLogout);
           setTimeout(() => {
+            console.log('isLogout', isLogout);
             if (isLogout) {
               self.setData({
                 playStreamList: []

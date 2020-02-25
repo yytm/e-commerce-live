@@ -1,5 +1,5 @@
 <!--miniprogram/pages/live/index.wxml-->
-<custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}">
+<custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}" bindBack="back">
     <view class="room-title">{{roomShowName}}</view>
 </custom-nav>
 <view class="live-container">
@@ -15,7 +15,7 @@
                     </view>
                     <image class="m-close-png" src="../../resource/m-close.png" bindtap="hideModal"></image>
                 </view>
-                <view class="merchandise-list">
+                <scroll-view class="merchandise-list" scroll-y='true'>
                     <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item">
                         <image class="" src="{{item.img}}"></image>
                         <view class="merchandise-detail">
@@ -33,7 +33,7 @@
                             </view>
                         </view>
                     </view>
-                </view>
+                </scroll-view>
             </view>
         </view>
     </view>

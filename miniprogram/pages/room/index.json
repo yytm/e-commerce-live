@@ -3,5 +3,6 @@
     "live": "/components/live-room/index",
     "custom-nav":"/components/custom-nav/index"
   },
+  "disableScroll": true,
   "navigationStyle": "custom"
 }
