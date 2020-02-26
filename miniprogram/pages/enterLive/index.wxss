@@ -1,0 +1,33 @@
+/* miniprogram/pages/enterLive/index.wxss */
+.bottom-input {
+  padding: 0 1vw;
+  position: fixed;
+  width: 50vw;
+  left: 5vh;
+  bottom: 3vh;
+  height: 9.4vw;
+  /*border-radius: 4px;*/
+  color: #3c3c3c;
+  border-bottom: 1px solid #FD4747;
+}
+
+.bottom-btn {
+  position: fixed;
+  width: 26vw;
+  right: 5vh;
+  bottom: 3vh;
+  display: flex;
+}
+
+.bottom-btn button {
+  background-color: #FD4747;
+  color: #fff;
+  line-height: 80rpx;
+  border-radius: 10rpx;
+  width: 100%;
+  font-size: 26rpx;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

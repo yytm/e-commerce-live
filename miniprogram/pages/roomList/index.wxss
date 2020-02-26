@@ -4,21 +4,29 @@
   padding: 10px 20px 0;
 }
 
+.tool-bars {
+  display: flex;
+  justify-content: space-between;
+}
+
 .nav {
-  width: 60px;
-  height: 20px;
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
   background-color: #F2034C;
-  margin-left: 8vw;
-  margin-top: 2vw;
+  color: #fff;
   text-align: center;
+  border-radius: 10rpx;
 }
 .invi-btn {
   width: 240rpx;
+  height: 80rpx;
   margin: 0;
   display: flex;
 }
 .invi-btn button {
   width: 100%;
+  height: 100%;
   background-color: #F2034C;
   font-size: 32rpx;
   color: #fff;
@@ -140,39 +148,3 @@
   width: 300rpx;
 }
 
-.bottom-input {
-  padding: 0 1vw;
-  position: fixed;
-  width: 50vw;
-  left: 5vh;
-  bottom: 3vh;
-  height: 9.4vw;
-  /*border-radius: 4px;*/
-  color: #3c3c3c;
-  border-bottom: 1px solid #F2034C;
-
-}
-
-
-.bottom-btn {
-  position: fixed;
-  width: 26vw;
-  right: 5vh;
-  bottom: 3vh;
-  display: flex;
-}
-
-
-
-.bottom-btn button {
-  background-color: #F2034C;
-  line-height: 80rpx;
-  border-radius: 0;
-  width: 100%;
-  font-size: 26rpx;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}

@@ -4,7 +4,8 @@
     "pages/roomList/index",
     "pages/web/index",
     "pages/room/index",
-    "pages/register/index"
+    "pages/register/index",
+    "pages/enterLive/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

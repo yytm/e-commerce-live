@@ -4,6 +4,7 @@ const app = getApp();
 let zg;
 let networkOk = true;
 let isLogout = false;
+let logOutTer = null;
 let playingList = [];
 let merT = null;
 let priseTotal = 0;
@@ -205,7 +206,7 @@ Component({
   methods: {
     init() {
       this.getUserInfo();
-  
+
       // iphoneX 等机型
       if (iphoneXX) {
         this.data.mmBot += 68;
@@ -221,7 +222,7 @@ Component({
       this.setData({
         userTop
       });
-  
+
       let timestamp = new Date().getTime();
       const nickName = this.data.userInfo.nickName ? this.data.userInfo.nickName : 'xcxU' + timestamp;
       const avatar = this.data.userInfo.avatarUrl ? this.data.userInfo.avatarUrl : '../images/avatar-logo.png';
@@ -243,7 +244,7 @@ Component({
           nickName: nickName
         })
       }
-  
+
       zg = new ZegoClient();
       zg.config({
         appid: this.data.liveAppID, // 必填，应用id，由即构提供
@@ -255,17 +256,17 @@ Component({
         logUrl: this.data.logServerURL, // 必填，log 服务器地址，由即构提供
         audienceCreateRoom: true // false观众不允许创建房间
       });
-  
+
       this.bindCallBack(); //监听zego-sdk回调
-  
+
       console.log(
         '>>>[liveroom-room] publishStreamID is: ' + this.data.publishStreamID
       );
-  
+
       zg.setUserStateUpdate(true);
-  
+
       // this.loginRoom(this.data.token);
-  
+
       this.onNetworkStatus();
       // 保持屏幕常亮
       wx.setKeepScreenOn({
@@ -333,7 +334,7 @@ Component({
 
       // 服务端主动推过来的 流的创建/删除事件；updatedType: { added: 0, deleted: 1 }；streamList：增量流列表
       zg.onStreamUpdated = function (updatedType, streamList) {
-        console.log(
+        console.error(
           '>>>[liveroom-room] zg onStreamUpdated, updatedType: ' +
           (updatedType === 0 ? 'added' : 'deleted') +
           ', streamList: '
@@ -414,57 +415,57 @@ Component({
           });
         }
       },
-      // 接收可靠消息
-      zg.onRecvReliableMessage = function (type, seq, data) {
-        console.log('onRecvReliableMessage', type);
-        if (self.data.loginType === 'audience' && type === 'merchandise') {
-          const merArr = data.split('&');
-          const merIndex = parseInt(merArr[0]);
-          const merTime = parseInt(merArr[1]);
-          console.log('merchandise', merIndex);
-          const content = {
-            indx: merIndex,
-            merTime,
-            merBot: self.data.mmBot + 140
-          }
-          self.triggerEvent('RoomEvent', {
-            tag: 'onRecvMer',
-            // code: 0,
-            content
-          });
-          console.log(!!merT);
-          if (merT) {
-            clearTimeout(merT);
-            merT = null;
-          } else {
-            self.data.meBot += 120;
-            self.data.newBot += 120;
-            self.setData({
-              meBot: self.data.meBot,
-              newBot: self.data.newBot
+        // 接收可靠消息
+        zg.onRecvReliableMessage = function (type, seq, data) {
+          console.log('onRecvReliableMessage', type);
+          if (self.data.loginType === 'audience' && type === 'merchandise') {
+            const merArr = data.split('&');
+            const merIndex = parseInt(merArr[0]);
+            const merTime = parseInt(merArr[1]);
+            console.log('merchandise', merIndex);
+            const content = {
+              indx: merIndex,
+              merTime,
+              merBot: self.data.mmBot + 140
+            }
+            self.triggerEvent('RoomEvent', {
+              tag: 'onRecvMer',
+              // code: 0,
+              content
             });
-          }
-          
-          merT = setTimeout(() => {
-            self.data.meBot -= 120;
-            self.data.newBot -= 120;
-            self.setData({
-              meBot: self.data.meBot,
-              newBot: self.data.newBot
-            })
-            clearTimeout(merT);
-            merT = null;
-          }, merTime * 1000);
-        }
-      },
+            console.log(!!merT);
+            if (merT) {
+              clearTimeout(merT);
+              merT = null;
+            } else {
+              self.data.meBot += 120;
+              self.data.newBot += 120;
+              self.setData({
+                meBot: self.data.meBot,
+                newBot: self.data.newBot
+              });
+            }
 
-      // 服务端主动推过来的 流的质量更新
-      zg.onPublishQualityUpdate = function (streamID, streamQuality) {
-        console.log(
-          '>>>[liveroom-room] zg onPublishQualityUpdate',
-          streamQuality
-        );
-      };
+            merT = setTimeout(() => {
+              self.data.meBot -= 120;
+              self.data.newBot -= 120;
+              self.setData({
+                meBot: self.data.meBot,
+                newBot: self.data.newBot
+              })
+              clearTimeout(merT);
+              merT = null;
+            }, merTime * 1000);
+          }
+        },
+
+        // 服务端主动推过来的 流的质量更新
+        zg.onPublishQualityUpdate = function (streamID, streamQuality) {
+          console.log(
+            '>>>[liveroom-room] zg onPublishQualityUpdate',
+            streamQuality
+          );
+        };
       // 服务端主动推过来的 流的质量更新
       zg.onPlayQualityUpdate = function (streamID, streamQuality) {
         console.log('>>>[liveroom-room] zg onPlayQualityUpdate', streamQuality);
@@ -689,7 +690,7 @@ Component({
               // code: 0,
               content
             });
-          } else { 
+          } else {
 
             // 房间内已经有流，拉流
             if (streamList.length >= self.data.upperStreamLimit) {
@@ -774,16 +775,17 @@ Component({
       // 主播推流
       if (this.data.isCaster) {
         this.setData({
-            mainPusher: {
-              ...this.data.mainPusher,
-              ... {
-                streamID,
-                url: url
-              }
+          mainPusher: {
+            ...this.data.mainPusher,
+            ... {
+              streamID,
+              url: url
             }
+          }
         }, () => {
-              this.data.pusherContext = wx.createLivePusherContext();
-              this.data.pusherContext.start();
+          this.data.pusherContext = wx.createLivePusherContext();
+          this.data.pusherContext.stop();
+          this.data.pusherContext.start();
         });
       } else { // 子主播推流
         this.setData({
@@ -796,7 +798,7 @@ Component({
           }
         })
       }
-      
+
     },
 
     setPlayUrl(streamid, url) {
@@ -806,97 +808,42 @@ Component({
         console.log('>>>[liveroom-room] setPlayUrl, url is null');
         return;
       }
-      // if (self.data.loginType === 'anchor') {
-      //   // if (self.data.playStreamList.length) return;
-      //   for (let i = 0; i < self.data.playStreamList.length; i++) {
-      //     if (self.data.playStreamList[i]['streamID'] === streamid && self.data.playStreamList[i]['playUrl'] === url) {
-      //       console.log('>>>[liveroom-room] setPlayUrl, streamid and url are repeated');
-      //       return;
-      //     }
-      //   }
 
-      //   let streamInfo = {};
-      //   let isStreamRepeated = false;
-
-      //   // 相同 streamid 的源已存在，更新 Url
-      //   for (let i = 0; i < self.data.playStreamList.length; i++) {
-      //     if (self.data.playStreamList[i]['streamID'] === streamid) {
-      //       isStreamRepeated = true;
-      //       self.data.playStreamList[i]['playUrl'] = url;
-      //       // self.data.playStreamList[i]['playingState'] = 'initial';
-      //       break;
-      //     }
-      //   }
-
-      //   // 相同 streamid 的源不存在，创建新 player
-      //   if (!isStreamRepeated) {
-      //     streamInfo['streamID'] = streamid;
-      //     streamInfo['playUrl'] = url;
-      //     const findPlay = playingList.find(playItem => playItem.stream_id === streamid);
-      //     console.log('findPlay', findPlay);
-      //     if (findPlay) {
-      //       streamInfo['anchorID'] = findPlay.anchor_id_name;
-      //     }
-      //     // streamInfo['playingState'] = 'initial';
-      //     self.data.playStreamList.push(streamInfo);
-      //   }
-
-      //   console.log('playStreamList', self.data.playStreamList);
-      //   self.setData({
-      //     playStreamList: self.data.playStreamList,
-      //   }, function () {
-      //     // 检查流新增后，是否已经达到房间流上限
-      //     if (self.data.playStreamList.length >= self.data.upperStreamLimit) {
-
-      //       self.setData({
-      //         reachStreamLimit: true,
-      //       }, function () {
-      //         wx.showToast({
-      //           title: '房间内连麦人数已达上限，不允许新的连麦',
-      //           icon: 'none',
-      //           duration: 2000
-      //         });
-      //       });
-
-      //     }
-
-      //   });
-      // } else if (self.data.loginType === 'audience') {
-        let founded = false, isHost = false;
-        let streamInfo = {};
-        console.log('playingList', playingList.length);
-        playingList.forEach(item => {
-          if (item.stream_id === streamid) {
-            streamInfo['streamID'] = streamid;
-            streamInfo['playUrl'] = url;
-            streamInfo['anchorID'] = item.anchor_id_name;
-            founded = true;
-          }
-        });
-        console.log(founded);
-        if (!founded) return;
-        console.log('pusherID', streamInfo.anchorID, self.data.mainPusher.pusherID);
-        if (streamInfo.anchorID === self.data.mainPusher.pusherID) {
-          self.setData({
-            mainPusher: {
-              ...self.data.mainPusher,
-              ...{
-                streamID: streamInfo.streamID,
-                url: streamInfo.playUrl,
-                pusherID: streamInfo.anchorID
-              }
-            }
-          }, () => {
-            this.data.playerContext = wx.createLivePlayerContext(streamInfo.streamID, self);
-            console.log(self.data.mainPusher, this.data.playerContext)
-            this.data.playerContext.play();
-          })
-        } else {
-          self.data.playStreamList.push(streamInfo);
-          self.setData({
-            playStreamList: self.data.playStreamList
-          });
+      let founded = false, isHost = false;
+      let streamInfo = {};
+      console.log('playingList', playingList.length);
+      playingList.forEach(item => {
+        if (item.stream_id === streamid) {
+          streamInfo['streamID'] = streamid;
+          streamInfo['playUrl'] = url;
+          streamInfo['anchorID'] = item.anchor_id_name;
+          founded = true;
         }
+      });
+      console.log(founded);
+      if (!founded) return;
+      console.log('pusherID', streamInfo.anchorID, self.data.mainPusher.pusherID);
+      if (streamInfo.anchorID === self.data.mainPusher.pusherID) {
+        self.setData({
+          mainPusher: {
+            ...self.data.mainPusher,
+            ...{
+              streamID: streamInfo.streamID,
+              url: streamInfo.playUrl,
+              pusherID: streamInfo.anchorID
+            }
+          }
+        }, () => {
+          this.data.playerContext = wx.createLivePlayerContext(streamInfo.streamID, self);
+          console.log(self.data.mainPusher, this.data.playerContext)
+          this.data.playerContext.play();
+        })
+      } else {
+        self.data.playStreamList.push(streamInfo);
+        self.setData({
+          playStreamList: self.data.playStreamList
+        });
+      }
 
     },
 
@@ -926,7 +873,7 @@ Component({
           zg.startPlayingStream(streamID);
         }
       } else if (self.data.loginType === 'audience') {
- 
+        console.log('isLogout', streamList, self.data.mainPusher)
         isLogout = streamList.find(item => item.stream_id === self.data.mainPusher.streamID);
 
         // 获取每个 streamID 对应的拉流 url
@@ -944,7 +891,7 @@ Component({
             playingList.push(streamList[i]);
             console.log('playingList', playingList);
             zg.startPlayingStream(streamID);
-            
+
           }
         }
       }
@@ -978,9 +925,31 @@ Component({
               }
             },
           });
+          if (self.data.isConnecting && self.data.isPublishing) {
+            // zg.endJoinLive(self.data.anchorID, function (result, userID, userName) {
+            //   console.log('>>>[liveroom-room] endJoinLive, result: ' + result);
+            // }, null);
+
+            // 停止推流
+            zg.stopPublishingStream(self.data.publishStreamID);
+
+            self.setData({
+              isPublishing: false,
+              isConnecting: false,
+              subPusher: {
+                ...self.data.subPusher,
+                ... {
+                  streamID: '',
+                  url: ''
+                }
+              }
+            }, function () {
+            });
+          }
           isLogout = true;
+          logOutTer && clearTimeout(logOutTer);
           console.log('isLogout', isLogout);
-          setTimeout(() => {
+          logOutTer = setTimeout(() => {
             console.log('isLogout', isLogout);
             if (isLogout) {
               self.setData({
@@ -995,7 +964,7 @@ Component({
                 content
               });
             }
-          }, 10000);
+          }, 20000);
           break;
         } else {
           let playStreamList = self.data.playStreamList;
@@ -1232,6 +1201,7 @@ Component({
       zg && zg.logout();
 
       this.setData({
+        isConnecting: false,
         isPublishing: false,
         playStreamList: [],
         mainPusher: {},
@@ -1480,7 +1450,7 @@ Component({
 
     },
     onPushStateChange(e) {
-      console.log('onPushStateChange', e);
+      console.log('onPushStateChange', this.data.publishStreamID, e);
       console.log(
         '>>>[liveroom-room] onPushStateChange, code: ' +
         e.detail.code +

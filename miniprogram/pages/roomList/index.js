@@ -6,9 +6,6 @@ const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
-    roomID: '',
-    roomName: '',
-
     userInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     hasUserInfo: false,
@@ -60,66 +57,6 @@ Page({
         content: '需获取信息用于登录，请重新登录',
       })
     }
-  },
-
-  createRoom: function () {
-    var self = this;
-    console.log('>>>[liveroom-roomList] onCreateRoom, roomID is: ' + self.data.roomID);
-
-    if (self.data.roomID.length === 0) {
-      wx.showToast({
-        title: '创建失败，房间 ID 不可为空',
-        icon: 'none',
-        duration: 2000
-      });
-      return;
-    }
-
-    if (self.data.roomID.match(/^[ ]+$/)) {
-      wx.showToast({
-        title: '创建失败，房间 ID 不可为空格',
-        icon: 'none',
-        duration: 2000
-      });
-      return;
-    }
-
-    self.setData({
-      loginType: 'anchor'
-    });
-    wx.request({
-      url: BaseUrl + '/app/get_room_list',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-      },
-      success(res) {
-        if (res.data.ret && res.data.ret.code === 0) {
-          var roomList = res.data.room_list;
-
-          for (var index in roomList) {
-            if (roomList[index].room_id === self.data.roomID) {
-              wx.showToast({
-                title: '创建失败，相同 ID 房间已存在，请重新创建',
-                icon: 'none',
-                duration: 3000
-              });
-              return;
-            }
-          }
-          const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
-          // + '&roomImg=' + roomImg;
-
-          wx.navigateTo({
-            url: url,
-          });
-        }
-      },
-      fail(e) {
-        console.error(e);
-      }
-    })
   },
 
   getRoomList() {
@@ -180,7 +117,6 @@ Page({
       tapTime: nowTime,
       loginType: 'audience'
     }, function () {
-      // const url = '../play-room/index?roomID=' + id + '&roomName=' + id + '&loginType=audience';
       const url = '../room/index?roomID=' + id + '&roomName=' + id + '&anchorID=' + anchorId + '&anchorName=' + anchorName + '&roomImg=' + roomImg + '&loginType=audience';
 
       wx.navigateTo({
@@ -189,13 +125,6 @@ Page({
     })
   },
 
-  // 输入的房间 ID
-  bindKeyInput(e) {
-    this.setData({
-      roomID: e.detail.value,
-      roomName: e.detail.value,
-    })
-  },
   getUserInfo() {
     wx.getUserInfo({
       lang: 'zh_CN',
@@ -224,22 +153,4 @@ Page({
     })
   },
 
-  onGotUserInfo: function (e) {
-    let userInfo = e.detail.userInfo || {};
-    const { currentTarget: { dataset: { id } } } = e;
-    console.log('id', id);
-    console.log('onGotUserInfo', e);
-    // store data for next launch use
-    wx.setStorage({
-      key: 'userInfo',
-      data: userInfo,
-    })
-    // this.onJoin(userInfo);
-    if (id === 'create') {
-      this.createRoom();
-    } else {
-      this.onClickItem(id);
-    }
-
-  },
 });

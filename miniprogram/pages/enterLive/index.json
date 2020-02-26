@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarBackgroundColor": "#FD4747",
+  "navigationBarTitleText": "开始直播",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true
+}
