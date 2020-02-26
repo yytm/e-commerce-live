@@ -119,8 +119,11 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    liveRoom = this.selectComponent('#live-room');
-    this.getRoomToken(this.data.userID, this.data.liveAppID);
+    this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
+      liveRoom = this.selectComponent('#live-room');
+      liveRoom.init();
+      liveRoom.loginRoom(this.data.token);
+    });
     this.getGoods();
   },
 
@@ -137,13 +140,17 @@ Page({
       fail: () => { },
       complete: () => { }
     });
+    if (liveRoom) {
+      console.log('liveRoom', this.data.token);
+      liveRoom.loginRoom(this.data.token);
+    }
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.getRoomToken(this.data.userID, this.data.liveAppID);
+    // this.getRoomToken(this.data.userID, this.data.liveAppID);
 
   },
 
@@ -152,6 +159,7 @@ Page({
    */
   onUnload: function () {
     console.log('onUnload');
+    liveRoom = null;
   },
 
   /**
@@ -375,7 +383,7 @@ Page({
     });
   },
 
-  getRoomToken(userID, appID) {
+  getRoomToken(userID, appID, callback) {
     let self = this;
     wx.request({
       url: BaseUrl + '/app/get_room_token',
@@ -390,7 +398,8 @@ Page({
           const token = res.data['room_token'];
           self.setData({
             token
-          })
+          });
+          callback();
         }
       },
       fail: function (e) {

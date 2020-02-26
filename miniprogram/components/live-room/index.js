@@ -51,12 +51,12 @@ Component({
       type: String,
       value: '',
       observer: function (newVal, oldVal, changedPath) {
-        if (newVal !== '') {
-          this.loginRoom(newVal);
-          this.setData({
-            token: newVal
-          })
-        }
+        // if (newVal !== '') {
+        //   this.loginRoom(newVal);
+        //   this.setData({
+        //     token: newVal
+        //   })
+        // }
       }
     },
     // avatar: {
@@ -167,74 +167,8 @@ Component({
   },
   ready: function () {
     console.log('ready', this.data.liveAppID, this.data);
-    this.getUserInfo();
-
-    // iphoneX 等机型
-    if (iphoneXX) {
-      this.data.mmBot += 68;
-      this.data.meBot += 68;
-      this.data.newBot += 68;
-      this.setData({
-        mmBot: this.data.mmBot,
-        meBot: this.data.meBot,
-        newBot: this.data.newBot
-      })
-    }
-    let userTop = this.data.navBarHeight + 16;
-    this.setData({
-      userTop
-    });
-
-    let timestamp = new Date().getTime();
-    const nickName = this.data.userInfo.nickName ? this.data.userInfo.nickName : 'xcxU' + timestamp;
-    const avatar = this.data.userInfo.avatarUrl ? this.data.userInfo.avatarUrl : '../images/avatar-logo.png';
-    const nickAvatar = {
-      nickName: nickName,
-      avatar: avatar
-    }
-    this.setData({
-      roomName: this.data.roomID,
-      preferPlaySourceType: 0,
-      // userID: 'xcxU' + timestamp,
-      userName: JSON.stringify(nickAvatar),
-      publishStreamID: 'xcxS' + timestamp,
-      isCaster: this.data.loginType !== 'audience'
-    });
-    if (this.data.loginType === 'anchor') {
-      this.setData({
-        avatarUrl: avatar,
-        nickName: nickName
-      })
-    }
-
-    zg = new ZegoClient();
-    zg.config({
-      appid: this.data.liveAppID, // 必填，应用id，由即构提供
-      idName: this.data.userID, // 必填，用户自定义id，全局唯一
-      nickName: this.data.userName, // 必填，用户自定义昵称
-      remoteLogLevel: 2, // 日志上传级别，建议取值不小于 logLevel
-      logLevel: 0, // 日志级别，debug: 0, info: 1, warn: 2, error: 3, report: 99, disable: 100（数字越大，日志越少）
-      server: 'wss://wsliveroom' + this.data.liveAppID + '-api.zego.im:8282/ws', // 必填，服务器地址，由即构提供
-      logUrl: this.data.logServerURL, // 必填，log 服务器地址，由即构提供
-      audienceCreateRoom: true // false观众不允许创建房间
-    });
-
-    this.bindCallBack(); //监听zego-sdk回调
-
-    console.log(
-      '>>>[liveroom-room] publishStreamID is: ' + this.data.publishStreamID
-    );
-
-    zg.setUserStateUpdate(true);
-
-    // this.loginRoom(this.data.token);
-
-    this.onNetworkStatus();
-    // 保持屏幕常亮
-    wx.setKeepScreenOn({
-      keepScreenOn: true
-    });
   },
+
   lifetimes: {
     attached() {
       console.log('live-room attached');
@@ -250,12 +184,12 @@ Component({
     show: function () {
       // 页面被展示
       console.log('page show', zg);
-      console.log('token', this.data.token)
-      if (zg) {
-        zg.setUserStateUpdate(true);
-        this.logoutRoom();
-        this.loginRoom(this.data.token);
-      }
+      console.log('token', this.data.token, typeof this.data.token);
+      // if (zg) {
+      //   zg.setUserStateUpdate(true);
+      //   this.logoutRoom();
+      //   this.loginRoom(this.data.token);
+      // }
     },
     hide: function () {
       // 页面被隐藏
@@ -269,6 +203,75 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    init() {
+      this.getUserInfo();
+  
+      // iphoneX 等机型
+      if (iphoneXX) {
+        this.data.mmBot += 68;
+        this.data.meBot += 68;
+        this.data.newBot += 68;
+        this.setData({
+          mmBot: this.data.mmBot,
+          meBot: this.data.meBot,
+          newBot: this.data.newBot
+        })
+      }
+      let userTop = this.data.navBarHeight + 16;
+      this.setData({
+        userTop
+      });
+  
+      let timestamp = new Date().getTime();
+      const nickName = this.data.userInfo.nickName ? this.data.userInfo.nickName : 'xcxU' + timestamp;
+      const avatar = this.data.userInfo.avatarUrl ? this.data.userInfo.avatarUrl : '../images/avatar-logo.png';
+      const nickAvatar = {
+        nickName: nickName,
+        avatar: avatar
+      }
+      this.setData({
+        roomName: this.data.roomID,
+        preferPlaySourceType: 0,
+        // userID: 'xcxU' + timestamp,
+        userName: JSON.stringify(nickAvatar),
+        publishStreamID: 'xcxS' + timestamp,
+        isCaster: this.data.loginType !== 'audience'
+      });
+      if (this.data.loginType === 'anchor') {
+        this.setData({
+          avatarUrl: avatar,
+          nickName: nickName
+        })
+      }
+  
+      zg = new ZegoClient();
+      zg.config({
+        appid: this.data.liveAppID, // 必填，应用id，由即构提供
+        idName: this.data.userID, // 必填，用户自定义id，全局唯一
+        nickName: this.data.userName, // 必填，用户自定义昵称
+        remoteLogLevel: 2, // 日志上传级别，建议取值不小于 logLevel
+        logLevel: 0, // 日志级别，debug: 0, info: 1, warn: 2, error: 3, report: 99, disable: 100（数字越大，日志越少）
+        server: 'wss://wsliveroom' + this.data.liveAppID + '-api.zego.im:8282/ws', // 必填，服务器地址，由即构提供
+        logUrl: this.data.logServerURL, // 必填，log 服务器地址，由即构提供
+        audienceCreateRoom: true // false观众不允许创建房间
+      });
+  
+      this.bindCallBack(); //监听zego-sdk回调
+  
+      console.log(
+        '>>>[liveroom-room] publishStreamID is: ' + this.data.publishStreamID
+      );
+  
+      zg.setUserStateUpdate(true);
+  
+      // this.loginRoom(this.data.token);
+  
+      this.onNetworkStatus();
+      // 保持屏幕常亮
+      wx.setKeepScreenOn({
+        keepScreenOn: true
+      });
+    },
     getUserInfo() {
       let userInfo = app.globalData.userInfo;
       console.log('getUserInfo', userInfo);
