@@ -1,6 +1,5 @@
 // miniprogram/pages/live/index.js
 let { sharePage } = require("../../utils/util.js");
-let { getLoginToken } = require("../../utils/server.js");
 let { liveAppID, BaseUrl } = getApp().globalData;
 
 let liveRoom;
@@ -118,12 +117,6 @@ Page({
    */
   onReady: function () {
     liveRoom = this.selectComponent('#live-room');
-    // getLoginToken(this.data.userID, this.data.liveAppID).then(token => {
-    //   console.log('token', token)
-    //   this.setData({
-    //     token
-    //   });
-    // });
     this.getRoomToken(this.data.userID, this.data.liveAppID);
     this.getGoods();
   },
@@ -132,6 +125,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    console.log('room onShow');
     wx.setKeepScreenOn({
       keepScreenOn: true,
       success: (result) => {
@@ -146,6 +140,7 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
+    this.getRoomToken(this.data.userID, this.data.liveAppID);
 
   },
 

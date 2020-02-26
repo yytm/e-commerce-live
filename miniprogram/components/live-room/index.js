@@ -53,9 +53,9 @@ Component({
       observer: function (newVal, oldVal, changedPath) {
         if (newVal !== '') {
           this.loginRoom(newVal);
-          // this.setData({
-          //   token: newVal
-          // })
+          this.setData({
+            token: newVal
+          })
         }
       }
     },
@@ -225,16 +225,9 @@ Component({
       '>>>[liveroom-room] publishStreamID is: ' + this.data.publishStreamID
     );
 
-    // 进入房间，自动登录
-    // getLoginToken(this.data.userID, this.data.liveAppID).then(token => {
-    //   console.log('tokenn', token);
-    //   this.setData({
-    //     token
-    //   });
     zg.setUserStateUpdate(true);
-    console.log('token', this.data.token)
+
     // this.loginRoom(this.data.token);
-    // });
 
     this.onNetworkStatus();
     // 保持屏幕常亮
@@ -257,10 +250,12 @@ Component({
     show: function () {
       // 页面被展示
       console.log('page show', zg);
-      // if (zg) {
-      // zg.setUserStateUpdate(true);
-      // this.loginRoom(this.data.token);
-      // }
+      console.log('token', this.data.token)
+      if (zg) {
+        zg.setUserStateUpdate(true);
+        this.logoutRoom();
+        this.loginRoom(this.data.token);
+      }
     },
     hide: function () {
       // 页面被隐藏
