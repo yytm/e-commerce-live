@@ -15,7 +15,7 @@
                     </view>
                     <image class="m-close-png" src="../../resource/m-close.png" bindtap="hideModal"></image>
                 </view>
-                <scroll-view class="merchandise-list" scroll-y='true'>
+                <scroll-view class="merchandise-list" scroll-y='true' bindscrolltolower='lower'>
                     <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item">
                         <image class="" src="{{item.img}}"></image>
                         <view class="merchandise-detail" id="{{item.id}}" bindtap="clickMech">

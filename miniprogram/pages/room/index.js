@@ -25,53 +25,56 @@ Page({
     animationData: {},
 
     uid: -1,
-    merchandises: [
-      {
-        name: 'Givenchy/纪梵希高定香榭天鹅绒唇膏',
-        img: '../../resource/m0.png',
-        price: '345',
-        id: 0,
-        link: {
-          appId: '0',
-          path: "../web/index",
-          extraData: {
-            url: "https://shop-ecommerce.yunyikao.com/product.html"
-          }
-        }
-      },
-      {
-        name: 'OACH蔻驰Charlie 27 Carryal单肩斜挎手提包女包包2952过长样式挎手提包女包包2952过',
-        img: '../../resource/m1.png',
-        price: '1599',
-        id: 1,
-        // link: {
-        //   appId: 'wx2b8909dae7727f25',
-        //   path: "pages/liveroom/roomlist/roomlist",
-        // }
-        link: {
-          appId: '0',
-          path: "../web/index",
-          extraData: {
-            url: "https://shop-ecommerce.yunyikao.com/product1.html"
-          }
-        }
-      },
-      {
-        name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-        img: '../../resource/m2.png',
-        price: '749',
-        id: 2,
-        link: {
-          appId: '0',
-          path: "../web/index",
-          extraData: {
-            url: "https://shop-ecommerce.yunyikao.com/product2.html"
-          }
-        }
-      },
-    ],
+    merchandises: [],
+    // merchandises: [
+    //   {
+    //     name: 'Givenchy/纪梵希高定香榭天鹅绒唇膏',
+    //     img: '../../resource/m0.png',
+    //     price: '345',
+    //     id: 0,
+    //     link: {
+    //       appId: '0',
+    //       path: "../web/index",
+    //       extraData: {
+    //         url: "https://shop-ecommerce.yunyikao.com/product.html"
+    //       }
+    //     }
+    //   },
+    //   {
+    //     name: 'OACH蔻驰Charlie 27 Carryal单肩斜挎手提包女包包2952过长样式挎手提包女包包2952过',
+    //     img: '../../resource/m1.png',
+    //     price: '1599',
+    //     id: 1,
+    //     // link: {
+    //     //   appId: 'wx2b8909dae7727f25',
+    //     //   path: "pages/liveroom/roomlist/roomlist",
+    //     // }
+    //     link: {
+    //       appId: '0',
+    //       path: "../web/index",
+    //       extraData: {
+    //         url: "https://shop-ecommerce.yunyikao.com/product1.html"
+    //       }
+    //     }
+    //   },
+    //   {
+    //     name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
+    //     img: '../../resource/m2.png',
+    //     price: '749',
+    //     id: 2,
+    //     link: {
+    //       appId: '0',
+    //       path: "../web/index",
+    //       extraData: {
+    //         url: "https://shop-ecommerce.yunyikao.com/product2.html"
+    //       }
+    //     }
+    //   },
+    // ],
     pushInx: -1,
-    pushMer: {}
+    pushMer: {},
+    stopLoadMore: false,
+    page: 1,
   },
 
   /**
@@ -193,6 +196,14 @@ Page({
       case 'onMerchandise': {
         console.log('onMerchandise', content);
         this.showModal();
+        if (this.data.merchandises.length === 0) {
+          setTimeout(() => {
+            wx.showToast({
+              title: '您的商品袋空空如也，请先添加商品',
+              icon: 'none'
+            });
+          }, 1000);
+        }
         break;
       }
       case 'onBack': {
@@ -390,6 +401,7 @@ Page({
 
   getGoods() {
     let self = this;
+    self.data.stopLoadMore = true;
     wx.request({
       url: BaseUrl + '/app/list_goods',
       method: 'POST',
@@ -397,34 +409,45 @@ Page({
         "session_id": wx.getStorageSync('sessionId'),
         "live_appid": liveAppID,
         "uid": self.data.uid,
-        "page": 1,
+        "page": self.data.page,
         "count": 10,
       },
       success: function (res) {
         if (res.statusCode !== 200) return;
         console.log('goods', res);
         const result = res.data;
-        if (result.ret && result.ret.code === 0 && result.goods_count > 0) {
-          const merchandises = result['goods_list'].map(item => {
-            return {
-              id: item['goods_id'],
-              num: item['goods_no'],
-              name: item['goods_desc'],
-              link: {
-                // url: item['goods_url']
-                appId: '0',
-                path: "../web/index",
-                extraData: {
-                  url: item['goods_url']
-                }
-              },
-              price: item['price'],
-              img: item['goods_img']
+        if (result.ret && result.ret.code === 0) {
+          if (result.goods_count > 0 && result.goods_list && result.goods_list.length) {
+            const merchandises = result['goods_list'].map(item => {
+              return {
+                id: item['goods_id'],
+                num: item['goods_no'],
+                name: item['goods_desc'],
+                link: {
+                  // url: item['goods_url']
+                  appId: '0',
+                  path: "../web/index",
+                  extraData: {
+                    url: item['goods_url']
+                  }
+                },
+                price: item['price'],
+                img: item['goods_img']
+              }
+            });
+            self.data.merchandises = self.data.merchandises.concat(merchandises);
+            self.setData({
+              merchandises: self.data.merchandises
+            });
+          } else {
+            if (self.data.merchandises.length > 0) {
+              wx.showToast({
+                title: '没有更多商品了',
+                icon: 'none'
+              });
             }
-          });
-          self.setData({
-            merchandises
-          })
+          }
+          self.data.stopLoadMore = false;
         }
       },
       fail: function (e) {
@@ -432,7 +455,17 @@ Page({
       }
     })
   },
-
+  lower: function() {
+    const self = this;
+    if (self.data.stopLoadMore) {
+      return;
+    }
+    self.setData({
+      page: self.data.page + 1 //上拉到底时将page+1后再调取列表接口
+    });
+    self.getGoods();
+ 
+  },
   back() {
     if(getCurrentPages().length>1){
         wx.navigateBack();
