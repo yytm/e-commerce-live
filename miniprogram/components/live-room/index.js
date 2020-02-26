@@ -334,7 +334,7 @@ Component({
 
       // 服务端主动推过来的 流的创建/删除事件；updatedType: { added: 0, deleted: 1 }；streamList：增量流列表
       zg.onStreamUpdated = function (updatedType, streamList) {
-        console.error(
+        console.log(
           '>>>[liveroom-room] zg onStreamUpdated, updatedType: ' +
           (updatedType === 0 ? 'added' : 'deleted') +
           ', streamList: '
@@ -863,7 +863,7 @@ Component({
         '>>>[liveroom-room] startPlayingStream, preferPlaySourceType: ',
         self.data.preferPlaySourceType
       );
-      console.error('startPlayingStreamList', self.data.playStreamList);
+      console.log('startPlayingStreamList', self.data.playStreamList);
 
       if (self.data.loginType === 'anchor') {
         if (self.data.playStreamList.length) return;
