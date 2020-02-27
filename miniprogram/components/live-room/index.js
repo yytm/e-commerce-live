@@ -966,7 +966,7 @@ Component({
                 content
               });
             }
-          }, 20000);
+          }, 10000);
           break;
         } else {
           let playStreamList = self.data.playStreamList;
