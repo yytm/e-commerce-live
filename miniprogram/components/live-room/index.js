@@ -680,6 +680,7 @@ Component({
               self.data.publishStreamID
             );
             zg.setPreferPublishSourceType(self.data.preferPublishSourceType);
+            console.log(self.data.publishStreamID);
             zg.startPublishingStream(self.data.publishStreamID);
             const content = {
               liveAppID: self.data.liveAppID,
@@ -786,6 +787,7 @@ Component({
           this.data.pusherContext = wx.createLivePusherContext();
           this.data.pusherContext.stop();
           this.data.pusherContext.start();
+          console.log('start');
         });
       } else { // 子主播推流
         this.setData({
@@ -1192,11 +1194,13 @@ Component({
         })
     },
     logoutRoom() {
+
+      console.log('publishing', this.data.isPublishing, this.data.publishStreamID);
+      this.data.isPublishing && zg.stopPublishingStream(this.data.publishStreamID);
+      this.data.pusherContext && this.data.pusherContext.stop();
       this.data.playStreamList.forEach(item => {
         zg.stopPlayingStream(item.streamID);
       });
-      this.data.isPublishing && zg.stopPublishingStream(this.data.publishStreamID);
-      this.data.pusherContext && this.data.pusherContext.stop();
       this.data.playerContext && this.data.playerContext.stop();
       zg && zg.logout();
 
@@ -1450,15 +1454,14 @@ Component({
 
     },
     onPushStateChange(e) {
-      console.log('onPushStateChange', this.data.publishStreamID, e);
       console.log(
         '>>>[liveroom-room] onPushStateChange, code: ' +
         e.detail.code +
         ', message:' +
         e.detail.message
       );
-      // console.log('onPushStateChange', e.detail.detail.code);
       zg.updatePlayerState(this.data.publishStreamID, e);
+      console.log('onPushStateChange', this.data.publishStreamID, e);
     },
     onPushNetStateChange(e) {
       zg.updatePlayerNetStatus(this.data.publishStreamID, e);
