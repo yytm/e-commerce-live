@@ -113,8 +113,11 @@ Page({
         if (res.data.ret && res.data.ret.code === 0) {
           var roomList = res.data.room_list;
 
+          const userID = 'anchor' + wx.getStorageSync('uid');
+          console.log('userID', userID);
           for (var index in roomList) {
-            if (roomList[index].room_id === self.data.roomID) {
+            console.log(roomList[index]);
+            if (roomList[index].room_id === 'e-' + self.data.roomID && roomList[index].anchor_id_name !== userID) {
               wx.showToast({
                 title: '创建失败，相同 ID 房间已存在，请重新创建',
                 icon: 'none',
