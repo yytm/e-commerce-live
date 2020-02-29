@@ -113,16 +113,30 @@ Page({
       return;
     }
 
-    this.setData({
-      tapTime: nowTime,
-      loginType: 'audience'
-    }, function () {
-      const url = '../room/index?roomID=' + id + '&roomName=' + id + '&anchorID=' + anchorId + '&anchorName=' + anchorName + '&roomImg=' + roomImg + '&loginType=audience';
-
-      wx.navigateTo({
-        url: url
+    const userID = 'anchor' + wx.getStorageSync('uid');
+    if (anchorId === userID) {
+      this.setData({
+        tapTime: nowTime,
+      }, () => {
+        const url = '../room/index?roomID=' + id + '&roomName=' + id + '&loginType=anchor'
+        // + '&roomImg=' + roomImg;
+        wx.navigateTo({
+          url: url,
+        });
       })
-    })
+    } else {
+      this.setData({
+        tapTime: nowTime,
+        loginType: 'audience'
+      }, function () {
+        const url = '../room/index?roomID=' + id + '&roomName=' + id + '&anchorID=' + anchorId + '&anchorName=' + anchorName + '&roomImg=' + roomImg + '&loginType=audience';
+  
+        wx.navigateTo({
+          url: url
+        })
+      })
+    }
+    
   },
 
   getUserInfo() {
@@ -140,17 +154,10 @@ Page({
   getRole() {
     let self = this;
     // 登录
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res, BaseUrl, wxAppID);
-        // console.log(loginApp(res.code, self.data.userInfo.nickName))
-         loginApp(res.code, self.data.userInfo.nickName).then(role => {
-           console.log('role', role);
-           self.setData({ role });
-         });
-      }
-    })
+    loginApp(self.data.userInfo.nickName).then(role => {
+      console.log('role', role);
+      self.setData({ role });
+    });
   },
 
 });

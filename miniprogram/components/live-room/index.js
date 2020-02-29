@@ -692,6 +692,26 @@ Component({
               content
             });
           } else {
+            if (streamList.length === 0) {
+              console.log('no stream');
+              wx.showModal({
+                title: '提示',
+                content: '主播暂时离开了',
+                showCancel: false,
+                success(res) {
+                  if (res.confirm || !res.cancel) {
+                    // wx.navigateBack();
+                    const content = {};
+                    self.triggerEvent('RoomEvent', {
+                      tag: 'onBack',
+                      // code: 0,
+                      content
+                    });
+                  }
+                }
+              });
+              return;
+            }
 
             // 房间内已经有流，拉流
             if (streamList.length >= self.data.upperStreamLimit) {

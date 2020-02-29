@@ -200,4 +200,8 @@
     line-height: 100rpx;
     background-color: #069ff8;
   }
-  
+  .login-container {
+    position: fixed;
+    top: 15vh;
+    margin: 0 auto;
+  }

@@ -63,62 +63,74 @@ function getLoginToken(userID, appid) {
 }
 
 
-function loginApp(code, nickName) {
+function loginApp(nickName) {
     const _wxAppID = wx.getAccountInfoSync().miniProgram.appId || wxAppID;
     const { BaseUrl, wxAppID, liveAppID } = getApp().globalData;
 
     return new Promise((res, rej) => {
-      wx.request({
-        url: BaseUrl + '/app/login',
-        method: 'POST',
-        data: {
-          "wx_appid": _wxAppID,
-          "wx_code": code,
-          "live_appid": liveAppID,
-          "nickname": nickName
-        },
+      wx.login({
         success(result) {
-          console.log('result', result);
-          if (result.statusCode !== 200) return;
-          if (result.data.ret && result.data.ret.code == 0) {
-            let _role = '';
-            wx.setStorageSync('sessionId', result.data['session_id']);
-            wx.setStorageSync('uid', result.data['uid']);
-            wx.setStorageSync('nickName', result.data['nickname']);
-            // wx.setStorageSync('avatar', result.data['avatar']);
-            switch (result.data.role) {
-              case 1: {
-                _role = 'admin';
-                break;
+          console.log('wx login success');
+          // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          console.log(result, BaseUrl, wxAppID);
+          wx.request({
+            url: BaseUrl + '/app/login',
+            method: 'POST',
+            data: {
+              "wx_appid": _wxAppID,
+              "wx_code": result.code,
+              "live_appid": liveAppID,
+              "nickname": nickName
+            },
+            success(result) {
+              console.log('result', result);
+              if (result.statusCode !== 200) return;
+              if (result.data.ret && result.data.ret.code == 0) {
+                let _role = '';
+                wx.setStorageSync('sessionId', result.data['session_id']);
+                wx.setStorageSync('uid', result.data['uid']);
+                wx.setStorageSync('nickName', result.data['nickname']);
+                // wx.setStorageSync('avatar', result.data['avatar']);
+                switch (result.data.role) {
+                  case 1: {
+                    _role = 'admin';
+                    break;
+                  }
+                  case 2: {
+                    _role = 'anchor';
+                    break;
+                  }
+                  case 4: {
+                    _role = 'audience';
+                    break;
+                  }
+                  default: {
+                    _role = 'audience';
+                    break;
+                  }
+                }
+                // console.log('role', _role);
+                wx.setStorageSync('role', _role);
+                if (_role === 'anchor') {
+                  wx.setStorageSync('roomImg', result.data['room_img']);
+                }
+                res(_role);
+              } else {
+                rej()
               }
-              case 2: {
-                _role = 'anchor';
-                break;
-              }
-              case 4: {
-                _role = 'audience';
-                break;
-              }
-              default: {
-                _role = 'audience';
-                break;
-              }
+            },
+            fail(e) {
+              console.error('fail ', e);
+              rej();
             }
-            // console.log('role', _role);
-            wx.setStorageSync('role', _role);
-            if (_role === 'anchor') {
-              wx.setStorageSync('roomImg', result.data['room_img']);
-            }
-            res(_role);
-          } else {
-            rej()
-          }
+          })
         },
-        fail(e) {
-          console.error('fail ', e);
+        fail() {
+          console.error('wx login fail');
           rej();
         }
       })
+
     })
 
 }

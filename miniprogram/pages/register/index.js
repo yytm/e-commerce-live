@@ -193,17 +193,10 @@ Page({
 
   judgeIdentity(callback) {
     let self = this;
-    wx.login({
-      success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log(res, BaseUrl, wxAppID);
-        // console.log(loginApp(res.code, self.data.userInfo.nickName))
-         loginApp(res.code, self.data.userInfo.nickName).then(role => {
-           console.log('role', role);
-           callback();
-         });
-      }
-    })
+    loginApp(self.data.userInfo.nickName).then(role => {
+      console.log('role', role);
+      callback();
+    });
   },
 
   goToAnchor() {

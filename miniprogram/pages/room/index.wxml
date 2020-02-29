@@ -2,7 +2,8 @@
 <custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}" bindBack="back">
     <view class="room-title">{{roomShowName}}</view>
 </custom-nav>
-<view class="live-container">
+
+<view wx:if="{{userInfo}}" class="live-container">
     <live id="live-room" navBarHeight="{{navBarHeight}}" liveAppID="{{liveAppID}}" userID="{{userID}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
     <view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
         <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
@@ -45,3 +46,10 @@
         </view>
     </view>
 </view>
+<view wx:else class="login-container">
+    <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
+        登录
+    </button>
+    <view wx:else class="">请升级微信版本</view>
+</view>
+

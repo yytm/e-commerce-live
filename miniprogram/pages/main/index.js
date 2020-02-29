@@ -123,7 +123,6 @@ Page({
      */
     onPullDownRefresh() {
         console.log("onPullDownRefresh");
-
     },
 
     /**
