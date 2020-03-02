@@ -276,11 +276,23 @@ Component({
     getUserInfo() {
       let userInfo = app.globalData.userInfo;
       console.log('getUserInfo', userInfo);
-      if (userInfo) {
-        this.setData({
-          hasUserInfo: true,
-          userInfo: userInfo
-        });
+      this.setData({
+        hasUserInfo: true,
+        userInfo: userInfo
+      });
+      if(!userInfo) {
+        wx.getUserInfo({
+          success: res => {
+            app.globalData.userInfo = res.userInfo;
+            this.setData({
+              hasUserInfo: true,
+              userInfo: res.userInfo
+            });
+          },
+          fail: e => {
+            console.error(e);
+          }
+        })
       }
 
     },
