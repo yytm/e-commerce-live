@@ -514,7 +514,8 @@ Page({
   getState() {
     if (app.globalData.userInfo) {
       this.setData({
-        userInfo: app.globalData.userInfo
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
       });
       loginApp(this.data.userInfo.nickName);
     } else {
@@ -528,6 +529,10 @@ Page({
               success: res => {
                 // 可以将 res 发送给后台解码出 unionId
                 app.globalData.userInfo = res.userInfo
+                this.setData({
+                  userInfo: res.userInfo,
+                  hasUserInfo: true
+                })
                 loginApp(res.userInfo.nickName);
 
                 // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回

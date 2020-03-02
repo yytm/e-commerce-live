@@ -290,7 +290,10 @@ Component({
     getUserInfo() {
       let userInfo = app.globalData.userInfo;
       console.log('getUserInfo', userInfo);
-
+      this.setData({
+        hasUserInfo: true,
+        userInfo: userInfo
+      });
       if(!userInfo) {
         wx.getUserInfo({
           success: res => {
