@@ -23,6 +23,8 @@ Page({
     loginType: "",
     roomShowName: '',
     token: '',
+    isLiving: false,
+
     userInfo: null,
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -81,6 +83,7 @@ Page({
     pushMer: {},
     stopLoadMore: false,
     page: 1,
+    isbeginLive: false
   },
 
   /**
@@ -129,8 +132,9 @@ Page({
   onReady: function () {
     this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
       liveRoom = this.selectComponent('#live-room');
-      liveRoom.init();
-      liveRoom.loginRoom(this.data.token);
+      liveRoom.startPreview();
+      // liveRoom.init();
+      // liveRoom.loginRoom(this.data.token);
     });
     this.getGoods();
   },
@@ -148,7 +152,7 @@ Page({
       fail: () => { },
       complete: () => { }
     });
-    if (liveRoom) {
+    if (liveRoom && this.data.isLiving) {
       console.log('liveRoom', this.data.token);
       this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
         liveRoom.loginRoom(this.data.token);

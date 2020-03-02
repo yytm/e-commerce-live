@@ -208,6 +208,16 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    startPreview() {
+      this.setData({
+        mainPusher: {
+          url: "rtmp://**"
+        }
+      }, () => {
+        this.data.pusherContext = wx.createLivePusherContext();
+        this.data.pusherContext.startPreview();
+      })
+    },
     init() {
       this.getUserInfo();
 
@@ -280,11 +290,20 @@ Component({
     getUserInfo() {
       let userInfo = app.globalData.userInfo;
       console.log('getUserInfo', userInfo);
-      if (userInfo) {
-        this.setData({
-          hasUserInfo: true,
-          userInfo: userInfo
-        });
+
+      if(!userInfo) {
+        wx.getUserInfo({
+          success: res => {
+            app.globalData.userInfo = res.userInfo;
+            this.setData({
+              hasUserInfo: true,
+              userInfo: res.userInfo
+            });
+          },
+          fail: e => {
+            console.error(e);
+          }
+        })
       }
 
     },
@@ -808,7 +827,7 @@ Component({
             }
           }
         }, () => {
-          this.data.pusherContext = wx.createLivePusherContext();
+          (!this.data.pusherContext) && (this.data.pusherContext = wx.createLivePusherContext());
           this.data.pusherContext.stop();
           this.data.pusherContext.start();
           console.log('start');
@@ -1484,11 +1503,11 @@ Component({
         ', message:' +
         e.detail.message
       );
-      zg.updatePlayerState(this.data.publishStreamID, e);
+      zg && zg.updatePlayerState(this.data.publishStreamID, e);
       console.log('onPushStateChange', this.data.publishStreamID, e);
     },
     onPushNetStateChange(e) {
-      zg.updatePlayerNetStatus(this.data.publishStreamID, e);
+      zg && zg.updatePlayerNetStatus(this.data.publishStreamID, e);
     },
     onPlayStateChange(e) {
       console.log('onPlayStateChange', e);
@@ -1501,7 +1520,7 @@ Component({
       zg.updatePlayerState(e.target.id, e);
     },
     onPlayNetStateChange(e) {
-      zg.updatePlayerNetStatus(e.target.id, e);
+      zg && zg.updatePlayerNetStatus(e.target.id, e);
     },
     onPushError: function (ev) {
       console.error(ev);

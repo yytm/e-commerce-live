@@ -1,7 +1,8 @@
 {
   "usingComponents": {
     "live": "/components/live-room/index",
-    "custom-nav":"/components/custom-nav/index"
+    "custom-nav":"/components/custom-nav/index",
+    "set-room": "/components/set-room/index"
   },
   "disableScroll": true,
   "navigationStyle": "custom"
