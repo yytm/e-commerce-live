@@ -14,9 +14,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    liveAppID: 1739272706,
-    roomID: "",
+    liveAppID: liveAppID,
+    wsServerURL: "wss://wsliveroom1739272706-api.zego.im:8282/ws", 
     logServerURL: "https://wsslogger-demo.zego.im/httplog",
+    shareImg: "/resource/share.png",
+
+    roomID: "",
     loginType: "",
     roomShowName: '',
     token: '',
@@ -187,7 +190,7 @@ Page({
    */
   onShareAppMessage() {
     let self = this;
-    const imgUrl = wx.getStorageSync('roomImg') || "/resource/share.png";
+    const imgUrl = wx.getStorageSync('roomImg') || self.data.shareImg;
     let obj = sharePage(imgUrl, {
       roomID: this.data.roomID,
       roomName: this.data.roomName,

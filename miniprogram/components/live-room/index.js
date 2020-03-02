@@ -25,6 +25,10 @@ Component({
         // console.log('liveAppID')
       }
     },
+    wsServerURL: {
+      type: String,
+      value: ""
+    },
     logServerURL: {
       type: String,
       value: ''
