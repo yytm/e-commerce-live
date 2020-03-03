@@ -884,7 +884,10 @@ Component({
         }, () => {
           this.data.playerContext = wx.createLivePlayerContext(streamInfo.streamID, self);
           console.log(self.data.mainPusher, this.data.playerContext)
-          this.data.playerContext.play();
+          setTimeout(() => {
+            this.data.playerContext.play()
+          }, 5)
+          
         })
       } else {
         self.data.playStreamList.push(streamInfo);
@@ -934,6 +937,7 @@ Component({
             ', pushed by : ' +
             anchorID
           );
+          console.log('>>>[liveroom-room] playingList ', playingList);
           if (!playingList.some(playItem => playItem.stream_id === streamID)) {
             console.log('no exist')
             playingList.push(streamList[i]);
@@ -973,6 +977,7 @@ Component({
               }
             },
           });
+          playingList = playingList.filter(playItem => playItem.stream_id !== streamID);
           if (self.data.isConnecting && self.data.isPublishing) {
             // zg.endJoinLive(self.data.anchorID, function (result, userID, userName) {
             //   console.log('>>>[liveroom-room] endJoinLive, result: ' + result);
