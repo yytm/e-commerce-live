@@ -1127,6 +1127,7 @@ Component({
         keyboardHold: true,
         inputMessage: '',
       })
+      console.log('msgContent', msgContent);
       wx.cloud.init();
       wx.cloud.callFunction({
         name: 'msgcheck',
@@ -1134,7 +1135,7 @@ Component({
           content: msgContent
         }
       }).then(ckres => {
-
+        console.log('callfunction ', ckres)
         //审核通过之后的操作 if == 0
         if (ckres.result.errCode == 0) {
           let message = {
@@ -1184,6 +1185,8 @@ Component({
             showCancel: false
           })
         }
+      }).catch(e => {
+        console.error('callfunction' , e)
       })
 
     },

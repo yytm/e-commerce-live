@@ -45,7 +45,7 @@
             <text class="push-mer-price">¥{{pushMer.price}}</text>
         </view>
     </view>
-    
+    <set-room></set-room>
 </view>
 <view wx:else class="login-container">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">

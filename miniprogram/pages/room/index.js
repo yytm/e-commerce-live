@@ -91,28 +91,31 @@ Page({
    */
   onLoad: function (options) {
     this.getState();
-    
-    console.log('>>>onLoad')
-    const { roomID, roomName, loginType } = options;
-    const roomShowName = roomID.slice(2);
-    let timestamp = new Date().getTime();
-    let userID;
-    if (loginType === 'anchor') {
-      userID = 'anchor' + wx.getStorageSync('uid');
-      this.data.uid = wx.getStorageSync('uid');
-    } else if (loginType === 'audience') {
-      userID = "xcxU" + timestamp;
-      console.log('anchor', options.anchorID, typeof options.anchorID);
-      this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
-    }
+    const { loginType } = options;
     this.setData({
-      liveAppID,
-      roomID,
-      roomName,
-      loginType,
-      roomShowName,
-      userID,
-    });
+      loginType
+    })
+    // console.log('>>>onLoad')
+    // const { roomID, roomName, loginType } = options;
+    // const roomShowName = roomID.slice(2);
+    // let timestamp = new Date().getTime();
+    // let userID;
+    // if (loginType === 'anchor') {
+    //   userID = 'anchor' + wx.getStorageSync('uid');
+    //   this.data.uid = wx.getStorageSync('uid');
+    // } else if (loginType === 'audience') {
+    //   userID = "xcxU" + timestamp;
+    //   console.log('anchor', options.anchorID, typeof options.anchorID);
+    //   this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
+    // }
+    // this.setData({
+    //   liveAppID,
+    //   roomID,
+    //   roomName,
+    //   loginType,
+    //   roomShowName,
+    //   userID,
+    // });
 
     let systemInfo = wx.getSystemInfoSync();
     let rect = wx.getMenuButtonBoundingClientRect();

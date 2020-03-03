@@ -1,13 +1,19 @@
 <!--miniprogram/components/set-room/index.wxml-->
 <view class="set-room-container">
-    <view class="room-img-container">
-
+    <view class="room-content">
+        <view class="room-img-container">
+            <text class="room-text">直播封面</text>
+            <view class="add-icon" bind:tap="chooseImg">
+                <image class="plus-ico" src="../images/plus.png">
+                </image>
+            </view>
+        </view>
+        <view class="room-name-container">
+            <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入直播间标题" placeholder-style='color: rgba(255, 255, 255, 0.8); font-size: 14px;' />
+        </view>
+        <view class="create-button" bindtap="createRoom"> 
+            立即开播
+        </view>
     </view>
-    <view class="room-name-container">
-        <view>直播间标题</view>
-        <input value="{{inputValue}}" cursor-spacing="15" bindinput="bindKeyInput" placeholder="请输入房间 ID" placeholder-style='color: #b3b3b3; font-size: 14px;' />
-    </view>
-    <view class="create-button" bindtap="createRoom"> 
-        立即开播
-    </view>
+    
 </view>

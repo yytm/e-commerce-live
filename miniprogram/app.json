@@ -5,7 +5,8 @@
     "pages/web/index",
     "pages/room/index",
     "pages/register/index",
-    "pages/enterLive/index"
+    "pages/enterLive/index",
+    "pages/index/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

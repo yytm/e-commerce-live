@@ -148,3 +148,16 @@
   width: 300rpx;
 }
 
+.no-lives {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.no-lives-img {
+  width: 240rpx;
+  height: 240rpx;
+}

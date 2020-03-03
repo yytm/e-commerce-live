@@ -1,0 +1,9 @@
+<!--miniprogram/pages/index/index.wxml-->
+<view class="index-container" hover-class="none" hover-stop-propagation="false">
+    <view>邀请流程说明</view>
+    <view class="btn-tool">
+        <view class="btn">邀请主播</view>
+        <view class="btn">创建直播</view>
+        <view class="btn list-btn">直播列表</view>
+    </view>
+</view>
