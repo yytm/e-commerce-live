@@ -11,7 +11,8 @@ Component({
     inputValue: '',
     roomID: '',
     roomName: '',
-    loginType: ''
+    loginType: '',
+    coverImg: ''
   },
 
   methods: {
@@ -71,12 +72,18 @@ Component({
                 return;
               }
             }
-            const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
-            // + '&roomImg=' + roomImg;
+            self.triggerEvent('startLogin', {
+              filePath: self.data.filePath,
+              roomID: self.data.roomID,
+              roomList: self.data.roomID,
+              loginType: self.data.loginType
+            })
+            // const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
+            // // + '&roomImg=' + roomImg;
   
-            wx.navigateTo({
-              url: url,
-            });
+            // wx.navigateTo({
+            //   url: url,
+            // });
           }
         },
         fail(e) {
@@ -86,6 +93,7 @@ Component({
     },
   
     chooseImg: function() {
+      let self = this;
       wx.chooseImage({
         count: 1,
         sizeType: ['original', 'compressed'],
@@ -93,26 +101,12 @@ Component({
         success (res) {
           // tempFilePath可以作为img标签的src属性显示图片
           const tempFilePaths = res.tempFilePaths
-          console.log('tempFilePaths', tempFilePaths);
-          wx.uploadFile({
-            url: BaseUrl + '/app/set_room', 
+          self.setData({
             filePath: tempFilePaths[0],
-            name: 'file',
-            header: {
-              'content-type': 'multipart/form-data'
-            },
-            formData: {
-              "session_id":wx.getStorageSync('sessionId'),
-              "live_appid": liveAppID,
-              "uid": wx.getStorageSync('uid'),
-              "room_id": "e-12",
-            },
-            success (res){
-              console.log('upload success', res);
-              const data = res.data
-              //do something
-            }
+            coverImg: tempFilePaths[0]
           })
+          console.log('tempFilePaths', tempFilePaths);
+          // console.log('sessionId', typeof wx.getStorageSync('sessionId'))
         }
       })
     },

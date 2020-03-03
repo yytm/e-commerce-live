@@ -1,22 +1,34 @@
 <!--miniprogram/pages/register/index.wxml-->
 <view wx:if="{{userInfo}}" class="user-container">
-    <view class="user-info">
+    <!-- <view class="user-info">
         <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
         <text class="user-text">
             {{userInfo.nickName}}
         </text>
-    </view>
+    </view> -->
     <view class="operate">
-        <!-- <view class="invi-btn">
-            <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
-        </view> -->
-        <view class="invi-code">
-            <input value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
-                    placeholder-style='color: #b3b3b3; font-size: 14px;'/>
-            <view class="submit-btn">
-                <button bindtap="authorize">提交</button>
+        <!-- <view class="invi-code"> -->
+            <image class="invite-img" src="../../resource/invited.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+            </image>
+            <view class="tips">
+                <text class="tip-head">您被邀请成为主播</text>
+                <text class="tip-text">请输入六位绑定码</text>
             </view>
-        </view>
+            <view class='password-input-box'>
+                <view class='input' bindtap='getFocus'>
+                    <view wx:for="{{Length}}" wx:key="item" class='input-content'>
+                        <input value="{{inputValue.length>=index+1?inputValue[index]:''}}" 
+                        disabled password='{{ispassword}}' catchtap='Tap'></input>
+                    </view>
+                </view>
+                <input name="password" password="{{true}}" class='password-input' maxlength="{{Length}}" focus="{{isFocus}}"   bindinput="passwordInput"></input>
+            </view>
+            <!-- <input value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
+                    placeholder-style='color: #b3b3b3; font-size: 14px;'/> -->
+            <view class="{{comp?'submit-btn':'disable-btn'}}" bindtap="authorize">
+                确定
+            </view>
+        <!-- </view> -->
     </view>
     
 </view>

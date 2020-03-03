@@ -1,4 +1,8 @@
 /* miniprogram/pages/enterLive/index.wxss */
+live-pusher {
+  width: 100vw;
+  height: 100vh;
+}
 .bottom-input {
   padding: 0 1vw;
   position: fixed;

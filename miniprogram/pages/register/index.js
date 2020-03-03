@@ -13,6 +13,12 @@ Page({
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     inviCode: '',
     role: '',
+    focus: false,
+    Length: 6,        //输入框个数  
+    isFocus: true,    //聚焦  
+    inputValue: "",        //输入的内容  
+    ispassword: false, //是否密文显示 true为密文， false为明文。
+    comp: false,
   },
 
   /**
@@ -110,7 +116,33 @@ Page({
       })
     }
   },
+  passwordInput: function (e) {
+    var that = this;
+    console.log(e.detail.value);
+    var inputValue = e.detail.value;
+    that.setData({
+      inputValue: inputValue
+    }, () => {
+      if (that.data.inputValue.length == 6) {
+        that.setData({
+          comp: true
+        })
+      }
+    })
+  },
 
+  Tap() {
+    var that = this;
+    that.setData({
+      isFocus: true,
+    })
+  },
+
+  getFocus: function () {
+    this.setData({
+      focus: !this.data.focus
+    })
+  },
   bindKeyInput(e) {
     this.setData({
       inviCode: e.detail.value
@@ -151,7 +183,7 @@ Page({
       data: {
         "session_id": wx.getStorageSync('sessionId'),
         "live_appid": liveAppID,
-        "code": this.data.inviCode,
+        "code": this.data.inputValue,
       },
       success(res) {
         console.log(res);
@@ -173,10 +205,10 @@ Page({
           console.error('param error');
           wx.showModal({
             title: '提示',
-            content: '绑定失败，请重新操作'
+            content: '绑定码错误，请重新输入'
           });
           self.setData({
-            inviCode: ''
+            inputValue: ''
           })
         } else if (result.ret.code === 1002) {
           wx.showModal({

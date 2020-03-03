@@ -4,7 +4,7 @@
 </custom-nav>
 
 <view wx:if="{{userInfo}}" class="live-container">
-    <live id="live-room" navBarHeight="{{navBarHeight}}" liveAppID="{{liveAppID}}" userID="{{userID}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
+    <live id="live-room" navBarHeight="{{navBarHeight}}" liveAppID="{{liveAppID}}" userID="{{userID}}" isLiving="{{isLiving}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
     <view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
         <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
         <view class="bottom-dialog-body bottom-pos" animation="{{animationData}}">
@@ -45,7 +45,7 @@
             <text class="push-mer-price">¥{{pushMer.price}}</text>
         </view>
     </view>
-    <set-room></set-room>
+    <!-- <set-room bindstartLogin="startLogin"></set-room> -->
 </view>
 <view wx:else class="login-container">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">

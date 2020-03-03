@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -64,6 +64,12 @@
 					"id": -1,
 					"name": "pages/roomList/index",
 					"pathName": "pages/index/index",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/index/index",
+					"pathName": "pages/register/index",
 					"scene": null
 				}
 			]

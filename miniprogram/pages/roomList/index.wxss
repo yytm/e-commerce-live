@@ -1,7 +1,11 @@
 /* pages/index/index.wxss */
 /* pages/audience/index.wxss */
 .room-list-container {
+  width: 100vw;
+  height: 100vh;
   padding: 10px 20px 0;
+  background-color: #F6F7FA;
+  box-sizing: border-box;
 }
 
 .tool-bars {
@@ -61,25 +65,69 @@
 }
 
 .room-list-item {
-  height: 80rpx;
-  line-height: 80rpx;
-  font-size: 15px;
-  margin: 10rpx 0;
-  width: 100%;
+  width: 347rpx;
+  height: 433rpx;
   padding: 0;
-  background-color: #F2034C;
   color: #fff;
-  border-radius: 10rpx;
-  padding-left: 50rpx;
+  border-radius: 8rpx;
   box-sizing: border-box;
 }
 
-.room-list-item button {
-  width: 100%;
-  color: #fff;
-  background-color: #F2034C;
+.room-cover-container {
+  width: 347rpx;
+  height: 347rpx;
+  position: relative;
 }
 
+.room-cover{
+  width: 100%;
+  height: 100%;
+}
+.room-info {
+  position: absolute;
+  top: 0;
+  padding: 10rpx 10rpx 0;
+  height: 58rpx;
+}
+.room-state {
+  background-color: #F99A1F;
+  width:76rpx;
+  height:34rpx;
+  border-radius: 4rpx;
+  font-size:20rpx;
+  text-align: center;
+  line-height: 34rpx;
+
+}
+.room-info-container {
+  width: 100%;
+  height: 87rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+.room-name {
+  font-size:24rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  color:rgba(28,29,30,1);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+.anchor-name {
+  margin-top: 13rpx;
+  font-size:20rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  color:rgba(142,144,148,1);
+  line-height: 1;
+}
 .bottom-input {
   padding: 0 1vw;
   position: fixed;

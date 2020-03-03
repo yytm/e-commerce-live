@@ -4,14 +4,27 @@
             <view class="invi-btn">
                 <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
             </view>
-            <navigator wx:if="{{role==='admin' || role === 'anchor'}}" class="nav" url="../room/index?loginType=anchor" hover-class="navigator-hover" open-type="navigate">
+            <navigator wx:if="{{role==='admin' || role === 'anchor'}}" class="nav" url="../enterLive/index?loginType=anchor" hover-class="navigator-hover" open-type="navigate">
                 立即开播
             </navigator>
         </view>
         <scroll-view class="rooms" wx:if="{{roomList.length}}" scroll-y="true">
             <view class="room-list">
                 <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id_name}}" data-anchor-name="{{item.anchor_nick_name}}" data-room-img="{{item.room_img}}" bindtap="onClickItem">
-                    直播间名称:{{item.room_show_name}}
+                    <view class="room-cover-container">
+                        <image class="room-cover" src="{{item.room_img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+                        </image>
+                        <view class="room-info">
+                            <view class="room-state" hover-class="none" hover-stop-propagation="false">
+                                {{item.roomState}}
+                            </view>
+                            <view class="room-num">{{item.user_count}}人观看</view>
+                        </view>
+                    </view>
+                    <view class="room-info-container">
+                        <view class="room-name">{{item.room_show_name}}</view>
+                        <view class="anchor-name">张三</view>
+                    </view>
                 </view>
             </view>
         </scroll-view>

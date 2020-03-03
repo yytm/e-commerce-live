@@ -7,6 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    pusher: null,
     inputValue: '',
     roomID: '',
     roomName: '',
@@ -24,7 +25,11 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.setData({
+      pusher: wx.createLivePusherContext()
+    }, () => {
+      this.data.pusher.startPreview();
+    })
   },
 
   /**
@@ -139,4 +144,12 @@ Page({
       }
     })
   },
+  startLogin(e) {
+    console.log('startLogin', e)
+    const { detail: { filePath, loginType, roomID, roomName } } = e;
+    const url = '../room/index?roomID=' + 'e-' + roomID + '&roomName=' + roomName + '&loginType=' + loginType + '&filePath=' + filePath 
+    wx.redirectTo({
+      url: url,
+    });
+  }
 })

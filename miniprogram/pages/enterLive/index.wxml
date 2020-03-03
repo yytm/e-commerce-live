@@ -1,9 +1,5 @@
 <!-- miniprogram/pages/enterLive/index.wxml -->
-<view class='bottom-input'>
-    <input value="{{inputValue}}" cursor-spacing="15" bindinput="bindKeyInput" placeholder="请输入房间 ID" placeholder-style='color: #b3b3b3; font-size: 14px;' />
-</view>
-<view class='bottom-btn'>
-    <button class='create-button' data-id="create" hover-class="none" bind:tap="createRoom">
-        创建房间
-    </button>
+<view class="room-preview">
+    <live-pusher url="rtmp://**" class="push-content"></live-pusher>
+    <set-room bindstartLogin="startLogin"></set-room>
 </view>

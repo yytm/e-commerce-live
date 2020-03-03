@@ -1,6 +1,7 @@
 // miniprogram/pages/live/index.js
 let { sharePage } = require("../../utils/util.js");
 let { loginApp } = require("../../utils/server.js");
+const Multipart = require('../../utils/Multipart.min.js');
 
 const app = getApp();
 let { liveAppID, BaseUrl } = app.globalData;
@@ -83,7 +84,8 @@ Page({
     pushMer: {},
     stopLoadMore: false,
     page: 1,
-    isbeginLive: false
+    isbeginLive: false,
+    filePath: ''
   },
 
   /**
@@ -91,31 +93,30 @@ Page({
    */
   onLoad: function (options) {
     this.getState();
-    const { loginType } = options;
+    console.log('>>>onLoad')
+    const { roomID, roomName, loginType } = options;
+    const roomShowName = roomID.slice(2);
+    let timestamp = new Date().getTime();
+    let userID;
+    if (loginType === 'anchor') {
+      userID = 'anchor' + wx.getStorageSync('uid');
+      this.data.uid = wx.getStorageSync('uid');
+      this.setData({
+        filePath: options.filePath
+      })
+    } else if (loginType === 'audience') {
+      userID = "xcxU" + timestamp;
+      console.log('anchor', options.anchorID, typeof options.anchorID);
+      this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
+    }
     this.setData({
-      loginType
-    })
-    // console.log('>>>onLoad')
-    // const { roomID, roomName, loginType } = options;
-    // const roomShowName = roomID.slice(2);
-    // let timestamp = new Date().getTime();
-    // let userID;
-    // if (loginType === 'anchor') {
-    //   userID = 'anchor' + wx.getStorageSync('uid');
-    //   this.data.uid = wx.getStorageSync('uid');
-    // } else if (loginType === 'audience') {
-    //   userID = "xcxU" + timestamp;
-    //   console.log('anchor', options.anchorID, typeof options.anchorID);
-    //   this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
-    // }
-    // this.setData({
-    //   liveAppID,
-    //   roomID,
-    //   roomName,
-    //   loginType,
-    //   roomShowName,
-    //   userID,
-    // });
+      liveAppID,
+      roomID,
+      roomName,
+      loginType,
+      roomShowName,
+      userID,
+    });
 
     let systemInfo = wx.getSystemInfoSync();
     let rect = wx.getMenuButtonBoundingClientRect();
@@ -135,9 +136,9 @@ Page({
   onReady: function () {
     this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
       liveRoom = this.selectComponent('#live-room');
-      liveRoom.startPreview();
-      // liveRoom.init();
-      // liveRoom.loginRoom(this.data.token);
+      // liveRoom.startPreview();
+      liveRoom.init();
+      liveRoom.loginRoom(this.data.token);
     });
     this.getGoods();
   },
@@ -277,29 +278,70 @@ Page({
       }
     }
   },
+  // startLogin(e) {
+  //   console.log('startLogin', e)
+  //   const { detail: { filePath, loginType, roomID, roomName } } = e;
+  //   if (loginType === 'anchor') {
+
+  //   }
+  //   const roomShowName = roomID.slice(2);
+  //   this.setData({
+  //     roomID,
+  //     roomName,
+  //     loginType,
+  //     roomShowName
+  //   }, () => {
+  //     this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
+  //           liveRoom = this.selectComponent('#live-room');
+  //           liveRoom.init();
+  //           liveRoom.loginRoom(this.data.token);
+  //     });
+  //   })
+    
+  // },
 
   setRoom(content) {
     const { liveAppID, roomID } = content;
-    wx.request({
-      url: BaseUrl + '/app/set_room',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": wx.getStorageSync('uid'),
-        "room_id": roomID,
-      },
-      success(res) {
-        if (res.statusCode === 200) {
-          if (res.data.ret.code === 0) {
-            console.log('set room succeed');
-          }
-        }
-      },
-      fail(e) {
-        console.error('fail ', e);
+    const fields=[{
+            name:'req',
+            value:`{"session_id":"${wx.getStorageSync('sessionId')}","live_appid":${liveAppID},"uid":${wx.getStorageSync('uid')},"room_id":"${roomID}"}`
+          }]
+    const files=[{
+      filePath: this.data.filePath, filename:'example.png', name:'img'
+    }]
+    
+    new Multipart({
+      fields,
+      files
+    }).submit(BaseUrl + '/app/set_room')
+    .then(res => {
+      console.log('set room suc', res);
+      if (res.ret && res.ret.code === 0) {
+        res.room_img && wx.setStorageSync('roomImg', res.room_img);
       }
+    }).catch(e => {
+      console.error('set room fail', e);
     })
+    // wx.request({
+    //   url: BaseUrl + '/app/set_room',
+    //   method: 'POST',
+    //   data: {
+    //     "session_id": wx.getStorageSync('sessionId'),
+    //     "live_appid": liveAppID,
+    //     "uid": wx.getStorageSync('uid'),
+    //     "room_id": roomID,
+    //   },
+    //   success(res) {
+    //     if (res.statusCode === 200) {
+    //       if (res.data.ret.code === 0) {
+    //         console.log('set room succeed');
+    //       }
+    //     }
+    //   },
+    //   fail(e) {
+    //     console.error('fail ', e);
+    //   }
+    // })
   },
 
   pushMer(e) {

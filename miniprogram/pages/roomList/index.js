@@ -9,7 +9,7 @@ Page({
     userInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     hasUserInfo: false,
-    role: ''
+    role: '',
   },
   onLoad: function () {
     console.log(app.globalData)
@@ -76,6 +76,7 @@ Page({
             .map(item => {
                 item.room_show_name = item.room_id.slice(2);
                 console.log('show_name', item.room_show_name);
+                item.roomState = '直播中';
                 return item;
               });;
             self.setData({

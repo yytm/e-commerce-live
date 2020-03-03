@@ -2,14 +2,15 @@
 <view class="set-room-container">
     <view class="room-content">
         <view class="room-img-container">
-            <text class="room-text">直播封面</text>
+            <image wx:if="{{coverImg}}" class="cover-img" src="{{coverImg}}" />
+            <text wx:else class="room-text">直播封面</text>
             <view class="add-icon" bind:tap="chooseImg">
                 <image class="plus-ico" src="../images/plus.png">
                 </image>
             </view>
         </view>
         <view class="room-name-container">
-            <input value="{{inputValue}}" bindinput="bindKeyInput" placeholder="请输入直播间标题" placeholder-style='color: rgba(255, 255, 255, 0.8); font-size: 14px;' />
+            <input value="{{inputValue}}" bindinput="bindKeyInput" cursor-spacing="100" placeholder="请输入直播间标题" placeholder-style='color: rgba(255, 255, 255, 0.8); font-size: 14px;' />
         </view>
         <view class="create-button" bindtap="createRoom"> 
             立即开播

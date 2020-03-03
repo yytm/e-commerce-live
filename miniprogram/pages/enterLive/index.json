@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "set-room":"/components/set-room/index"
+  },
   "navigationBarBackgroundColor": "#FD4747",
   "navigationBarTitleText": "开始直播",
   "navigationBarTextStyle": "white",
