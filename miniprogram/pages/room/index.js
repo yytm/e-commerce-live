@@ -268,11 +268,14 @@ Page({
       }
       case 'onPushMerSuc': {
         console.log('onPushMerSuc', content);
+        if (!this.data.hideModal) {
+          this.hideModal();
+        }
         wx.showToast({
           title: '商品推送成功',
           icon: 'none'
         });
-
+        break;
       }
       default: {
         // console.log('onRoomEvent default: ', e);
@@ -490,6 +493,7 @@ Page({
         if (result.ret && result.ret.code === 0) {
           if (result.goods_count > 0 && result.goods_list && result.goods_list.length) {
             const merchandises = result['goods_list'].map(item => {
+              const price = item.price === 0 ? item.price_text : item.price;
               return {
                 id: item['goods_id'],
                 num: item['goods_no'],
@@ -502,7 +506,7 @@ Page({
                     url: item['goods_url']
                   }
                 },
-                price: item['price'],
+                price: price,
                 img: item['goods_img']
               }
             });

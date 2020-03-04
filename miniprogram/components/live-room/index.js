@@ -1248,6 +1248,39 @@ Component({
         indx + '&' + this.data.pushMerTime,
         function (res) {
           console.log('pushMer success', res);
+          const contents = {
+            indx,
+            merTime: self.data.pushMerTime,
+            merBot: self.data.mmBot + 140
+          }
+          self.triggerEvent('RoomEvent', {
+            tag: 'onRecvMer',
+            // code: 0,
+            content: contents
+          });
+          console.log(!!merT);
+          if (merT) {
+            clearTimeout(merT);
+            merT = null;
+          } else {
+            self.data.meBot += 120;
+            self.data.newBot += 120;
+            self.setData({
+              meBot: self.data.meBot,
+              newBot: self.data.newBot
+            });
+          }
+
+          merT = setTimeout(() => {
+            self.data.meBot -= 120;
+            self.data.newBot -= 120;
+            self.setData({
+              meBot: self.data.meBot,
+              newBot: self.data.newBot
+            })
+            clearTimeout(merT);
+            merT = null;
+          }, self.data.pushMerTime * 1000);
           const content = {
 
           }
