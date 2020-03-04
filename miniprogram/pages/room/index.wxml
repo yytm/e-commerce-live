@@ -1,10 +1,24 @@
 <!--miniprogram/pages/live/index.wxml-->
 <custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}" bindBack="back">
-    <view class="room-title">{{roomShowName}}</view>
+    <view class="room-title">{{roomName}}</view>
 </custom-nav>
 
 <view wx:if="{{userInfo}}" class="live-container">
-    <live id="live-room" navBarHeight="{{navBarHeight}}" liveAppID="{{liveAppID}}" userID="{{userID}}" isLiving="{{isLiving}}" token="{{token}}" loginType="{{loginType}}" logServerURL="{{logServerURL}}" roomID="{{roomID}}" bindRoomEvent="onRoomEvent"></live>
+    <live 
+        id="live-room" 
+        navBarHeight="{{navBarHeight}}" 
+        liveAppID="{{liveAppID}}" 
+        userID="{{userID}}" 
+        isLiving="{{isLiving}}" 
+        token="{{token}}" 
+        loginType="{{loginType}}" 
+        logServerURL="{{logServerURL}}" 
+        roomID="{{roomID}}" 
+        roomName="{{roomName}}" 
+        preferPublishSourceType="{{preferPublishSourceType}}"
+        preferPlaySourceType="{{preferPlaySourceType}}"
+        bindRoomEvent="onRoomEvent">
+    </live>
     <view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
         <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
         <view class="bottom-dialog-body bottom-pos" animation="{{animationData}}">

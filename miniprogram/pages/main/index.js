@@ -20,7 +20,7 @@ Page({
                 icon: "../../resource/interactionLive.png",
                 subtitle: '列表',
                 title: "电商直播",
-                navigateTo: "../roomList/index"
+                navigateTo: "../index/index"
             },
             
             // {

@@ -3,7 +3,7 @@
 .room-list-container {
   width: 100vw;
   height: 100vh;
-  padding: 10px 20px 0;
+  padding: 12rpx 12rpx 0;
   background-color: #F6F7FA;
   box-sizing: border-box;
 }
@@ -22,7 +22,7 @@
   text-align: center;
   border-radius: 10rpx;
 }
-.invi-btn {
+/* .invi-btn {
   width: 240rpx;
   height: 80rpx;
   margin: 0;
@@ -34,7 +34,7 @@
   background-color: #F2034C;
   font-size: 32rpx;
   color: #fff;
-}
+} */
 .list-box {
   background-color: #0d70ff;
   color: #fff;
@@ -61,13 +61,15 @@
 
 .room-list {
   margin: 2vh 0;
-
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .room-list-item {
   width: 347rpx;
   height: 433rpx;
   padding: 0;
+  margin: 8rpx;
   color: #fff;
   border-radius: 8rpx;
   box-sizing: border-box;
@@ -82,12 +84,17 @@
 .room-cover{
   width: 100%;
   height: 100%;
+  border-radius: 8rpx 8rpx 0 0;
 }
 .room-info {
   position: absolute;
   top: 0;
   padding: 10rpx 10rpx 0;
   height: 58rpx;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 .room-state {
   background-color: #F99A1F;
@@ -99,6 +106,14 @@
   line-height: 34rpx;
 
 }
+.room-num {
+  font-size:18rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  color:rgba(255,255,255,1);
+  line-height:30rpx;
+  text-shadow:0rpx 2rpx 8rpx rgba(0, 0, 0, 0.5);
+}
 .room-info-container {
   width: 100%;
   height: 87rpx;
@@ -107,6 +122,7 @@
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  border-radius: 0 0 8rpx 8rpx;
 }
 .room-name {
   font-size:24rpx;
@@ -128,6 +144,33 @@
   color:rgba(142,144,148,1);
   line-height: 1;
 }
+.create-container {
+  position: fixed;
+  bottom: 54rpx;
+  left: 50%;
+  transform: translate(-50%);
+  width: 258rpx;
+  height: 88rpx;
+  background: rgba(243,31,91,1);
+  box-shadow: 0 20rpx 80rpx 0 rgba(243,31,91,0.5);
+  border-radius: 44rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.create-img {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 20rpx;
+}
+.create-txt {
+  font-size:24rpx;
+  font-family:PingFang SC;
+  font-weight:500;
+  color:rgba(255,255,255,1);
+}
 .bottom-input {
   padding: 0 1vw;
   position: fixed;
@@ -141,39 +184,8 @@
 
 }
 
-
-.bottom-btn {
-  position: fixed;
-  width: 26vw;
-  right: 5vh;
-  bottom: 3vh;
-}
-
-
-
-.bottom-btn button {
-  background-color: rgba(13, 112, 255, 0.8);
-  line-height: 2.3em;
-  border-radius: 0;
-
-}
-
-
-.create-button {
-  font-size: 16px;
-  color: white;
-}
-
 .index-container {
   padding: 2vh 5vw;
-}
-
-.input-container {
-  margin: 20rpx 0;
-  padding: 0 1vw;
-  display: flex;
-  height: 80rpx;
-  color: #3c3c3c;
 }
 
 .room-input {
@@ -183,17 +195,6 @@
 
 .tip {
   font-size: 24rpx;
-}
-
-.button-container {
-  margin-top: 40rpx;
-  display: flex;
-}
-
-.button-container button {
-  color: #fff;
-  background-color: #F2034C;
-  width: 300rpx;
 }
 
 .no-lives {
@@ -208,4 +209,49 @@
 .no-lives-img {
   width: 240rpx;
   height: 240rpx;
+}
+.room-exist-container {
+  position: fixed;
+  margin: 24rpx;
+  width:702rpx;
+  height:219rpx;
+  background:rgba(255,255,255,1);
+  border-radius:16rpx;
+  bottom: 24rpx;
+  padding-top: 48rpx;
+  text-align: center;
+  z-index: 3;
+}
+.room-exist-tip {
+  font-size:28rpx;
+  font-family:PingFang SC;
+  font-weight:500;
+  color:rgba(33,33,33,1);
+
+}
+.room-exist-btns {
+  display: flex;
+  margin-top: 30rpx;
+  justify-content: center;
+
+}
+.room-btn {
+  width:317rpx;
+  height:88rpx;
+  border-radius:8rpx;
+  font-size:28rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.end-btn {
+  background:rgba(246,246,246,1);
+  margin-right: 20rpx;
+  color:rgba(242,3,76,1);
+}
+.relogin-btn {
+  background:rgba(242,3,76,1);
+  color:rgba(255,255,255,1);
 }

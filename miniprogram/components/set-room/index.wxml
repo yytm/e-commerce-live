@@ -9,10 +9,10 @@
                 </image>
             </view>
         </view>
-        <view class="room-name-container">
-            <input value="{{inputValue}}" bindinput="bindKeyInput" cursor-spacing="100" placeholder="请输入直播间标题" placeholder-style='color: rgba(255, 255, 255, 0.8); font-size: 14px;' />
+        <view class="room-name-container {{isFocus?'focus':''}}">
+            <input value="{{inputValue}}" bindinput="bindKeyInput" bindfocus="focus" bindblur="blur" cursor-spacing="100" placeholder="请输入直播间标题" placeholder-style='color: rgba(255, 255, 255, 0.8); font-size: 14px;' />
         </view>
-        <view class="create-button" bindtap="createRoom"> 
+        <view class="create-button {{isFocus?'focus':''}}" bindtap="createRoom"> 
             立即开播
         </view>
     </view>

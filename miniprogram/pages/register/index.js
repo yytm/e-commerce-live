@@ -45,11 +45,11 @@ Page({
         }
       }
     })
-    const { role } = options;
-    console.log(role);
-    this.setData({
-      role
-    });
+    // const { role } = options;
+    // console.log(role);
+    // this.setData({
+    //   role
+    // });
   },
 
   /**
@@ -149,6 +149,7 @@ Page({
     })
   },
   authorize() {
+    if (!this.data.comp) return;
     console.log('authorize');
     let self = this;
     // const code = this.data.inviCode;

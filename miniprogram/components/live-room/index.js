@@ -48,6 +48,13 @@ Component({
         // this.setData({ items: newVal });
       }
     },
+    roomName: {
+      type: String,
+      value: '',
+      observer: function (newVal, oldVal, changedPath) {
+        // this.setData({ items: newVal });
+      }
+    },
     userID: {
       type: String,
       value: ''
@@ -63,6 +70,14 @@ Component({
         //   })
         // }
       }
+    },
+    preferPublishSourceType: {
+      type: Number,
+      value: 1
+    },
+    preferPlaySourceType: {
+      type: Number,
+      value: 1
     },
     // avatar: {
     //   type: String,
@@ -86,7 +101,7 @@ Component({
   data: {
     isCaster: true,
     // roomID: '',             // 房间 ID
-    roomName: '', // 房间名
+    // roomName: '', // 房间名
     // userID: '', // 当前初始化的用户 ID
     userName: '', // 当前初始化的用户名
     anchorID: '', // 主播 ID
@@ -113,8 +128,7 @@ Component({
     },
     playConfig: {
     },
-    preferPublishSourceType: 1, // 0：推流到 cdn；1：推流到 bgp
-    preferPlaySourceType: 1, // 0：auto；1：从 bgp 拉流
+    
     upperStreamLimit: 2, // 房间内限制1v1连麦
     tapTime: '',
     inputMessage: '',
@@ -245,8 +259,7 @@ Component({
         avatar: avatar
       }
       this.setData({
-        roomName: this.data.roomID,
-        preferPlaySourceType: 0,
+        // roomName: this.data.roomName,
         // userID: 'xcxU' + timestamp,
         userName: JSON.stringify(nickAvatar),
         publishStreamID: 'xcxS' + timestamp,
@@ -668,12 +681,13 @@ Component({
     loginRoom(token) {
       let self = this;
       console.log(
-        '>>>[liveroom-room] login room, roomID: ' + self.data.roomID,
+        '>>>[liveroom-room] login room, roomID: ' + self.data.roomID + ', roomName: ' + self.data.roomName +
         ', userID: ' + self.data.userID + ', userName: ' + self.data.userName + ', token: ' + token
       );
       if (!this.checkParam()) return;
       zg.login(
         self.data.roomID,
+        self.data.roomName,
         self.data.loginType === 'anchor' ? 1 : 2,
         token,
         function (streamList) {

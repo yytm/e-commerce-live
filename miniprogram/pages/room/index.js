@@ -19,6 +19,8 @@ Page({
     wsServerURL: "wss://wsliveroom1739272706-api.zego.im:8282/ws", 
     logServerURL: "https://wsslogger-demo.zego.im/httplog",
     shareImg: "/resource/share.png",
+    preferPublishSourceType: 1, // 0：推流到 cdn；1：推流到 bgp
+    preferPlaySourceType: 1, // 0：auto；1：从 bgp 拉流
 
     roomID: "",
     loginType: "",
@@ -93,7 +95,7 @@ Page({
    */
   onLoad: function (options) {
     this.getState();
-    console.log('>>>onLoad')
+    console.log('>>>onLoad', options)
     const { roomID, roomName, loginType } = options;
     const roomShowName = roomID.slice(2);
     let timestamp = new Date().getTime();
@@ -306,10 +308,12 @@ Page({
             name:'req',
             value:`{"session_id":"${wx.getStorageSync('sessionId')}","live_appid":${liveAppID},"uid":${wx.getStorageSync('uid')},"room_id":"${roomID}"}`
           }]
-    const files=[{
-      filePath: this.data.filePath, filename:'example.png', name:'img'
-    }]
-    
+    const files=[]
+    if (this.data.filePath) {
+      files.push( {
+           filePath: this.data.filePath, filename:'example.png', name:'img'
+      })
+    } 
     new Multipart({
       fields,
       files

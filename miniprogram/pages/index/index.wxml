@@ -1,9 +1,30 @@
 <!--miniprogram/pages/index/index.wxml-->
-<view class="index-container" hover-class="none" hover-stop-propagation="false">
-    <view>邀请流程说明</view>
-    <view class="btn-tool">
-        <view class="btn">邀请主播</view>
-        <view class="btn">创建直播</view>
-        <view class="btn list-btn">直播列表</view>
+<view wx:if="{{userInfo}}" class="index-container" hover-class="none" hover-stop-propagation="false">
+    <view class="invite-title">邀请流程说明</view>
+    <view class="invite-des" hover-class="none" hover-stop-propagation="false">
+        
+                                把造矿通除还代派确多眼，角别部约进严那广容给，常行孟设反济枝调芦。
+
+军音己风下自山明，带制们什列者全，观居易类呜董。再时验美间权色活方提革最，段少带争示取蠢连外军。精里治细想往制，取权后究参较对提，办届经候变态。
+
+个况它会组资教音交下带，政养性年由水但九因出华，期技积丽社接建争观群了求来情适，特美后实少五带布何，花机两行最刷抛机的。 油且学性说七争低济，性广先根断把区史物，据变却建提。
+
+受位低可便特中己，断统识和利铁构，眼越蠢价使维节。整手资严些用三从光及品，酸因处海不把收儿研团，因和屈根了验飞度育。
+
+论发结三少进物光节，维则少声江派眼十究生每，她豆知陕孤边茄。者叫他西结方原需部因想面将且，装这论命热几葡。活正切计划矿构合社，程志候京表孝它度。
+                            
     </view>
+    <view class="btn-tool">
+        <view class="btn invite-btn" wx:if="{{role==='admin'}}">
+            <button open-type="share">邀请主播</button>
+        </view>
+        <view class="btn" id="create" bind:tap="goTo">创建直播</view>
+        <view class="btn list-btn" id="list" bind:tap="goTo">直播列表</view>
+    </view>
+</view>
+<view wx:else class="">
+    <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
+        登录
+    </button>
+    <view wx:else class="">请升级微信版本</view>
 </view>

@@ -12,41 +12,66 @@ Component({
     roomID: '',
     roomName: '',
     loginType: '',
-    coverImg: ''
+    coverImg: '',
+    filePath: '',
+    isFocus: false,
+  },
+
+  ready() {
+    console.log('ready');
+    const coverImg = wx.getStorageSync('roomImg');
+    if (coverImg) {
+      this.setData({
+        coverImg,
+        // filePath: coverImg
+      })
+    }
   },
 
   methods: {
     bindKeyInput(e) {
       this.setData({
-        roomID: e.detail.value,
+        // roomID: e.detail.value,
         roomName: e.detail.value,
       })
     },
-  
+    focus() {
+      this.setData({
+        isFocus: true
+      })
+    },
+
+    blur() {
+      this.setData({
+        isFocus: false
+      })
+    },
+
     createRoom: function () {
       var self = this;
       console.log('>>>[liveroom-roomList] onCreateRoom, roomID is: ' + self.data.roomID);
-  
-      if (self.data.roomID.length === 0) {
+      
+      if (self.data.roomName.length === 0) {
         wx.showToast({
-          title: '创建失败，房间 ID 不可为空',
+          title: '创建失败，房间标题不可为空',
           icon: 'none',
           duration: 2000
         });
         return;
       }
   
-      if (self.data.roomID.match(/^[ ]+$/)) {
+      if (self.data.roomName.match(/^[ ]+$/)) {
         wx.showToast({
-          title: '创建失败，房间 ID 不可为空格',
+          title: '创建失败，房间标题不可为空格',
           icon: 'none',
           duration: 2000
         });
         return;
       }
-  
+      const timestamp = new Date().getTime();
       self.setData({
-        loginType: 'anchor'
+        loginType: 'anchor',
+        roomID: wx.getStorageSync('uid') + '-' + timestamp
       });
       wx.request({
         url: BaseUrl + '/app/get_room_list',
@@ -75,7 +100,7 @@ Component({
             self.triggerEvent('startLogin', {
               filePath: self.data.filePath,
               roomID: self.data.roomID,
-              roomList: self.data.roomID,
+              roomName: self.data.roomName,
               loginType: self.data.loginType
             })
             // const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
@@ -111,7 +136,5 @@ Component({
       })
     },
   }
-
-  
 
 })
