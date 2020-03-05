@@ -444,7 +444,7 @@ Page({
     if (!mer || !mer.link) return;
     var link = mer.link;
     console.log('link', link);
-    const toUrl = link.path + '?url=' + link.extraData.url
+    const toUrl = link.path + '?url=' + encodeURIComponent(link.extraData.url)
     wx.navigateTo({
       url: toUrl,
     });
