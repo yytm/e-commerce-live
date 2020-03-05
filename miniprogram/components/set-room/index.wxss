@@ -94,6 +94,9 @@
     margin-bottom: 24rpx;
     opacity: 0.2;
 }
+.room-name-input {
+    width: 100%;
+}
 .create-button {
     width:576rpx;
     height:88rpx;

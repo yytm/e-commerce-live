@@ -55,7 +55,12 @@ Component({
     },
     bindKeyInput(e) {
       const val = e.detail.value;
-      if (val.length >= 30) return;
+      if (val.length >= 30) {
+        this.setData({
+          inputValue: val.slice(0, 29)
+        }) 
+        return;
+      }
       this.setData({
         // roomID: e.detail.value,
         inputValue: e.detail.value,
