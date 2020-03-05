@@ -127,11 +127,20 @@ Page({
   },
   endLive() {
     console.log('endLive');
+    this.setData({
+      living: false
+    })
   },
   enterLive() {
     const url = '../room/index?roomID=' + this.data.livingRoomID + '&roomName=' + this.data.livingRoomName + '&loginType=anchor';
     wx.navigateTo({
       url
     });
+  },
+  createRoom() {
+    console.log('createRoom');
+    wx.navigateTo({
+      url: '../enterLive/index?role=anchor'
+    })
   }
 });

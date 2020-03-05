@@ -200,6 +200,7 @@ Page({
    */
   onShareAppMessage() {
     let self = this;
+    console.log('roomImg', wx.getStorageSync('roomImg'));
     const imgUrl = wx.getStorageSync('roomImg') || self.data.shareImg;
     let obj = sharePage(imgUrl, {
       roomID: this.data.roomID,
@@ -323,8 +324,9 @@ Page({
     }).submit(BaseUrl + '/app/set_room')
     .then(res => {
       console.log('set room suc', res);
-      if (res.ret && res.ret.code === 0) {
-        res.room_img && wx.setStorageSync('roomImg', res.room_img);
+      const result = res.data;
+      if (result.ret && result.ret.code === 0) {
+        result.room_img && wx.setStorageSync('roomImg', result.room_img);
       }
     }).catch(e => {
       console.error('set room fail', e);

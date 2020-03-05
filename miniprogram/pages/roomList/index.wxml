@@ -33,7 +33,7 @@
         <text>暂无直播</text>
     </view>
 </view>
-<view wx:if="{{(role==='admin' || role === 'anchor') && !living}}" class="create-container">
+<view wx:if="{{(role==='admin' || role === 'anchor') && !living}}" class="create-container" bind:tap="createRoom">
     <image src="../../resource/create.png" class="create-img"></image>
     <text class="create-txt">创建直播间</text>
 </view>

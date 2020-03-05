@@ -1,10 +1,10 @@
 <!--miniprogram/components/set-room/index.wxml-->
 <view class="set-room-container">
     <view class="room-content">
-        <view class="room-img-container">
+        <view class="room-img-container" bind:tap="chooseImg">
             <image wx:if="{{coverImg}}" class="cover-img" src="{{coverImg}}" />
             <text wx:else class="room-text">直播封面</text>
-            <view class="add-icon" bind:tap="chooseImg">
+            <view class="add-icon">
                 <image class="plus-ico" src="../images/plus.png">
                 </image>
             </view>
