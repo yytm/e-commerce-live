@@ -409,7 +409,7 @@ Page({
     if (!mer || !mer.link) return;
     const link = mer.link;
     if (link.appId === '0') {
-      const toUrl = link.path + "?url=" + link.extraData.url;
+      const toUrl = link.path + "?url=" + encodeURIComponent(link.extraData.url);
       console.log('toUrl', toUrl);
       wx.navigateTo({
         url: toUrl,
