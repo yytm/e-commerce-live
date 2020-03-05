@@ -13,6 +13,7 @@ Page({
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     hasUserInfo: false,
     role: '',
+    tapTime: -1,
   },
 
   /**
@@ -102,6 +103,15 @@ Page({
 
   goTo(e) {
     console.log('goTo', e);
+
+    // 防止两次点击操作间隔太快
+    let nowTime = new Date();
+    if (nowTime - this.data.tapTime < 1000) {
+      return;
+    }
+    this.setData({
+      tapTime: nowTime
+    });
     const { target: { id }} = e;
     let path;
     switch(id) {

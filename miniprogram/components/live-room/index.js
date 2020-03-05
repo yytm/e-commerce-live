@@ -1575,7 +1575,7 @@ Component({
         ', message:' +
         e.detail.message
       );
-      zg.updatePlayerState(e.target.id, e);
+      zg && zg.updatePlayerState(e.target.id, e);
     },
     onPlayNetStateChange(e) {
       zg && zg.updatePlayerNetStatus(e.target.id, e);
