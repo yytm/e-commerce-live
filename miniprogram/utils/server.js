@@ -111,8 +111,10 @@ function loginApp(nickName) {
                 }
                 // console.log('role', _role);
                 wx.setStorageSync('role', _role);
-                if (_role === 'anchor') {
+                if (result.data['room_img']) {
                   wx.setStorageSync('roomImg', result.data['room_img']);
+                } else {
+                  wx.setStorageSync('roomImg', '');
                 }
                 res(_role);
               } else {

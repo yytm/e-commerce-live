@@ -313,6 +313,7 @@ Page({
             value:`{"session_id":"${wx.getStorageSync('sessionId')}","live_appid":${liveAppID},"uid":${wx.getStorageSync('uid')},"room_id":"${roomID}"}`
           }]
     const files=[]
+    console.log('filePath: ', this.data.filePath);
     if (this.data.filePath) {
       files.push( {
            filePath: this.data.filePath, filename:'example.png', name:'img'

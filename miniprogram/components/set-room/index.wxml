@@ -1,5 +1,12 @@
 <!--miniprogram/components/set-room/index.wxml-->
+<wxs src="../lib/stringUtil.wxs" module="stringUtil" />
 <view class="set-room-container">
+    <view class="user-info">
+        <image class="avatar" src="{{userInfo.avatarUrl||'../images/avatar-logo.png'}}" bindload="" binderror=""></image>
+        <view class="user-text">
+            <view class="">{{stringUtil.substr(userInfo.nickName,8)}}</view>
+        </view>
+    </view>
     <view class="room-content">
         <view class="room-img-container" bind:tap="chooseImg">
             <image wx:if="{{coverImg}}" class="cover-img" src="{{coverImg}}" />

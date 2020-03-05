@@ -19,6 +19,7 @@ Component({
 
   ready() {
     console.log('ready');
+    this.getUserInfo();
     const coverImg = wx.getStorageSync('roomImg');
     if (coverImg) {
       this.setData({
@@ -29,9 +30,35 @@ Component({
   },
 
   methods: {
+    getUserInfo() {
+      let userInfo = app.globalData.userInfo;
+      console.log('getUserInfo', userInfo);
+      this.setData({
+        hasUserInfo: true,
+        userInfo: userInfo
+      });
+      if(!userInfo) {
+        wx.getUserInfo({
+          success: res => {
+            app.globalData.userInfo = res.userInfo;
+            this.setData({
+              hasUserInfo: true,
+              userInfo: res.userInfo
+            });
+          },
+          fail: e => {
+            console.error(e);
+          }
+        })
+      }
+
+    },
     bindKeyInput(e) {
+      const val = e.detail.value;
+      if (val.length >= 30) return;
       this.setData({
         // roomID: e.detail.value,
+        inputValue: e.detail.value,
         roomName: e.detail.value,
       })
     },

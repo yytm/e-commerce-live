@@ -844,10 +844,14 @@ Component({
             }
           }
         }, () => {
-          (!this.data.pusherContext) && (this.data.pusherContext = wx.createLivePusherContext());
-          this.data.pusherContext.stop();
-          this.data.pusherContext.start();
-          console.log('start');
+          // (!this.data.pusherContext) && (this.data.pusherContext = wx.createLivePusherContext());
+          this.data.pusherContext = wx.createLivePusherContext();
+          // this.data.pusherContext.stop();
+          setTimeout(() => {
+            this.data.pusherContext.start();
+            console.log('start');
+          }, 10);
+
         });
       } else { // 子主播推流
         this.setData({
