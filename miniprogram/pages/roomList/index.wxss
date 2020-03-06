@@ -56,7 +56,8 @@
 }
 
 .rooms {
-  max-height: 75vh;
+  /* max-height: 75vh; */
+  height: 100%;
 }
 
 .room-list {

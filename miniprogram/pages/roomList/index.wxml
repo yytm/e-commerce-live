@@ -37,10 +37,10 @@
     <image src="../../resource/create.png" class="create-img"></image>
     <text class="create-txt">创建直播间</text>
 </view>
-<view wx:if="{{living}}" class="room-exist-container">
+<!-- <view wx:if="{{living}}" class="room-exist-container">
     <text class="room-exist-tip">当前直播未结束，是否重新进入？</text>
     <view class="room-exist-btns">
         <view class="room-btn end-btn" bindtap="endLive">结束直播</view>
         <view class="room-btn relogin-btn" bindtap="enterLive">进入直播</view>
     </view>
-</view>
+</view> -->

@@ -496,7 +496,7 @@ Page({
         if (result.ret && result.ret.code === 0) {
           if (result.goods_count > 0 && result.goods_list && result.goods_list.length) {
             const merchandises = result['goods_list'].map(item => {
-              const price = item.price === 0 ? item.price_text : item.price;
+              const price = item.price === 0 ? item.price_text : '¥' + item.price;
               return {
                 id: item['goods_id'],
                 num: item['goods_no'],
