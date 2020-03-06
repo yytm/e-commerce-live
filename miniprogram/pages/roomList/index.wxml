@@ -33,6 +33,10 @@
         <text>暂无直播</text>
     </view>
 </view>
+<view wx:if="{{role==='admin' && !living}}" class="invite-container" bind:tap="goToAdmin">
+    <image src="../../resource/create.png" class="create-img"></image>
+    <text class="create-txt">邀请主播</text>
+</view>
 <view wx:if="{{(role==='admin' || role === 'anchor') && !living}}" class="create-container" bind:tap="createRoom">
     <image src="../../resource/create.png" class="create-img"></image>
     <text class="create-txt">创建直播间</text>
@@ -44,3 +48,12 @@
         <view class="room-btn relogin-btn" bindtap="enterLive">进入直播</view>
     </view>
 </view> -->
+<authroze-modal 
+    isShow="{{isShowModal}}"
+    id='dialog'
+    title='微信授权'
+    subTitle='建行到家CCBgo申请获取以下权限'
+    content='获取到你公开信息(呢称，头像等)'
+    confirmText='授权登录'
+    bind:GetUserInfo='bindGetUserInfo'>
+</authroze-modal>

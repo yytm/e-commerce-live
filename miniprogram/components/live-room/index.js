@@ -850,7 +850,7 @@ Component({
           setTimeout(() => {
             this.data.pusherContext.start();
             console.log('start');
-          }, 10);
+          }, 50);
 
         });
       } else { // 子主播推流
@@ -904,7 +904,7 @@ Component({
           console.log(self.data.mainPusher, this.data.playerContext)
           setTimeout(() => {
             this.data.playerContext.play()
-          }, 5)
+          }, 50)
           
         })
       } else {

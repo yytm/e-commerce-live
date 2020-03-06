@@ -1,5 +1,5 @@
 <!--miniprogram/pages/index/index.wxml-->
-<view wx:if="{{userInfo}}" class="index-container" hover-class="none" hover-stop-propagation="false">
+<view class="index-container" hover-class="none" hover-stop-propagation="false">
     <view class="invite-title">邀请流程说明</view>
     <view class="invite-des" hover-class="none" hover-stop-propagation="false">
         待定
@@ -12,9 +12,18 @@
         <view class="btn list-btn" id="list" bind:tap="goTo">直播列表</view>
     </view>
 </view>
-<view wx:else class="">
+<authroze-modal 
+    isShow="{{isShowModal}}"
+    id='dialog'
+    title='微信授权'
+    subTitle='建行到家CCBgo申请获取以下权限'
+    content='获取到你公开信息(呢称，头像等)'
+    confirmText='授权登录'
+    bind:GetUserInfo='bindGetUserInfo'>
+</authroze-modal>
+<!-- <view wx:else class="">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
         登录
     </button>
     <view wx:else class="">请升级微信版本</view>
-</view>
+</view> -->

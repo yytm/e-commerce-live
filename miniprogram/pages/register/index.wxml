@@ -1,5 +1,5 @@
 <!--miniprogram/pages/register/index.wxml-->
-<view wx:if="{{userInfo}}" class="user-container">
+<view class="user-container">
     <!-- <view class="user-info">
         <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
         <text class="user-text">
@@ -30,10 +30,18 @@
             </view>
         <!-- </view> -->
     </view>
-    
 </view>
-<view wx:else class="">
+<authroze-modal 
+    isShow="{{isShowModal}}"
+    id='dialog'
+    title='微信授权'
+    subTitle='建行到家CCBgo申请获取以下权限'
+    content='获取到你公开信息(呢称，头像等)'
+    confirmText='授权登录'
+    bind:GetUserInfo='bindGetUserInfo'>
+</authroze-modal>
+<!-- <view wx:else class="">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">登录</button>
     <view wx:else class="">请升级微信版本</view>
-</view>
+</view> -->
 

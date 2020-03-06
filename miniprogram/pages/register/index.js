@@ -11,6 +11,8 @@ Page({
   data: {
     userInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    isShowModal: false,
+
     inviCode: '',
     role: '',
     focus: false,
@@ -25,26 +27,55 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    app.globalData.userInfo && this.setData({
-      userInfo: app.globalData.userInfo
-    });
-    wx.getUserInfo({
-      success: res => {
-        // 可以将 res 发送给后台解码出 unionId
-        app.globalData.userInfo = res.userInfo
-
-        this.setData({
-          userInfo: res.userInfo
-        });
-        this.goToAnchor();
-
-        // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-        // 所以此处加入 callback 以防止这种情况
-        if (this.userInfoReadyCallback) {
-          this.userInfoReadyCallback(res)
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      });
+      this.goToAnchor();
+    } else {
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo;
+          this.setData({
+            hasUserInfo: true,
+            userInfo: res.userInfo
+          });
+          this.goToAnchor();
+          // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+          // 所以此处加入 callback 以防止这种情况
+          if (this.userInfoReadyCallback) {
+            this.userInfoReadyCallback(res)
+          }
+        },
+        fail: e => {
+          console.error(e);
+          this.setData({
+            isShowModal: true
+          });
         }
-      }
-    })
+      })
+    }
+
+    // app.globalData.userInfo && this.setData({
+    //   userInfo: app.globalData.userInfo
+    // });
+    // wx.getUserInfo({
+    //   success: res => {
+    //     // 可以将 res 发送给后台解码出 unionId
+    //     app.globalData.userInfo = res.userInfo
+
+    //     this.setData({
+    //       userInfo: res.userInfo
+    //     });
+    //     this.goToAnchor();
+
+    //     // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+    //     // 所以此处加入 callback 以防止这种情况
+    //     if (this.userInfoReadyCallback) {
+    //       this.userInfoReadyCallback(res)
+    //     }
+    //   }
+    // })
     // const { role } = options;
     // console.log(role);
     // this.setData({
@@ -106,7 +137,8 @@ Page({
     if (e.detail.userInfo) {
       app.globalData.userInfo = e.detail.userInfo;
       this.setData({
-        userInfo: e.detail.userInfo
+        userInfo: e.detail.userInfo,
+        isShowModal: false
       })
       this.goToAnchor();
     } else {

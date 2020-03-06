@@ -12,6 +12,7 @@ Page({
     userInfo: null,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     hasUserInfo: false,
+    isShowModal: false,
     role: '',
     tapTime: -1,
   },
@@ -26,7 +27,25 @@ Page({
         userInfo: app.globalData.userInfo
       });
       this.getRole();
+    } else {
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo;
+          this.setData({
+            hasUserInfo: true,
+            userInfo: res.userInfo
+          });
+          this.getRole();
+        },
+        fail: e => {
+          console.error(e);
+          this.setData({
+            isShowModal: true
+          });
+        }
+      })
     }
+
   },
 
   /**
@@ -90,7 +109,8 @@ Page({
     if (e.detail.userInfo) {
       app.globalData.userInfo = e.detail.userInfo;
       this.setData({
-        userInfo: e.detail.userInfo
+        userInfo: e.detail.userInfo,
+        isShowModal: false
       })
       this.getRole();
     } else {

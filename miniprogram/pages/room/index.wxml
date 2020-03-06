@@ -3,7 +3,7 @@
     <view class="room-title">{{roomName}}</view>
 </custom-nav>
 
-<view wx:if="{{userInfo}}" class="live-container">
+<view class="live-container">
     <live 
         id="live-room" 
         navBarHeight="{{navBarHeight}}" 
@@ -61,10 +61,19 @@
     </view>
     <!-- <set-room bindstartLogin="startLogin"></set-room> -->
 </view>
-<view wx:else class="login-container">
+<authroze-modal 
+    isShow="{{isShowModal}}"
+    id='dialog'
+    title='微信授权'
+    subTitle='建行到家CCBgo申请获取以下权限'
+    content='获取到你公开信息(呢称，头像等)'
+    confirmText='授权登录'
+    bind:GetUserInfo='bindGetUserInfo'>
+</authroze-modal>
+<!-- <view wx:else class="login-container">
     <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
         登录
     </button>
     <view wx:else class="">请升级微信版本</view>
-</view>
+</view> -->
 

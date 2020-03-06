@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "authroze-modal": "/components/authorize-modal/index"
+  },
   "navigationBarBackgroundColor": "#F2034C",
   "navigationBarTextStyle": "white",
   "navigationBarTitleText": "电商直播间"

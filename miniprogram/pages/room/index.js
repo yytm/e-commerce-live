@@ -31,6 +31,7 @@ Page({
     userInfo: null,
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    isShowModal: false,
 
     hideModal: true, //模态框的状态  true-隐藏  false-显示
     animationData: {},
@@ -97,7 +98,7 @@ Page({
     this.getState();
     console.log('>>>onLoad', options)
     const { roomID, roomName, loginType } = options;
-    const roomShowName = roomID.slice(2);
+    const roomShowName = roomID && roomID.slice(2);
     let timestamp = new Date().getTime();
     let userID;
     if (loginType === 'anchor') {
@@ -425,7 +426,7 @@ Page({
         extraData: {
           foo: 'bar'
         },
-        envVersion: 'trial',
+        envVersion: 'develop',
         success(res) {
           // 打开成功
           console.log(res)
@@ -497,18 +498,28 @@ Page({
           if (result.goods_count > 0 && result.goods_list && result.goods_list.length) {
             const merchandises = result['goods_list'].map(item => {
               const price = item.price === 0 ? item.price_text : '¥' + item.price;
-              return {
-                id: item['goods_id'],
-                num: item['goods_no'],
-                name: item['goods_desc'],
-                link: {
+              const url = item['goods_url'];
+              let link;
+              if (url.startsWith('pages')) {
+                link = {
+                  appId: 'wx2b8909dae7727f25',
+                  path: url
+                }
+              } else {
+                link = {
                   // url: item['goods_url']
                   appId: '0',
                   path: "../web/index",
                   extraData: {
-                    url: item['goods_url']
+                    url: url
                   }
-                },
+                }
+              }
+              return {
+                id: item['goods_id'],
+                num: item['goods_no'],
+                name: item['goods_desc'],
+                link: link,
                 price: price,
                 img: item['goods_img']
               }
@@ -558,7 +569,10 @@ Page({
     if (e.detail.userInfo) {
       app.globalData.userInfo = e.detail.userInfo;
       this.setData({
-        userInfo: e.detail.userInfo
+        userInfo: e.detail.userInfo,
+        isShowModal: false
+      }, () => {
+        loginApp(this.data.userInfo.nickName);
       })
     } else {
       wx.showModal({
@@ -568,6 +582,7 @@ Page({
     }
   },
   getState() {
+    let self = this;
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -575,32 +590,30 @@ Page({
       });
       loginApp(this.data.userInfo.nickName);
     } else {
-      // 获取用户信息
-      wx.getSetting({
-        success: res => {
-          console.log(res);
-          if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-            wx.getUserInfo({
-              success: res => {
-                // 可以将 res 发送给后台解码出 unionId
-                app.globalData.userInfo = res.userInfo
-                this.setData({
-                  userInfo: res.userInfo,
-                  hasUserInfo: true
-                })
-                loginApp(res.userInfo.nickName);
-
-                // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-                // 所以此处加入 callback 以防止这种情况
-                if (this.userInfoReadyCallback) {
-                  this.userInfoReadyCallback(res)
-                }
-              }
+        // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+        wx.getUserInfo({
+          success: res => {
+            // 可以将 res 发送给后台解码出 unionId
+            app.globalData.userInfo = res.userInfo
+            this.setData({
+              userInfo: res.userInfo,
+              hasUserInfo: true
             })
-          } 
-        }
-      })
+            loginApp(res.userInfo.nickName);
+
+            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+            // 所以此处加入 callback 以防止这种情况
+            if (this.userInfoReadyCallback) {
+              this.userInfoReadyCallback(res)
+            }
+          },
+          fail: e => {
+            console.error(e);
+            self.setData({
+              isShowModal: true
+            });
+          }
+        })
     }
     if (!wx.getStorageSync('sessionId')) {
       console.log('no sessionId');

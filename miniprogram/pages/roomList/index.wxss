@@ -145,6 +145,22 @@
   color:rgba(142,144,148,1);
   line-height: 1;
 }
+.invite-container {
+  position: fixed;
+  bottom: 154rpx;
+  left: 50%;
+  transform: translate(-50%);
+  width: 258rpx;
+  height: 88rpx;
+  background: rgba(243,31,91,1);
+  box-shadow: 0 20rpx 80rpx 0 rgba(243,31,91,0.5);
+  border-radius: 44rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
 .create-container {
   position: fixed;
   bottom: 54rpx;

@@ -1,22 +1,53 @@
 
 
 const app = getApp();
+let { loginApp } = require("../../utils/server.js");
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
     living: false,
-    isFirst: true
+    isFirst: true,
+    userInfo: null,
+    role: '',
+    isShowModal: false
   },
   onLoad: function (options) {
     
-    const { role } = options;
-    this.setData({
-      role
-    })
+    // const { role } = options;
+    // this.setData({
+    //   role
+    // })
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      });
+      this.getRole();
+    } else {
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo;
+          this.setData({
+            hasUserInfo: true,
+            userInfo: res.userInfo
+          });
+          this.getRole();
+        },
+        fail: e => {
+          console.error(e);
+          this.setData({
+            isShowModal: true
+          });
+        }
+      })
+      
+    }
   },
   onShow: function () {
-    this.getRoomList();
+    console.log('sessionId', wx.getStorageSync('sessionId'));
+    if (wx.getStorageSync('sessionId')) {
+      this.getRoomList();
+    }
   },
   onUnload: function () {
     this.stopRefresh();
@@ -57,7 +88,7 @@ Page({
               roomList.forEach(item => {
                 if (item.anchor_id_name === 'anchor' + wx.getStorageSync('uid')) {
                   self.setData({
-                    living: true,
+                    // living: true,
                     isFirst: false,
                     livingRoomID: item.room_id,
                     livingRoomName: item.room_name
@@ -137,10 +168,40 @@ Page({
       url
     });
   },
+  goToAdmin() {
+    wx.navigateTo({
+      url: "../index/index",
+      success: (result)=>{
+        console.log('nav suc', result);
+      },
+      fail: ()=>{},
+      complete: ()=>{}
+    });
+  },
   createRoom() {
     console.log('createRoom');
     wx.navigateTo({
       url: '../enterLive/index?role=anchor'
     })
-  }
+  },
+  bindGetUserInfo(e) {
+    console.log('bindGetUserInfo', e);
+    app.globalData.userInfo = e.detail.userInfo;
+    this.setData({
+      userInfo: e.detail.userInfo,
+      isShowModal: false
+    });
+    this.getRole(() => {
+      this.getRoomList();
+    });
+  },
+  getRole(callback) {
+    let self = this;
+    // 登录
+    loginApp(self.data.userInfo.nickName).then(role => {
+      console.log('role', role);
+      self.setData({ role });
+      callback &&  callback();
+    });
+  },
 });

@@ -64,12 +64,20 @@
 					"id": -1,
 					"name": "pages/roomList/index",
 					"pathName": "pages/index/index",
+					"query": "",
 					"scene": null
 				},
 				{
 					"id": -1,
 					"name": "pages/index/index",
 					"pathName": "pages/register/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/room/index",
+					"pathName": "pages/room/index",
 					"scene": null
 				}
 			]
