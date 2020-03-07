@@ -89,7 +89,8 @@ Page({
     page: 1,
     isbeginLive: false,
     filePath: '',
-    showEndModal: false
+    showEndModal: false,
+    isShared: false,
   },
 
   /**
@@ -152,6 +153,13 @@ Page({
    */
   onShow: function () {
     console.log('room onShow');
+    if (this.data.isShared) {
+      this.setData({
+        isShared: false
+      });
+      return;
+    }
+    
     wx.setKeepScreenOn({
       keepScreenOn: true,
       success: (result) => {
@@ -174,11 +182,8 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    if (this.data.loginType === 'anchor') {
-      const content = {
-        liveAppID,
-        roomID: this.data.roomID
-      }
+    console.log('onHide');
+    if (this.data.loginType === 'anchor' && !this.data.isShared) {
       liveRoom && liveRoom.endLiveRoom();
     }
   },
@@ -209,7 +214,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
+    console.log('onShareAppMessage');
     let self = this;
+    self.setData({
+      isShared: true
+    });
     console.log('roomImg', wx.getStorageSync('roomImg'));
     const imgUrl = wx.getStorageSync('roomImg') || self.data.shareImg;
     let obj = sharePage(imgUrl, {
@@ -449,6 +458,9 @@ Page({
     })
   },
   clickMech(e) {
+    this.setData({
+      isShared: true
+    });
     const mer = this.data.merchandises.find(item => item.id == e.currentTarget.id)
     if (!mer || !mer.link) return;
     const link = mer.link;
@@ -480,7 +492,9 @@ Page({
   },
   clickPush() {
     console.log(this.data.pushInx)
-
+    this.setData({
+      isShared: true
+    });
     console.log(this.data.merchandises);
     const mer = this.data.merchandises.find(item => item.id == this.data.pushInx)
     if (!mer || !mer.link) return;
