@@ -88,7 +88,8 @@ Page({
     stopLoadMore: false,
     page: 1,
     isbeginLive: false,
-    filePath: ''
+    filePath: '',
+    showEndModal: false
   },
 
   /**
@@ -173,7 +174,9 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    if (this.data.loginType === 'anchor') {
+      this.clearRoom();
+    }
   },
 
   /**
@@ -607,6 +610,16 @@ Page({
     });
     self.getGoods();
  
+  },
+  backClick() {
+    if (this.data.loginType === 'anchor') {
+      this.setData({
+        showEndModal: true
+      });
+    } else {
+      this.back();
+    }
+    
   },
   back() {
     if(getCurrentPages().length>1){

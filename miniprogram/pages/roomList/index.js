@@ -10,6 +10,7 @@ Page({
     isFirst: true,
     userInfo: null,
     role: '',
+    roomList: [],
     isShowModal: false
   },
   onLoad: function (options) {
@@ -75,6 +76,7 @@ Page({
       success(res) {
         self.stopRefresh();
         if (res.data.ret && res.data.ret.code === 0) {
+          console.error('roomList ', res.data.room_list);
           if ( res.data.room_list && res.data.room_list.length) {
             const roomList = res.data.room_list
             .filter(item => item.room_id.startsWith('e-'))
@@ -99,8 +101,11 @@ Page({
             self.setData({
               roomList
             });
+          } else {
+            self.setData({
+              roomList: []
+            })
           }
-
         }
       },
       fail(e) {

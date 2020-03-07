@@ -24,6 +24,17 @@ App({
       }
     })
   },
+  onShow: function() {
+    console.log('App onShow');
+    wx.setKeepScreenOn({
+      keepScreenOn: true,
+      success: (result)=>{
+        console.log('setKeepScreenOn', result);
+      },
+      fail: ()=>{},
+      complete: ()=>{}
+    });
+  },
   globalData: {
     userInfo: null,
     BaseUrl: 'https://shop-backend.yunyikao.com',

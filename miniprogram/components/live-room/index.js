@@ -39,7 +39,7 @@ Component({
     },
     pushMerTime: {
       type: Number,
-      value: 10
+      value: 60
     },
     roomID: {
       type: String,
@@ -93,6 +93,10 @@ Component({
     navBarHeight: {
       type: Number,
       value: 0
+    },
+    showEndModal: {
+      type: Boolean,
+      value: false,
     }
   },
   /**
@@ -173,7 +177,6 @@ Component({
     confirmText: '同意',
     cancelText: '拒绝',
     kitoutUser: '',
-    showEndModal: false,
     isLeaveTemp: false
   },
   created: function () {
@@ -298,9 +301,9 @@ Component({
 
       this.onNetworkStatus();
       // 保持屏幕常亮
-      wx.setKeepScreenOn({
-        keepScreenOn: true
-      });
+      // wx.setKeepScreenOn({
+      //   keepScreenOn: true
+      // });
     },
     getUserInfo() {
       let userInfo = app.globalData.userInfo;
@@ -604,7 +607,11 @@ Component({
 
         const audienceList = userList.filter(item => item.role === 2 && item.action === 1);
         const latest = audienceList.pop();
-
+        
+        const userCount = userList.length;
+        self.setData({
+          userCount
+        });
         if (latest) {
 
           let userInfo;
@@ -636,9 +643,9 @@ Component({
           ', userCount: ' +
           userCount
         );
-        self.setData({
-          userCount
-        });
+        // self.setData({
+        //   userCount
+        // });
       };
 
       zg.onRecvJoinLiveRequest = function (requestId, fromUserId, fromUsername, roomId) {

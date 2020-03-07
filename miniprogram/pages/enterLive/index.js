@@ -37,7 +37,19 @@ Page({
    */
   onShow: function () {
     wx.setKeepScreenOn({
-      keepScreenOn: true
+      keepScreenOn: true,
+      success: (result) => {
+        console.log('setKeepScreenOn', result);
+      },
+      fail: () => { 
+        console.error('setKeepScreenOn fail');
+      },
+      complete: () => { }
+    });
+    wx.getScreenBrightness({
+      success: res => {
+        console.log('bright', res.value);
+      }
     });
   },
 

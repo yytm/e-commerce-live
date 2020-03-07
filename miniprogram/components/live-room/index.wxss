@@ -303,8 +303,8 @@
   padding-right: 10rpx;
 }
 .small-video {
-  width: 90px;
-  height: 120px;
+  width: 105px;
+  height: 135px;
 }
 .play-container {
   width: 190rpx;
