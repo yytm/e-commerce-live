@@ -173,7 +173,8 @@ Component({
     confirmText: '同意',
     cancelText: '拒绝',
     kitoutUser: '',
-    showEndModal: false
+    showEndModal: false,
+    isLeaveTemp: false
   },
   created: function () {
     const sysInfo = wx.getSystemInfoSync();
@@ -745,22 +746,25 @@ Component({
           } else {
             if (streamList.length === 0) {
               console.log('no stream');
-              wx.showModal({
-                title: '提示',
-                content: '主播暂时离开了',
-                showCancel: false,
-                success(res) {
-                  if (res.confirm || !res.cancel) {
-                    // wx.navigateBack();
-                    const content = {};
-                    self.triggerEvent('RoomEvent', {
-                      tag: 'onBack',
-                      // code: 0,
-                      content
-                    });
-                  }
-                }
+              self.setData({
+                isLeaveTemp: true
               });
+              // wx.showModal({
+              //   title: '提示',
+              //   content: '主播暂时离开了',
+              //   showCancel: false,
+              //   success(res) {
+              //     if (res.confirm || !res.cancel) {
+              //       // wx.navigateBack();
+              //       const content = {};
+              //       self.triggerEvent('RoomEvent', {
+              //         tag: 'onBack',
+              //         // code: 0,
+              //         content
+              //       });
+              //     }
+              //   }
+              // });
               return;
             }
 
@@ -955,7 +959,11 @@ Component({
       } else if (self.data.loginType === 'audience') {
         console.log('isLogout', streamList, self.data.mainPusher)
         isLogout = streamList.find(item => item.stream_id === self.data.mainPusher.streamID);
-
+        if (isLogout) {
+          self.setData({
+            isLeaveTemp: false
+          })
+        }
         // 获取每个 streamID 对应的拉流 url
         for (let i = 0; i < streamList.length; i++) {
           let streamID = streamList[i].stream_id;
@@ -998,6 +1006,7 @@ Component({
         if (streamID === self.data.mainPusher.streamID) {
           self.data.playerContext && self.data.playerContext.stop();
           self.setData({
+            isLeaveTemp: true,
             mainPusher: {
               ...self.data.mainPusher,
               ...{
@@ -1006,6 +1015,7 @@ Component({
               }
             },
           });
+          console.log('isLeaveTemp', self.data.isLeaveTemp);
           playingList = playingList.filter(playItem => playItem.stream_id !== streamID);
           if (self.data.isConnecting && self.data.isPublishing) {
             // zg.endJoinLive(self.data.anchorID, function (result, userID, userName) {
@@ -1029,6 +1039,7 @@ Component({
             });
           }
           isLogout = true;
+          
           logOutTer && clearTimeout(logOutTer);
           console.log('isLogout', isLogout);
           logOutTer = setTimeout(() => {
@@ -1046,7 +1057,7 @@ Component({
                 content
               });
             }
-          }, 10000);
+          }, 100000);
           break;
         } else {
           let playStreamList = self.data.playStreamList;

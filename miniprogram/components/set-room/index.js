@@ -130,7 +130,7 @@ Component({
               }
             }
             self.triggerEvent('startLogin', {
-              filePath: self.data.filePath,
+              filePath: self.data.coverImg,
               roomID: self.data.roomID,
               roomName: self.data.roomName,
               loginType: self.data.loginType
