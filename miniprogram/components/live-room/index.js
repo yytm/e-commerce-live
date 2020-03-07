@@ -172,7 +172,8 @@ Component({
     hasCancel: true,
     confirmText: '同意',
     cancelText: '拒绝',
-    kitoutUser: ''
+    kitoutUser: '',
+    showEndModal: false
   },
   created: function () {
     const sysInfo = wx.getSystemInfoSync();
@@ -279,7 +280,7 @@ Component({
         nickName: this.data.userName, // 必填，用户自定义昵称
         remoteLogLevel: 2, // 日志上传级别，建议取值不小于 logLevel
         logLevel: 0, // 日志级别，debug: 0, info: 1, warn: 2, error: 3, report: 99, disable: 100（数字越大，日志越少）
-        server: 'wss://wsliveroom' + this.data.liveAppID + '-api.zego.im:8282/ws', // 必填，服务器地址，由即构提供
+        server: this.data.wsServerURL, // 必填，服务器地址，由即构提供
         logUrl: this.data.logServerURL, // 必填，log 服务器地址，由即构提供
         audienceCreateRoom: true // false观众不允许创建房间
       });
@@ -1557,6 +1558,32 @@ Component({
         kitoutUser: e.target.dataset.userid,
       })
 
+    },
+    endRoom() {
+      this.setData({
+        showEndModal: true
+      })
+    },
+    cancelLiveRoom() {
+      this.setData({
+        showEndModal: false
+      })
+    },
+    endLiveRoom() {
+      const content = {
+        liveAppID: this.data.liveAppID,
+        roomID: this.data.roomID
+      };
+      this.setData({
+        showEndModal: false
+      }, () => {
+        this.logoutRoom();
+        this.triggerEvent('RoomEvent', {
+          tag: 'onRoomDestory',
+          content
+        });
+      })
+      
     },
     onPushStateChange(e) {
       console.log(

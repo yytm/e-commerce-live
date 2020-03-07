@@ -1,6 +1,8 @@
 <!--components/zego-navigator/zegonavigator.wxml-->
 <view wx:if="{{!native}}" class="navaigator" style="height: {{navBarHeight}}px;padding-top:{{statusBarHeight}}px;">
-    <view class="narrow-left" bindtap="back">
+    <view class="narrow-left-container" bindtap="back">
+        <view class="narrow-left">
+    </view>
     </view>
     <slot>
 

@@ -156,7 +156,9 @@ Page({
       success: (result) => {
         console.log('setKeepScreenOn', result);
       },
-      fail: () => { },
+      fail: () => { 
+        console.error('setKeepScreenOn fail');
+      },
       complete: () => { }
     });
     if (liveRoom && this.data.isLiving) {
@@ -279,6 +281,12 @@ Page({
         });
         break;
       }
+      case 'onRoomDestory': {
+        console.log('onRoomCreate', content);
+        this.clearRoom(content);
+        this.back();
+        break;
+      }
       default: {
         // console.log('onRoomEvent default: ', e);
         break;
@@ -353,6 +361,30 @@ Page({
     //     console.error('fail ', e);
     //   }
     // })
+  },
+
+  clearRoom(content) {
+    const { liveAppID, roomID } = content;
+    wx.request({
+      url: BaseUrl + '/app/clear_room',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "room_id": roomID,
+      },
+      header: {'content-type':'application/json'},
+      method: 'POST',
+      success: (result)=>{
+        if (result.statusCode === 200) {
+          const res = result.data;
+          console.log(res.ret.code);
+        }
+
+      },
+      fail: ()=>{},
+      complete: ()=>{}
+    });
   },
 
   pushMer(e) {
@@ -446,10 +478,30 @@ Page({
     if (!mer || !mer.link) return;
     var link = mer.link;
     console.log('link', link);
-    const toUrl = link.path + '?url=' + encodeURIComponent(link.extraData.url)
-    wx.navigateTo({
-      url: toUrl,
-    });
+    if (link.appId === '0') {
+      const toUrl = link.path + "?url=" + encodeURIComponent(link.extraData.url);
+      console.log('toUrl', toUrl);
+      wx.navigateTo({
+        url: toUrl,
+      });
+    } else {
+      console.log('link', link);
+      wx.navigateToMiniProgram({
+        appId: link.appId,
+        path: link.path,
+        extraData: {
+          foo: 'bar'
+        },
+        envVersion: 'develop',
+        success(res) {
+          // 打开成功
+          console.log(res)
+        },
+        fail(e) {
+          console.error(e);
+        }
+      })
+    }
   },
 
   getRoomToken(userID, appID, callback) {

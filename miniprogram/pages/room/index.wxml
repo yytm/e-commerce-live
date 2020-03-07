@@ -11,7 +11,8 @@
         userID="{{userID}}" 
         isLiving="{{isLiving}}" 
         token="{{token}}" 
-        loginType="{{loginType}}" 
+        loginType="{{loginType}}"
+        wsServerURL="{{wsServerURL}}"
         logServerURL="{{logServerURL}}" 
         roomID="{{roomID}}" 
         roomName="{{roomName}}" 
@@ -31,9 +32,9 @@
                     <image class="m-close-png" src="../../resource/m-close.png" bindtap="hideModal"></image>
                 </view>
                 <scroll-view class="merchandise-list" scroll-y='true' bindscrolltolower='lower'>
-                    <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item">
+                    <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item" id="{{item.id}}" bindtap="clickMech">
                         <image class="" src="{{item.img}}"></image>
-                        <view class="merchandise-detail" id="{{item.id}}" bindtap="clickMech">
+                        <view class="merchandise-detail">
                             <text class="merchandise-text">
                                 {{item.name}}
                             </text>

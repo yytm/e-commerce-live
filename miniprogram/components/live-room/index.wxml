@@ -11,11 +11,15 @@
             <image wx:if="{{isCaster}}" class="close-icon" data-userid="{{item.anchorID}}" bindtap="endLive" src="../images/close-play.png"></image>
         </view>
     </view>
-    <view class="user-info" wx:if="{{userTop > 0}}" style="top:{{userTop}}px">
+    <view class="user-info" style="top:{{userTop}}px">
         <image class="avatar" src="{{avatarUrl}}" bindload="" binderror=""></image>
         <view class="user-text">
             <view class="">{{stringUtil.substr(nickName,8)}}</view>
             <view class="user-count">{{userCount - 1}}观看</view>
+        </view>
+        <view wx:if="{{isCaster}}" class="end-live" bind:tap="endRoom">
+            <image class="end-live-img" src="../images/end-live.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+            </image>
         </view>
     </view>
     <view class="new-msg">
@@ -92,4 +96,11 @@
         </view>
     </view>
     <modal isShowModal="{{isShowModal}}" top="{{userTop}}" showDesc="{{showDesc}}" hasConfirm="{{hasConfirm}}" hasCancel="{{hasCancel}}" confirmText="{{confirmText}}" cancelText="{{cancelText}}" bindconfirm="confirm" bindcancel="cancel"></modal>
+    <view wx:if="{{showEndModal}}" class="room-exist-container">
+        <text class="room-exist-tip">是否结束直播？</text>
+        <view class="room-exist-btns">
+            <view class="room-btn end-btn" bindtap="cancelLiveRoom">取消</view>
+            <view class="room-btn relogin-btn" bindtap="endLiveRoom">结束直播</view>
+        </view>
+    </view>
 </view>
