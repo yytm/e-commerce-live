@@ -2,7 +2,7 @@
   "usingComponents": {
     "set-room":"/components/set-room/index"
   },
-  "navigationBarBackgroundColor": "#FD4747",
+  "navigationBarBackgroundColor": "#F2034C",
   "navigationBarTitleText": "开始直播",
   "navigationBarTextStyle": "white",
   "enablePullDownRefresh": true

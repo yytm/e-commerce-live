@@ -379,6 +379,7 @@ Page({
         if (result.statusCode === 200) {
           const res = result.data;
           console.log(res.ret.code);
+          wx.setStorageSync('roomImg', '');
         }
 
       },

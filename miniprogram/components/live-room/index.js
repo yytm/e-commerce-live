@@ -455,57 +455,67 @@ Component({
           });
         }
       },
-        // 接收可靠消息
-        zg.onRecvReliableMessage = function (type, seq, data) {
-          console.log('onRecvReliableMessage', type);
-          if (self.data.loginType === 'audience' && type === 'merchandise') {
-            const merArr = data.split('&');
-            const merIndex = parseInt(merArr[0]);
-            const merTime = parseInt(merArr[1]);
-            console.log('merchandise', merIndex);
-            const content = {
-              indx: merIndex,
-              merTime,
-              merBot: self.data.mmBot + 140
-            }
-            self.triggerEvent('RoomEvent', {
-              tag: 'onRecvMer',
-              // code: 0,
-              content
-            });
-            console.log(!!merT);
-            if (merT) {
-              clearTimeout(merT);
-              merT = null;
-            } else {
-              self.data.meBot += 120;
-              self.data.newBot += 120;
-              self.setData({
-                meBot: self.data.meBot,
-                newBot: self.data.newBot
-              });
-            }
-
-            merT = setTimeout(() => {
-              self.data.meBot -= 120;
-              self.data.newBot -= 120;
-              self.setData({
-                meBot: self.data.meBot,
-                newBot: self.data.newBot
-              })
-              clearTimeout(merT);
-              merT = null;
-            }, merTime * 1000);
+      // 接收可靠消息
+      zg.onRecvReliableMessage = function (type, seq, data) {
+        console.log('onRecvReliableMessage', type);
+        if (self.data.loginType === 'audience' && type === 'merchandise') {
+          const merArr = data.split('&');
+          const merIndex = parseInt(merArr[0]);
+          const merTime = parseInt(merArr[1]);
+          console.log('merchandise', merIndex);
+          const content = {
+            indx: merIndex,
+            merTime,
+            merBot: self.data.mmBot + 140
           }
-        },
+          self.triggerEvent('RoomEvent', {
+            tag: 'onRecvMer',
+            // code: 0,
+            content
+          });
+          console.log(!!merT);
+          if (merT) {
+            clearTimeout(merT);
+            merT = null;
+          } else {
+            self.data.meBot += 120;
+            self.data.newBot += 120;
+            self.setData({
+              meBot: self.data.meBot,
+              newBot: self.data.newBot
+            });
+          }
 
-        // 服务端主动推过来的 流的质量更新
-        zg.onPublishQualityUpdate = function (streamID, streamQuality) {
-          console.log(
-            '>>>[liveroom-room] zg onPublishQualityUpdate',
-            streamQuality
-          );
-        };
+          merT = setTimeout(() => {
+            self.data.meBot -= 120;
+            self.data.newBot -= 120;
+            self.setData({
+              meBot: self.data.meBot,
+              newBot: self.data.newBot
+            })
+            clearTimeout(merT);
+            merT = null;
+          }, merTime * 1000);
+        } else if (type === 'roomDestory') {
+          self.logoutRoom();
+          const content = {
+            liveAppID: self.data.liveAppID,
+            roomID: self.data.roomID
+          };
+          self.triggerEvent('RoomEvent', {
+            tag: 'onRoomDestory',
+            content
+          });
+        }
+      },
+
+      // 服务端主动推过来的 流的质量更新
+      zg.onPublishQualityUpdate = function (streamID, streamQuality) {
+        console.log(
+          '>>>[liveroom-room] zg onPublishQualityUpdate',
+          streamQuality
+        );
+      };
       // 服务端主动推过来的 流的质量更新
       zg.onPlayQualityUpdate = function (streamID, streamQuality) {
         console.log('>>>[liveroom-room] zg onPlayQualityUpdate', streamQuality);
@@ -1570,20 +1580,25 @@ Component({
       })
     },
     endLiveRoom() {
-      const content = {
-        liveAppID: this.data.liveAppID,
-        roomID: this.data.roomID
-      };
-      this.setData({
-        showEndModal: false
-      }, () => {
-        this.logoutRoom();
-        this.triggerEvent('RoomEvent', {
-          tag: 'onRoomDestory',
-          content
-        });
+      let self = this;
+      zg.sendReliableMessage('roomDestory', '', function(seq) {
+        console.log('room destory suc', seq);
+        self.setData({
+          showEndModal: false
+        }, () => {
+          self.logoutRoom();
+          const content = {
+            liveAppID: self.data.liveAppID,
+            roomID: self.data.roomID
+          };
+          self.triggerEvent('RoomEvent', {
+            tag: 'onRoomDestory',
+            content
+          });
+        })
+      }, function(e, seq) {
+        console.error('room destory fail', e, seq);
       })
-      
     },
     onPushStateChange(e) {
       console.log(

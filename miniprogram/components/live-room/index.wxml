@@ -11,7 +11,7 @@
             <image wx:if="{{isCaster}}" class="close-icon" data-userid="{{item.anchorID}}" bindtap="endLive" src="../images/close-play.png"></image>
         </view>
     </view>
-    <view class="user-info" style="top:{{userTop}}px">
+    <view class="user-info" wx:if="{{userTop > 0}}" style="top:{{userTop}}px">
         <image class="avatar" src="{{avatarUrl}}" bindload="" binderror=""></image>
         <view class="user-text">
             <view class="">{{stringUtil.substr(nickName,8)}}</view>
