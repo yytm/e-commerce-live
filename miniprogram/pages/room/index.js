@@ -162,7 +162,7 @@ Page({
       },
       complete: () => { }
     });
-    if (liveRoom && this.data.isLiving) {
+    if (liveRoom) {
       console.log('liveRoom', this.data.token);
       this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
         liveRoom.loginRoom(this.data.token);
@@ -175,7 +175,11 @@ Page({
    */
   onHide: function () {
     if (this.data.loginType === 'anchor') {
-      this.clearRoom();
+      const content = {
+        liveAppID,
+        roomID: this.data.roomID
+      }
+      liveRoom && liveRoom.endLiveRoom();
     }
   },
 

@@ -597,6 +597,20 @@ Component({
         }
       };
 
+      zg.onGetTotalUserList = function(roomId, userList) {
+        console.log(
+          '>>>[liveroom-room] onGetTotalUserList, roomID: ' +
+          roomId +
+          ', userList: '
+        );
+        console.log(userList);
+        const userCount = userList.length;
+        self.setData({
+          userCount
+        });
+
+      };
+
       zg.onUserStateUpdate = function (roomId, userList) {
         console.log(
           '>>>[liveroom-room] onUserStateUpdate, roomID: ' +
@@ -605,13 +619,25 @@ Component({
         );
         console.log(userList);
 
-        const audienceList = userList.filter(item => item.role === 2 && item.action === 1);
-        const latest = audienceList.pop();
         
-        const userCount = userList.length;
+        let add = 0;
+        let minus = 0;
+        userList.forEach(item => {
+          if (item.action == 1) {
+            add += 1;
+          } else if (item.action == 2) {
+            minus -= 1;
+          }
+        })
+        const userCount = self.data.userCount + add + minus;
         self.setData({
           userCount
         });
+
+        const audienceList = userList.filter(item => item.role === 2 && item.action === 1);
+        const latest = audienceList.pop();
+        
+        
         if (latest) {
 
           let userInfo;
@@ -868,7 +894,7 @@ Component({
         }, () => {
           // (!this.data.pusherContext) && (this.data.pusherContext = wx.createLivePusherContext());
           this.data.pusherContext = wx.createLivePusherContext();
-          // this.data.pusherContext.stop();
+          this.data.pusherContext.stop();
           setTimeout(() => {
             this.data.pusherContext.start();
             console.log('start');

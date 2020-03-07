@@ -237,7 +237,7 @@
   color: #fff;
   display: flex;
   flex-direction: column;
-  z-index: 3;
+  z-index: 4;
   padding-top: 30rpx;
   transition: all 0.25s 0s ease-in-out;
 }
@@ -318,8 +318,8 @@
   position: absolute;
   width: 44rpx;
   height: 44rpx;
-  right: -7rpx;
-  top: -7rpx;
+  right: -20rpx;
+  top: -15rpx;
 }
 .room-exist-container {
   position: fixed;
@@ -331,7 +331,7 @@
   bottom: 24rpx;
   padding-top: 48rpx;
   text-align: center;
-  z-index: 3;
+  z-index: 12;
 }
 .room-exist-tip {
   font-size: 28rpx;
