@@ -58,7 +58,7 @@
         <image class="push-mer-img" src="{{pushMer.img}}"></image>
         <view class="push-mer-detail">
             <text class="push-mer-text">{{pushMer.name}}</text>
-            <text class="push-mer-price">¥{{pushMer.price}}</text>
+            <text class="push-mer-price">{{pushMer.price}}</text>
         </view>
     </view>
     <!-- <set-room bindstartLogin="startLogin"></set-room> -->
