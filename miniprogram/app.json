@@ -16,7 +16,8 @@
     "navigationBarTextStyle": "black"
   },
   "navigateToMiniProgramAppIdList": [
-    "wx2b8909dae7727f25"
+    "wx2b8909dae7727f25",
+    "wx867aca1a67a6709e"
   ],
   "cloud": true,
   "style": "v2",
