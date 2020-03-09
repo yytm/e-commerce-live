@@ -248,6 +248,11 @@ Page({
             title: '警告',
             content: '绑定授权验证码已使用'
           })
+        } else if(result.ret.code === 10000) {
+          wx.showModal({
+            title: '警告',
+            content: '绑定出错'
+          })
         }
       },
       fail(e) {

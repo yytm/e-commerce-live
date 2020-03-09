@@ -2,11 +2,24 @@
 <view class="index-container" hover-class="none" hover-stop-propagation="false">
     <view class="invite-title">邀请流程说明</view>
     <view class="invite-des" hover-class="none" hover-stop-propagation="false">
-        待定
+        第一步：
+        管理员将管理平台生成的邀请注册链接发送给主播
+
+        第二步：
+        主播通过在PC端打开链接进行注册，获取6位绑定码
+
+        第三步：
+        管理员点击下方【发送邀请】按钮，将小程序链接发送给要邀请的主播
+
+        第四步：
+        主播点击管理员发送的小程序链接，输入6位绑定码，完成绑定
+
+        第五步：
+        主播返回首页即可进行直播
     </view>
     <view class="btn-tool">
         <view class="btn invite-btn" wx:if="{{role==='admin'}}">
-            <button open-type="share">邀请主播</button>
+            <button open-type="share">发送邀请</button>
         </view>
         <view class="btn" wx:if="{{role==='admin' || role === 'anchor'}}" id="create" bind:tap="goTo" >创建直播</view>
         <view class="btn list-btn" id="list" bind:tap="goTo">直播列表</view>

@@ -24,6 +24,7 @@
     width: 100%;
     box-sizing: border-box;
     padding: 0 20rpx;
+    white-space:pre-wrap;
 }
 .btn-tool {
     margin: 0 auto;
