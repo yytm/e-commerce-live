@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "authroze-modal": "/components/authorize-modal/index"
+  },
   "navigationBarTitleText": "主播注册"
 }

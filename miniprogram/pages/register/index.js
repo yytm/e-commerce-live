@@ -27,12 +27,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let self = this;
+    console.log('onLoad');
     if (app.globalData.userInfo) {
+      console.log('app', app.globalData.data);
       this.setData({
         userInfo: app.globalData.userInfo
       });
       this.goToAnchor();
     } else {
+      console.log('getUserInfo');
       wx.getUserInfo({
         success: res => {
           app.globalData.userInfo = res.userInfo;
@@ -48,8 +52,8 @@ Page({
           }
         },
         fail: e => {
-          console.error(e);
-          this.setData({
+          console.error('getUserInfo fail', e);
+          self.setData({
             isShowModal: true
           });
         }
