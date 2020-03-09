@@ -1215,7 +1215,7 @@ Component({
       }).then(ckres => {
         console.log('callfunction ', ckres)
         //审核通过之后的操作 if == 0
-        if (ckres.result.errCode == 0) {
+        if (ckres.result.errCode == 0 || ckres.errMsg.includes('ok')) {
           let message = {
             id: this.data.userID + Date.parse(new Date()),
             // name: this.data.userID,
