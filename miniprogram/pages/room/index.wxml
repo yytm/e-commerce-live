@@ -67,7 +67,7 @@
     isShow="{{isShowModal}}"
     id='dialog'
     title='微信授权'
-    subTitle='建行到家CCBgo申请获取以下权限'
+    subTitle='建行到家CCBgo在线申请获取以下权限'
     content='获取到你公开信息(呢称，头像等)'
     confirmText='授权登录'
     bind:GetUserInfo='bindGetUserInfo'>
