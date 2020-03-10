@@ -435,10 +435,10 @@ Component({
         console.log('msgList', messageList);
         for (let i = 0; i < messageList.length; i++) {
           let message = {};
-          const { avatar: anchorAvatar, nickName } = JSON.parse(
-            messageList[i].nickName
-          );
-          message.name = nickName;
+          // const { avatar: anchorAvatar, nickName } = JSON.parse(
+          //   messageList[i].nickName
+          // );
+          message.name = messageList[i].nickName;
 
           const logTime = messageList[i].time
             ? messageList[i].time
