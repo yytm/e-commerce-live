@@ -161,11 +161,14 @@
   align-items: center;
   z-index: 2;
 }
-.create-container {
+.button-container {
   position: fixed;
   bottom: 54rpx;
   left: 50%;
   transform: translate(-50%);
+  display: flex;
+}
+.bot-button {
   width: 258rpx;
   height: 88rpx;
   background: rgba(243,31,91,1);
@@ -176,7 +179,9 @@
   justify-content: center;
   align-items: center;
   z-index: 2;
+  margin: 0 10rpx;
 }
+
 .create-img {
   width: 32rpx;
   height: 32rpx;
