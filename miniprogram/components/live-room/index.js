@@ -79,17 +79,14 @@ Component({
       type: Number,
       value: 1
     },
-    // avatar: {
-    //   type: String,
-    //   value: ''
-    // },
-    // nickName: {
-    //   type: String,
-    //   value: '',
-    //   observer: function (newVal, oldVal) {
-    //     // this.data.userName = newVal;
-    //   }
-    // },
+    anchorAvatar: {
+      type: String,
+      value: '../images/avatar-logo.png'
+    },
+    anchorNickName: {
+      type: String,
+      value: '',
+    },
     navBarHeight: {
       type: Number,
       value: 0
@@ -162,8 +159,8 @@ Component({
     hasUserInfo: false,
 
     waitingImage: 'https://storage.zego.im/downloads/pause_publish.png',
-    avatarUrl: '',
-    nickName: '',
+    // avatarUrl: '',
+    // nickName: '',
 
     isFull: false,
     showBeauty: false,
@@ -271,12 +268,12 @@ Component({
         publishStreamID: 'xcxS' + timestamp,
         isCaster: this.data.loginType !== 'audience'
       });
-      if (this.data.loginType === 'anchor') {
-        this.setData({
-          avatarUrl: avatar,
-          nickName: nickName
-        })
-      }
+      // if (this.data.loginType === 'anchor') {
+      //   this.setData({
+      //     avatarUrl: avatar,
+      //     nickName: nickName
+      //   })
+      // }
 
       zg = new ZegoClient();
       zg.config({

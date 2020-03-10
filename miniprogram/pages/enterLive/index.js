@@ -11,14 +11,38 @@ Page({
     inputValue: '',
     roomID: '',
     roomName: '',
-    loginType: ''
+    loginType: '',
+    userInfo: null,
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    hasUserInfo: false,
+    isShowModal: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo
+      });
+    } else {
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo;
+          this.setData({
+            hasUserInfo: true,
+            userInfo: res.userInfo
+          });
+        },
+        fail: e => {
+          console.error(e);
+          this.setData({
+            isShowModal: true
+          });
+        }
+      })
+    }
   },
 
   /**
@@ -149,7 +173,7 @@ Page({
             }
           }
           const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
-          // + '&roomImg=' + roomImg;
+          + '&nickName=' + self.data.userInfo.nickName + '&avatar=' + self.data.userInfo.avatar
 
           wx.navigateTo({
             url: url,

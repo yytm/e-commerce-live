@@ -9,7 +9,7 @@
     </view> -->
     <view class="rooms" wx:if="{{roomList.length}}">
         <view class="room-list">
-            <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id_name}}" data-anchor-name="{{item.anchor_nick_name}}" data-room-img="{{item.room_img}}" bindtap="onClickItem">
+            <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id_name}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" bindtap="onClickItem">
                 <view class="room-cover-container">
                     <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
                     </image>

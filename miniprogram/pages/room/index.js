@@ -99,7 +99,7 @@ Page({
   onLoad: function (options) {
     this.getState();
     console.log('>>>onLoad', options)
-    const { roomID, roomName, loginType } = options;
+    const { roomID, roomName, loginType, nickName, avatar } = options;
     const roomShowName = roomID && roomID.slice(2);
     let timestamp = new Date().getTime();
     let userID;
@@ -121,6 +121,8 @@ Page({
       loginType,
       roomShowName,
       userID,
+      nickName,
+      avatar
     });
 
     let systemInfo = wx.getSystemInfoSync();
