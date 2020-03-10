@@ -129,8 +129,9 @@ Component({
                 return;
               }
             }
+            const filePath = self.data.coverImg !== wx.getStorageSync('roomImg') ? self.data.coverImg : ''
             self.triggerEvent('startLogin', {
-              filePath: self.data.coverImg,
+              filePath: filePath,
               roomID: self.data.roomID,
               roomName: self.data.roomName,
               loginType: self.data.loginType

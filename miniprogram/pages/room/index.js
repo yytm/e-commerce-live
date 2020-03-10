@@ -99,7 +99,7 @@ Page({
   onLoad: function (options) {
     this.getState();
     console.log('>>>onLoad', options)
-    const { roomID, roomName, loginType } = options;
+    const { roomID, roomName, loginType, nickName, avatar } = options;
     const roomShowName = roomID && roomID.slice(2);
     let timestamp = new Date().getTime();
     let userID;
@@ -121,8 +121,10 @@ Page({
       loginType,
       roomShowName,
       userID,
+      nickName,
+      avatar
     });
-
+    console.log('nickName', this.data.nickName);
     let systemInfo = wx.getSystemInfoSync();
     let rect = wx.getMenuButtonBoundingClientRect();
     console.log(rect.top, systemInfo);
@@ -225,7 +227,9 @@ Page({
       roomID: this.data.roomID,
       roomName: this.data.roomName,
       loginType: 'audience',
-      anchorID: 'anchor' + self.data.uid
+      anchorID: 'anchor' + self.data.uid,
+      nickName: this.data.userInfo.nickName,
+      avatar: this.data.userInfo.avatarUrl
     });
     console.log('onShareAppMessage', obj);
     return obj;
@@ -332,6 +336,7 @@ Page({
   // },
 
   setRoom(content) {
+    console.log('setRoom');
     const { liveAppID, roomID } = content;
     const fields=[{
             name:'req',

@@ -127,7 +127,7 @@ Page({
   // 点击进入房间
   onClickItem(e) {
     console.log(e);
-    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName } } } = e;
+    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar } } } = e;
     console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
 
     // 防止两次点击操作间隔太快
@@ -141,7 +141,7 @@ Page({
       this.setData({
         tapTime: nowTime,
       }, () => {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&loginType=anchor'
+        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&loginType=anchor' + '&nickName=' + anchorName + '&avatar=' + avatar
         // + '&roomImg=' + roomImg;
         wx.navigateTo({
           url: url,
@@ -152,7 +152,7 @@ Page({
         tapTime: nowTime,
         loginType: 'audience'
       }, function () {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&anchorName=' + anchorName + '&roomImg=' + roomImg + '&loginType=audience';
+        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&nickName=' + anchorName + '&avatar=' + avatar + '&roomImg=' + roomImg + '&loginType=audience';
   
         wx.navigateTo({
           url: url
