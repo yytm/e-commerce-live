@@ -6,8 +6,8 @@
     "pages/room/index",
     "pages/register/index",
     "pages/enterLive/index",
-    "pages/index/index"
-
+    "pages/index/index",
+    "pages/replay/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

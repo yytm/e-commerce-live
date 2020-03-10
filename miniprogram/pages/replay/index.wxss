@@ -1,0 +1,21 @@
+/* miniprogram/pages/replay/index.wxss */
+.replay-container {
+
+}
+.video-content {
+    width: 100vw;
+    height: 100vh;
+}
+.tool-btns {
+    position: fixed;
+    bottom: 20rpx;
+    right: 20rpx;
+}
+.share-container {
+    width: 40rpx;
+    height: 40rpx;
+    display: flex;
+}
+.share-container button {
+    flex: 1;
+}

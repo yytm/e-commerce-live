@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "merch-modal": "/components/merch-modal/index"
+  }
+}
