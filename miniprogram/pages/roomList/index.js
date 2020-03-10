@@ -11,10 +11,22 @@ Page({
     userInfo: null,
     role: '',
     roomList: [],
-    isShowModal: false
+    isShowModal: false,
+    list: [{
+      "text": "直播列表",
+      "iconPath": "/resource/room_list.png",
+      "selectedIconPath": "/resource/room_list_selected.png",
+      dot: true
+    },
+    {
+      "text": "个人中心",
+      "iconPath": "/resource/per_center.png",
+      "selectedIconPath": "/resource/per_center_selected.png",
+      badge: 'New'
+    }]
   },
   onLoad: function (options) {
-    
+
     // const { role } = options;
     // this.setData({
     //   role
@@ -41,7 +53,7 @@ Page({
           });
         }
       })
-      
+
     }
   },
   onShow: function () {
@@ -57,7 +69,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    
+
   },
 
   getRoomList() {
@@ -77,10 +89,10 @@ Page({
         self.stopRefresh();
         if (res.data.ret && res.data.ret.code === 0) {
           console.error('roomList ', res.data.room_list);
-          if ( res.data.room_list && res.data.room_list.length) {
+          if (res.data.room_list && res.data.room_list.length) {
             const roomList = res.data.room_list
-            .filter(item => item.room_id.startsWith('e-'))
-            .map(item => {
+              .filter(item => item.room_id.startsWith('e-'))
+              .map(item => {
                 item.room_show_name = item.room_id.slice(2);
                 console.log('show_name', item.room_show_name);
                 item.roomState = '直播中';
@@ -110,7 +122,7 @@ Page({
       },
       fail(e) {
 
-      } 
+      }
     })
   },
   /**
@@ -153,13 +165,13 @@ Page({
         loginType: 'audience'
       }, function () {
         const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&nickName=' + anchorName + '&avatar=' + avatar + '&roomImg=' + roomImg + '&loginType=audience';
-  
+
         wx.navigateTo({
           url: url
         })
       })
     }
-    
+
   },
   endLive() {
     console.log('endLive');
@@ -176,11 +188,11 @@ Page({
   goToAdmin() {
     wx.navigateTo({
       url: "../index/index",
-      success: (result)=>{
+      success: (result) => {
         console.log('nav suc', result);
       },
-      fail: ()=>{},
-      complete: ()=>{}
+      fail: () => { },
+      complete: () => { }
     });
   },
   createRoom() {
@@ -206,7 +218,10 @@ Page({
     loginApp(self.data.userInfo.nickName).then(role => {
       console.log('role', role);
       self.setData({ role });
-      callback &&  callback();
+      callback && callback();
     });
   },
+  tabChange(e) {
+    console.log('tab change', e)
+  }
 });

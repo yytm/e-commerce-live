@@ -4,6 +4,7 @@
   "navigationBarTextStyle": "white",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "authroze-modal": "/components/authorize-modal/index"
+    "authroze-modal": "/components/authorize-modal/index",
+    "tabbar": "/components/custom-tabbar/index"
   }
 }

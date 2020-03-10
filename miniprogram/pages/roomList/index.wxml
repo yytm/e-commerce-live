@@ -43,7 +43,7 @@
         <text class="create-txt">创建直播间</text>
     </view>
 </view>
-
+<tabbar class="tabbar" list="{{list}}" bindchange="tabChange"></tabbar>
 <!-- <view wx:if="{{living}}" class="room-exist-container">
     <text class="room-exist-tip">当前直播未结束，是否重新进入？</text>
     <view class="room-exist-btns">

@@ -1,0 +1,16 @@
+<!-- components/custom-tabbar/index.wxml -->
+<view class="tabbar-container" hover-class="none" hover-stop-propagation="false">
+    <view class="tabbar-list">
+        <view data-index='{{index}}' bindtap="tabChange" wx:for="{{list}}" wx:key="index" class="weui-tabbar__item {{index === current ? 'weui-bar__item_on' : ''}}">
+            <view style="position: relative;display:inline-block;">
+                <image src="{{current === index ? item.selectedIconPath : item.iconPath}}" class="weui-tabbar__icon"></image>
+            </view>
+            <view class="weui-tabbar__label">{{item.text}}</view>
+        </view>
+    </view>
+    <view class="tabbar-btn" bind:tap="btnClick">
+        <image class="tab-img" src="../images/tab-btn.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+            
+        </image>
+    </view>
+</view>

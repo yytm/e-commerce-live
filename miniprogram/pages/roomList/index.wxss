@@ -277,3 +277,10 @@
   background:rgba(242,3,76,1);
   color:rgba(255,255,255,1);
 }
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
