@@ -266,7 +266,8 @@ Component({
       this.setData({
         // roomName: this.data.roomName,
         // userID: 'xcxU' + timestamp,
-        userName: JSON.stringify(nickAvatar),
+        // userName: JSON.stringify(nickAvatar),
+        userName: nickName,
         publishStreamID: 'xcxS' + timestamp,
         isCaster: this.data.loginType !== 'audience'
       });

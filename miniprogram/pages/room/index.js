@@ -225,7 +225,9 @@ Page({
       roomID: this.data.roomID,
       roomName: this.data.roomName,
       loginType: 'audience',
-      anchorID: 'anchor' + self.data.uid
+      anchorID: 'anchor' + self.data.uid,
+      nickName: this.data.userInfo.nickName,
+      avatar: this.data.userInfo.avatarUrl
     });
     console.log('onShareAppMessage', obj);
     return obj;
