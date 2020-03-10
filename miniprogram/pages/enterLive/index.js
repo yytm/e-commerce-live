@@ -172,8 +172,9 @@ Page({
               return;
             }
           }
+          console.error('userInfo', self.data.userInfo)
           const url = '../room/index?roomID=' + 'e-' + self.data.roomID + '&roomName=' + self.data.roomName + '&loginType=' + self.data.loginType 
-          + '&nickName=' + self.data.userInfo.nickName + '&avatar=' + self.data.userInfo.avatar
+          + '&nickName=' + self.data.userInfo.nickName + '&avatar=' + self.data.userInfo.avatarUrl
 
           wx.navigateTo({
             url: url,
@@ -189,6 +190,7 @@ Page({
     console.log('startLogin', e)
     const { detail: { filePath, loginType, roomID, roomName } } = e;
     const url = '../room/index?roomID=' + 'e-' + roomID + '&roomName=' + roomName + '&loginType=' + loginType + '&filePath=' + filePath 
+    + '&nickName=' + this.data.userInfo.nickName + '&avatar=' + this.data.userInfo.avatarUrl
     wx.redirectTo({
       url: url,
     });

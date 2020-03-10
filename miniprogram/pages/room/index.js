@@ -124,7 +124,7 @@ Page({
       nickName,
       avatar
     });
-
+    console.log('nickName', this.data.nickName);
     let systemInfo = wx.getSystemInfoSync();
     let rect = wx.getMenuButtonBoundingClientRect();
     console.log(rect.top, systemInfo);
@@ -336,6 +336,7 @@ Page({
   // },
 
   setRoom(content) {
+    console.log('setRoom');
     const { liveAppID, roomID } = content;
     const fields=[{
             name:'req',
