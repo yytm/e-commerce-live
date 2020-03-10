@@ -114,7 +114,7 @@ Component({
     publishStreamID: '', // 推流 ID
     pusherContext: null, // live-pusher Context，内部只有一个对象
     playerContext: null, // 主播拉流 Context
-    playStreamList: [], // 拉流流信息列表，列表中每个对象结构为 {anchorID:'xxx', streamID:'xxx', playContext:{}, playUrl:'xxx', playingState:'xxx'}
+    playStreamList: [], // 拉流流信息列表，列表中每个对象结构为 {anchorID:'xxx', streamID:'xxx', playContext:{}, playUrl:'xxx'}
     beginToPublish: false, // 准备连麦标志位
     reachStreamLimit: false, // 房间内达到流上限标志位
     isPublishing: false, // 是否正在推流

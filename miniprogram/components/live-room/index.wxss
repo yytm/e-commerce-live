@@ -307,8 +307,8 @@
   height: 135px;
 }
 .play-container {
-  width: 190rpx;
-  height: 250rpx;
+  width: 220rpx;
+  height: 280rpx;
   padding-right: 10rpx;
   padding-top: 10rpx;
   box-sizing: border-box;
@@ -318,8 +318,8 @@
   position: absolute;
   width: 44rpx;
   height: 44rpx;
-  right: -20rpx;
-  top: -15rpx;
+  right: -7rpx;
+  top: -7rpx;
 }
 .room-exist-container {
   position: fixed;

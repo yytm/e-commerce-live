@@ -75,9 +75,10 @@
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 2,
 					"name": "pages/room/index",
 					"pathName": "pages/room/index",
+					"query": "loginType=anchor",
 					"scene": null
 				}
 			]
