@@ -38,7 +38,7 @@ App({
   globalData: {
     userInfo: null,
     BaseUrl: 'https://shop-backend.yunyikao.com',
-    wxAppID: 'wx371ac5dc128c4c5e',
-    liveAppID: 1739272706 
+    wxAppID: 'wx338a5073bb1c390d',
+    liveAppID: 788354136 
   },
 })

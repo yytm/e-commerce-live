@@ -16,8 +16,8 @@ Page({
    */
   data: {
     liveAppID: liveAppID,
-    wsServerURL: "wss://wsliveroom1739272706-api.zego.im:8282/ws", 
-    logServerURL: "https://wsslogger-demo.zego.im/httplog",
+    wsServerURL: "wss://webliveroom788354136-api.yunyikao.com/ws", 
+    logServerURL: "https://weblogger788354136-api.yunyikao.com/httplog",
     shareImg: "/resource/share.png",
     preferPublishSourceType: 1, // 0：推流到 cdn；1：推流到 bgp
     preferPlaySourceType: 1, // 0：auto；1：从 bgp 拉流
@@ -483,7 +483,7 @@ Page({
         extraData: {
           foo: 'bar'
         },
-        envVersion: 'trial',
+        envVersion: 'release',
         success(res) {
           // 打开成功
           console.log(res)
@@ -519,7 +519,7 @@ Page({
         extraData: {
           foo: 'bar'
         },
-        envVersion: 'trial',
+        envVersion: 'release',
         success(res) {
           // 打开成功
           console.log(res)
