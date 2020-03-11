@@ -81,7 +81,14 @@ Component({
     },
     anchorAvatar: {
       type: String,
-      value: '../images/avatar-logo.png'
+      value: '',
+      // observer: function (newVal, oldVal, changedPath) {
+      //   if (newVal === '') {
+      //     this.setData({
+      //       anchorAvatar: '../images/avatar-logo.png'
+      //     })
+      //   }
+      // }
     },
     anchorNickName: {
       type: String,
@@ -574,25 +581,26 @@ Component({
           mainPusher: {
             ...self.data.mainPusher,
             pusherID: anchorId
-          }
+          },
+          anchorID: anchorId
         })
-        if (self.data.loginType === 'audience' && anchorName) {
-          try {
-            const { avatar: anchorAvatar, nickName: anchorNickName } = JSON.parse(anchorName);
-            console.log(anchorAvatar);
-            self.setData({
-              anchorID: anchorId,
-              nickName: anchorNickName,
-              avatarUrl: anchorAvatar
-            });
-          } catch (e) {
-            self.setData({
-              anchorID: anchorId,
-              nickName: anchorNickName,
-              avatarUrl: '../images/avatar-logo.png'
-            })
-          }
-        }
+        // if (self.data.loginType === 'audience' && anchorName) {
+        //   try {
+        //     const { avatar: anchorAvatar, nickName: anchorNickName } = JSON.parse(anchorName);
+        //     console.log(anchorAvatar);
+        //     self.setData({
+        //       anchorID: anchorId,
+        //       nickName: anchorNickName,
+        //       avatarUrl: anchorAvatar
+        //     });
+        //   } catch (e) {
+        //     self.setData({
+        //       anchorID: anchorId,
+        //       nickName: anchorNickName,
+        //       avatarUrl: '../images/avatar-logo.png'
+        //     })
+        //   }
+        // }
       };
 
       zg.onGetTotalUserList = function(roomId, userList) {

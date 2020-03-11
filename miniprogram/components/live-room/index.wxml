@@ -18,6 +18,7 @@
     </view>
     <view class="user-info" wx:if="{{userTop > 0}}" style="top:{{userTop}}px">
         <image class="avatar" src="{{anchorAvatar}}" bindload="" binderror=""></image>
+        <!-- <image wx:v-else class="avatar" src="../images/avatar-logo.png" bindload="" binderror=""></image> -->
         <view class="user-text">
             <view class="">{{stringUtil.substr(anchorNickName,8)}}</view>
             <view class="user-count">{{userCount - 1}}观看</view>
