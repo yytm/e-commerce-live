@@ -137,8 +137,8 @@ Page({
      * 用户点击右上角分享
      */
     onShareAppMessage() {
-        console.log("onShareAppMessage");
-        return sharePage();
+        // console.log("onShareAppMessage");
+        // return sharePage();
     },
 
     settingCallback({detail}) {
