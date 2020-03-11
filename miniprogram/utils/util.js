@@ -13,7 +13,7 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
-function sharePage(imgUrl, param) {
+function sharePage(imgUrl, name, param) {
 
   let paramArr = [];
   if (param && typeof param == 'object') {
@@ -23,7 +23,7 @@ function sharePage(imgUrl, param) {
   }
   console.log(getCurrentPages());
   return {
-      title: '即构ECommerceLive',
+      title: name + '邀请你观看直播',
       path: getCurrentPages().pop().route + '?' + paramArr.join('&'),
       imageUrl: imgUrl ? imgUrl : '/resource/share.png'
   }

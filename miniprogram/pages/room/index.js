@@ -223,7 +223,7 @@ Page({
     });
     console.log('roomImg', wx.getStorageSync('roomImg'));
     const imgUrl = wx.getStorageSync('roomImg') || self.data.shareImg;
-    let obj = sharePage(imgUrl, {
+    let obj = sharePage(imgUrl, this.data.userInfo.nickName, {
       roomID: this.data.roomID,
       roomName: this.data.roomName,
       loginType: 'audience',
