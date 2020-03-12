@@ -241,14 +241,16 @@ Page({
     if (nowTime - this.data.tapTime < 1000) {
       return;
     }
+    this.setData({
+      selectRoomID: id
+    })
     if (roomPassword) {
       this.setData({
         isShowPassword: true,
-        selectRoomID: id
       })
     }
+    this.enterRoom();
     
-
   },
   enterRoom() {
     const selectRoom = this.data.roomList.find(item => item.id === this.data.selectRoomID);
@@ -276,7 +278,7 @@ Page({
         })
       })
     }
-  }
+  },
   endLive() {
     console.log('endLive');
     this.setData({
@@ -308,6 +310,7 @@ Page({
       },
       success(res) {
         console.log('del playback suc', res);
+        self.enterRoom();
       },
       fail(e) {
         console.error('del playback fail', e);
