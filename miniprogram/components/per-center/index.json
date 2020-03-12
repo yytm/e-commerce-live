@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "confirm-modal": "/components/confirm-modal/index",
+    "update-modal": "/components/update-modal/index"
+  }
+}

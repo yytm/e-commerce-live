@@ -1,0 +1,77 @@
+<!-- components/per-center/index.wxml -->
+<wxs src="../lib/stringUtil.wxs" module="stringUtil" />
+<view class="per-center-container" hover-class="none" hover-stop-propagation="false">
+    <view class="per-center-head">
+        <image class="head-background" src="../images/per-center-head.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+        <view style="top:{{top}}px;height:{{height}}px;" class="title">电商直播</view>
+        <view class="head-content">
+            <view class="user-info">
+                <view class="avatar-container">
+                    <image class="avatar" src="{{avatar}}" bindload="" binderror=""></image>
+                </view>
+                <view class="user-text">
+                    <view class="user-nickname">{{stringUtil.substr(nickName,8)}}</view>
+                    <view class="{{role==='admin'?'role-admin':'role-anchor'}}" wx:if="{{role!==''}}">
+                        <image class="user-role-img" src="{{role==='admin'?'../images/admin.png':'../images/anchor.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                        <view class="user-role-text" selectable="false" space="false" decode="false">
+                            {{role==='admin'?'管理员':'主播'}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="button-container" bind:tap="goToAdmin">
+                <button open-type="share" class="invite-btn">
+                    <image src="../images/create-img.png" class="create-img"></image>
+                    <text class="create-txt">邀请主播</text>
+                </button>
+            </view>
+        </view>
+    </view>
+    <view class="replay-list">
+        <view wx:if="{{replayList.length}}">
+            <view wx:for="{{replayList}}" wx:key="index" class="item replay-item">
+                <view bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}" style="{{item.txtStyle}}" class="inner txt">
+                    <view class="replay-cover-container">
+                        <image class="replay-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                        <view class="replay-info">
+                            <view class="replay-state" hover-class="none" hover-stop-propagation="false">
+                                <image class="replay-photo" src="../images/photo.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                                <text class="replay-state-text">{{item.room_state}}</text>
+                            </view>
+                            <view class="replay-lock">
+                                <image src="../images/lock.png" class="replay-lock-img" />
+                            </view>
+                        </view>
+                    </view>
+                    <!-- <image class="replay-item-img" src="{{item.img}}"></image> -->
+                    <view class="replay-detail">
+                        <view class="replay-text">{{item.room_name}}</view>
+                        <view class="replay-action">
+                            <text class="passwrd">直播密码:{{item.room_password}}</text>
+                        </view>
+                        <view class="extra-info">
+                            <view class="extra-item">
+                                <image src="../images/count.png" class="extra-item-img" />
+                                <text class="extra-item-txt">{{item.play_count}}</text>
+                            </view>
+                            <view class="extra-item">
+                                <image src="../images/time.png" class="extra-item-img" />
+                                <text class="extra-item-txt">{{item.playback_duration}}</text>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view data-index="{{index}}" bindtap="delItem" class="inner del">
+                    <image class="del-icon" src="../images/del-icon.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                </view>
+            </view>
+        </view>
+        <view wx:else class="no-replays">
+            <image class="no-replays-img" src="../images/no-replays.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+            <text class="no-replay-text1">暂无直播</text>
+            <text class="no-replay-text2">快去创建直播间开播吧</text>
+        </view>
+    </view>
+    <confirm-modal class="confirm-modal" isShow="{{isShowConfirm}}" title="{{title}}" cancelText="{{cancelText}}" confirmText="{{confirmText}}" bottom="{{bottom}}" bindcancel="cancelClick" bindconfirm="confirmClick"></confirm-modal>
+    <update-modal isShow="{{isShowUpdate}}" confirmText="确定" bottom="{{bottom}}" bindcancel="cancelClick" bindconfirm="confirmClick"></update-modal>
+</view>
