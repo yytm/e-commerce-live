@@ -11,13 +11,13 @@ Page({
     userInfo: null,
     role: '',
     roomList: [],
-    isShowPassword: true,
+    isShowPassword: false,
     isShowModal: false,
     title: '当前直播未结束，是否重新进入？',
     cancelText: '结束直播',
     confirmText: '进入直播',
     bottom: '30',
-    state: 'list',
+    state: 'center',
     list: [{
       "text": "直播列表",
       "id": "list",
@@ -32,6 +32,7 @@ Page({
       "selectedIconPath": "/resource/per_center_selected.png",
       badge: 'New'
     }],
+    selectRoomID: '',
     replayList: []
     // replayList: [
     //   { 
@@ -232,7 +233,7 @@ Page({
   // 点击进入房间
   onClickItem(e) {
     console.log(e);
-    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar } } } = e;
+    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar, roomPassword } } } = e;
     console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
 
     // 防止两次点击操作间隔太快
@@ -240,13 +241,24 @@ Page({
     if (nowTime - this.data.tapTime < 1000) {
       return;
     }
+    if (roomPassword) {
+      this.setData({
+        isShowPassword: true,
+        selectRoomID: id
+      })
+    }
+    
 
+  },
+  enterRoom() {
+    const selectRoom = this.data.roomList.find(item => item.id === this.data.selectRoomID);
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img } = selectRoom;
     const userID = 'anchor' + wx.getStorageSync('uid');
     if (anchorId === userID) {
       this.setData({
         tapTime: nowTime,
       }, () => {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&loginType=anchor' + '&nickName=' + anchorName + '&avatar=' + avatar
+        const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
         // + '&roomImg=' + roomImg;
         wx.navigateTo({
           url: url,
@@ -257,15 +269,14 @@ Page({
         tapTime: nowTime,
         loginType: 'audience'
       }, function () {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&nickName=' + anchorName + '&avatar=' + avatar + '&roomImg=' + roomImg + '&loginType=audience';
+        const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&anchorID=' + anchor_id_name + '&nickName=' + nickname + '&avatar=' + avatar + '&roomImg=' + room_img + '&loginType=audience';
 
         wx.navigateTo({
           url: url
         })
       })
     }
-
-  },
+  }
   endLive() {
     console.log('endLive');
     this.setData({
@@ -282,8 +293,26 @@ Page({
 
   },
   confirmPassword(e) {
-     const { password } = e.detail;
-     console.log('password', password);
+    let self = this;
+    const { password } = e.detail;
+    console.log('password', password);
+    wx.request({
+      url: BaseUrl + '/app/check_room_password',
+      method: 'POST',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "room_id": self.data.selectRoomID,
+        "room_password": password
+      },
+      success(res) {
+        console.log('del playback suc', res);
+      },
+      fail(e) {
+        console.error('del playback fail', e);
+      }
+    })
   },
   goToAdmin() {
     wx.navigateTo({

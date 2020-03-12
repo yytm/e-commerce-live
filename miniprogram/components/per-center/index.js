@@ -1,4 +1,6 @@
 // components/per-center/index.js
+const app = getApp();
+let { liveAppID, BaseUrl } = app.globalData;
 Component({
   /**
    * 组件的属性列表
@@ -34,7 +36,7 @@ Component({
     cancelText: '取消',
     confirmText: '删除回放',
     bottom: '124',
-    isShowUpdate: false,
+    isShowUpdate: true,
   },
 
   ready() {
@@ -166,6 +168,38 @@ Component({
         delIndex: -1,
         replayList: replayList
       });
+    },
+    cancelUpdate() {
+      console.log('cancelUpdate');
+
+    },
+    confirmUpdate(e) {
+      const { name, filePath } = e.detail;
+      console.log('name', name);
+      const fields = [{
+        name: 'req',
+        value: `{"session_id":"${wx.getStorageSync('sessionId')}","live_appid":${liveAppID},"name":"${name}"}`
+      }]
+      const files = []
+      console.log('filePath: ', filePath);
+      if (filePath) {
+        files.push({
+          filePath: filePath, filename: 'example.png', name: 'img'
+        })
+      }
+      new Multipart({
+        fields,
+        files
+      }).submit(BaseUrl + '/app/update_anchor')
+        .then(res => {
+          console.log('set room suc', res);
+          const result = res.data;
+          if (result.ret && result.ret.code === 0) {
+            // result.room_img && wx.setStorageSync('roomImg', result.room_img);
+          }
+        }).catch(e => {
+          console.error('set room fail', e);
+        })
     }
   }
 })

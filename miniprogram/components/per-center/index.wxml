@@ -73,5 +73,5 @@
         </view>
     </view>
     <confirm-modal class="confirm-modal" isShow="{{isShowConfirm}}" title="{{title}}" cancelText="{{cancelText}}" confirmText="{{confirmText}}" bottom="{{bottom}}" bindcancel="cancelClick" bindconfirm="confirmClick"></confirm-modal>
-    <update-modal isShow="{{isShowUpdate}}" confirmText="确定" bottom="{{bottom}}" bindcancel="cancelClick" bindconfirm="confirmClick"></update-modal>
+    <update-modal isShow="{{isShowUpdate}}" avatar="{{avatar}}" nickName="{{nickName}}" confirmText="确定" bottom="{{bottom}}" bindconfirm="confirmUpdate"></update-modal>
 </view>
