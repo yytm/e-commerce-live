@@ -10,14 +10,27 @@ Page({
     isFirst: true,
     userInfo: null,
     role: '',
-    roomList: [],
+    roomList: [
+      {
+        room_id: '123',
+        room_name: 'Givenchy/纪梵希高定香榭天鹅',
+        room_img: '../../resource/m0.png',
+        anchor_id_name: "xcxU1582085277557",
+        anchor_nick_name: "zhc",
+        play_count: 2345,
+        playback_duration: '05:03:34',
+        is_private: true,
+        room_password: "124563",
+        room_state: '回放',
+      },
+    ],
     isShowPassword: false,
     isShowModal: false,
     title: '当前直播未结束，是否重新进入？',
     cancelText: '结束直播',
     confirmText: '进入直播',
     bottom: '30',
-    state: 'center',
+    state: 'list',
     list: [{
       "text": "直播列表",
       "id": "list",
@@ -133,7 +146,7 @@ Page({
   },
   onShow: function () {
     console.log('sessionId', wx.getStorageSync('sessionId'));
-    this.fetchRooms();
+    // this.fetchRooms();
   },
   onUnload: function () {
     this.stopRefresh();
@@ -224,7 +237,7 @@ Page({
   // },
   refresh() {
     console.log('>>>[liveroom-roomList] refresh');
-    this.getRoomList();
+    this.fetchRooms();
   },
   stopRefresh() {
     wx.hideLoading();
@@ -242,40 +255,36 @@ Page({
       return;
     }
     this.setData({
+      tapTime: nowTime,
       selectRoomID: id
     })
     if (roomPassword) {
       this.setData({
         isShowPassword: true,
       })
+      return;
     }
     this.enterRoom();
-    
+
   },
   enterRoom() {
-    const selectRoom = this.data.roomList.find(item => item.id === this.data.selectRoomID);
+    const selectRoom = this.data.roomList.find(item => item.room_id === this.data.selectRoomID);
+    console.log('selectRoom', selectRoom);
     const { room_id, room_name, nickname, avatar, anchor_id_name, room_img } = selectRoom;
     const userID = 'anchor' + wx.getStorageSync('uid');
-    if (anchorId === userID) {
-      this.setData({
-        tapTime: nowTime,
-      }, () => {
-        const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
-        // + '&roomImg=' + roomImg;
-        wx.navigateTo({
-          url: url,
-        });
-      })
-    } else {
-      this.setData({
-        tapTime: nowTime,
-        loginType: 'audience'
-      }, function () {
-        const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&anchorID=' + anchor_id_name + '&nickName=' + nickname + '&avatar=' + avatar + '&roomImg=' + room_img + '&loginType=audience';
+    if (anchor_id_name === userID) {
 
-        wx.navigateTo({
-          url: url
-        })
+      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
+      // + '&roomImg=' + roomImg;
+      wx.navigateTo({
+        url: url,
+      });
+
+    } else {
+      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&anchorID=' + anchor_id_name + '&nickName=' + nickname + '&avatar=' + avatar + '&roomImg=' + room_img + '&loginType=audience';
+
+      wx.navigateTo({
+        url: url
       })
     }
   },
@@ -309,8 +318,10 @@ Page({
         "room_password": password
       },
       success(res) {
-        console.log('del playback suc', res);
-        self.enterRoom();
+        if (result.statusCode === 200) {
+          console.log('del playback suc', res);
+          self.enterRoom();
+        }
       },
       fail(e) {
         console.error('del playback fail', e);
@@ -341,7 +352,7 @@ Page({
       isShowModal: false
     });
     this.getRole(() => {
-      this.getRoomList();
+      this.fetchRooms();
     });
   },
   getRole(callback) {

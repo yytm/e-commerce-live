@@ -40,7 +40,7 @@ view {
   top: 178rpx;
   left: 38rpx;
   display: inline-block;
-  height: 80rpx;
+  /* height: 80rpx; */
   display: flex;
   justify-content: flex-start;
   align-items: center;

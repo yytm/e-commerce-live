@@ -5,7 +5,7 @@
         <image class="head-background" src="../images/per-center-head.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
         <view style="top:{{top}}px;height:{{height}}px;" class="title">电商直播</view>
         <view class="head-content">
-            <view class="user-info">
+            <view class="user-info" bind:tap="updateInfoEvent">
                 <view class="avatar-container">
                     <image class="avatar" src="{{avatar}}" bindload="" binderror=""></image>
                 </view>
@@ -19,7 +19,7 @@
                     </view>
                 </view>
             </view>
-            <view class="button-container" bind:tap="goToAdmin">
+            <view wx:if="{{role==='admin'}}" class="button-container" bind:tap="goToAdmin">
                 <button open-type="share" class="invite-btn">
                     <image src="../images/create-img.png" class="create-img"></image>
                     <text class="create-txt">邀请主播</text>

@@ -1,9 +1,11 @@
 <!-- components/confirm-modal/index.wxml -->
 <view wx:if="{{isShow}}" class="modal-container">
-    <view class="modal-mask"></view>
+    <view class="modal-mask" bind:tap="modalMaskClick"></view>
     <view class="modal-box" style="bottom:{{bottom}}rpx;">
         <view class="modal-tip">{{title}}</view>
-        <image src="../images/close-btn.png" class="close-btn" bind:tap="cancel" />
+        <view class="close-btn-container" bind:tap="cancel">
+                <image src="../images/close-btn.png" class="close-btn" />
+        </view>
         <view class="tip" wx:if="{{isShowTip}}">
             <image src="../images/warn.png" class="warn-img"></image>
             <view class="warn-text">用户名只能包含中英文、数字</view>
@@ -17,7 +19,7 @@
             </view>
             <view class="modal-btns">
                 <!-- <view class="modal-btn cancel-btn" bindtap="cancel">{{cancelText}}</view> -->
-                <view class="modal-btn confirm-btn" bindtap="confirm">{{confirmText}}</view>
+                <view class="modal-btn confirm-btn {{isShowTip?'invalid':''}}" bindtap="confirm">{{confirmText}}</view>
             </view>
     </view>
 </view>

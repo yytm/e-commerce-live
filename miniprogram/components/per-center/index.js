@@ -1,4 +1,5 @@
 // components/per-center/index.js
+const Multipart = require('../../utils/Multipart.min.js');
 const app = getApp();
 let { liveAppID, BaseUrl } = app.globalData;
 Component({
@@ -36,7 +37,7 @@ Component({
     cancelText: '取消',
     confirmText: '删除回放',
     bottom: '124',
-    isShowUpdate: true,
+    isShowUpdate: false,
   },
 
   ready() {
@@ -168,6 +169,11 @@ Component({
         delIndex: -1,
         replayList: replayList
       });
+    },
+    updateInfoEvent() {
+      this.setData({
+        isShowUpdate: true
+      })
     },
     cancelUpdate() {
       console.log('cancelUpdate');

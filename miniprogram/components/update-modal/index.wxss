@@ -44,12 +44,19 @@
   color: rgba(33, 33, 33, 1);
   line-height: 1;
 }
+.close-btn-container {
+  width: 40rpx;
+  height: 40rpx;
+  top: 76rpx;
+  right: 16rpx;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .close-btn {
   width: 20rpx;
   height: 20rpx;
-  position: absolute;
-  top: 26rpx;
-  right: 26rpx;
 }
 .modal-btns {
   display: flex;
@@ -139,4 +146,8 @@
   font-family: PingFang SC;
   font-weight: 400;
   color: rgba(254, 254, 254, 1);
+}
+.invalid {
+  background:rgba(255,218,222,1);
+  border-radius:16rpx;
 }

@@ -184,7 +184,7 @@
 }
 .room-info-container {
   position: absolute;
-  bottom: 0;
+  bottom: 10rpx;
   width: 100%;
   height: 80rpx;
   padding: 16rpx;
