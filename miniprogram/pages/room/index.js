@@ -234,7 +234,13 @@ Page({
     console.log('onShareAppMessage', obj);
     return obj;
   },
-
+  // 获取拉流配置
+  getPreferType() {
+    const preferType = 0;
+    this.setData({
+      preferPlaySourceType: preferType
+    });
+  },
   onRoomEvent(ev) {
     console.log('onRoomEvent', ev);
     let { tag, content } = ev.detail;
