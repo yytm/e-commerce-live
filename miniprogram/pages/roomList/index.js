@@ -10,27 +10,115 @@ Page({
     isFirst: true,
     userInfo: null,
     role: '',
-    roomList: [],
+    roomList: [
+      {
+        room_id: '123',
+        room_name: 'Givenchy/纪梵希高定香榭天鹅',
+        room_img: '../../resource/m0.png',
+        anchor_id_name: "xcxU1582085277557",
+        anchor_nick_name: "zhc",
+        play_count: 2345,
+        playback_duration: '05:03:34',
+        is_private: true,
+        room_password: "124563",
+        room_state: '回放',
+      },
+    ],
+    isShowPassword: false,
     isShowModal: false,
+    title: '当前直播未结束，是否重新进入？',
+    cancelText: '结束直播',
+    confirmText: '进入直播',
+    bottom: '30',
+    state: 'list',
     list: [{
       "text": "直播列表",
+      "id": "list",
       "iconPath": "/resource/room_list.png",
       "selectedIconPath": "/resource/room_list_selected.png",
       dot: true
     },
     {
       "text": "个人中心",
+      "id": "center",
       "iconPath": "/resource/per_center.png",
       "selectedIconPath": "/resource/per_center_selected.png",
       badge: 'New'
-    }]
+    }],
+    selectRoomID: '',
+    replayList: []
+    // replayList: [
+    //   { 
+    //     room_id: '123',
+    //     room_name: 'Givenchy/纪梵希高定香榭天鹅',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    //   {
+    //     room_id: '123',
+    //     room_name: 'OACH蔻驰Charlie 27 Carryal单肩斜挎手提包女包包2952过长样式挎手提包女包包2952过',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    //   {
+    //     room_id: '123',
+    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    //   {
+    //     room_id: '123',
+    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    //   {
+    //     room_id: '123',
+    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    //   {
+    //     room_id: '123',
+    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
+    //     room_img: '../../resource/m0.png',
+    //     play_count: 2345,
+    //     playback_duration: '05:03:34',
+    //     is_private: true,
+    //     room_password: "124563",
+    //     room_state: '回放',
+    //   },
+    // ],
   },
   onLoad: function (options) {
-
-    // const { role } = options;
-    // this.setData({
-    //   role
-    // })
+    console.log('onLoad', options);
+    let rect = wx.getMenuButtonBoundingClientRect();
+    const top = rect.top;
+    const height = rect.height;
+    this.setData({
+      top,
+      height
+    });
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo
@@ -58,9 +146,7 @@ Page({
   },
   onShow: function () {
     console.log('sessionId', wx.getStorageSync('sessionId'));
-    if (wx.getStorageSync('sessionId')) {
-      this.getRoomList();
-    }
+    // this.fetchRooms();
   },
   onUnload: function () {
     this.stopRefresh();
@@ -72,7 +158,21 @@ Page({
 
   },
 
-  getRoomList() {
+  fetchRooms() {
+    if (wx.getStorageSync('sessionId')) {
+      if (this.data.state === 'list') {
+        this.getRoomList(18);
+      } else if (this.data.state === 'center') {
+        this.getRoomList(16, wx.getStorageSync('uid'));
+      }
+    }
+  },
+  /**
+   * 
+   * @param {*} uid 
+   * @param {*} status 1未开始; 2 直播中; 4 已结束; 8 禁播; 16 可回放, 多个累加
+   */
+  getRoomList(status = undefined, uid = undefined) {
     let self = this;
     console.log(">>>[liveroom-roomList] begin to getRoomList");
     wx.showLoading({
@@ -84,6 +184,8 @@ Page({
       data: {
         "session_id": wx.getStorageSync('sessionId'),
         "live_appid": liveAppID,
+        "uid": uid,
+        "status": status
       },
       success(res) {
         self.stopRefresh();
@@ -95,7 +197,8 @@ Page({
               .map(item => {
                 item.room_show_name = item.room_id.slice(2);
                 console.log('show_name', item.room_show_name);
-                item.roomState = '直播中';
+                // item.roomState = '直播中';
+                item.has_playback = true;
                 return item;
               });;
             if (self.data.isFirst) {
@@ -128,9 +231,13 @@ Page({
   /**
      * 页面相关事件处理函数--监听用户下拉动作
      */
-  onPullDownRefresh() {
-    console.log('>>>[liveroom-roomList] onPullDownRefresh');
-    this.getRoomList();
+  // onPullDownRefresh() {
+  //   console.log('>>>[liveroom-roomList] onPullDownRefresh');
+  //   this.getRoomList();
+  // },
+  refresh() {
+    console.log('>>>[liveroom-roomList] refresh');
+    this.fetchRooms();
   },
   stopRefresh() {
     wx.hideLoading();
@@ -139,7 +246,7 @@ Page({
   // 点击进入房间
   onClickItem(e) {
     console.log(e);
-    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar } } } = e;
+    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar, roomPassword } } } = e;
     console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
 
     // 防止两次点击操作间隔太快
@@ -147,31 +254,39 @@ Page({
     if (nowTime - this.data.tapTime < 1000) {
       return;
     }
-
-    const userID = 'anchor' + wx.getStorageSync('uid');
-    if (anchorId === userID) {
+    this.setData({
+      tapTime: nowTime,
+      selectRoomID: id
+    })
+    if (roomPassword) {
       this.setData({
-        tapTime: nowTime,
-      }, () => {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&loginType=anchor' + '&nickName=' + anchorName + '&avatar=' + avatar
-        // + '&roomImg=' + roomImg;
-        wx.navigateTo({
-          url: url,
-        });
+        isShowPassword: true,
       })
-    } else {
-      this.setData({
-        tapTime: nowTime,
-        loginType: 'audience'
-      }, function () {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&nickName=' + anchorName + '&avatar=' + avatar + '&roomImg=' + roomImg + '&loginType=audience';
+      return;
+    }
+    this.enterRoom();
 
-        wx.navigateTo({
-          url: url
-        })
+  },
+  enterRoom() {
+    const selectRoom = this.data.roomList.find(item => item.room_id === this.data.selectRoomID);
+    console.log('selectRoom', selectRoom);
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img } = selectRoom;
+    const userID = 'anchor' + wx.getStorageSync('uid');
+    if (anchor_id_name === userID) {
+
+      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
+      // + '&roomImg=' + roomImg;
+      wx.navigateTo({
+        url: url,
+      });
+
+    } else {
+      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&anchorID=' + anchor_id_name + '&nickName=' + nickname + '&avatar=' + avatar + '&roomImg=' + room_img + '&loginType=audience';
+
+      wx.navigateTo({
+        url: url
       })
     }
-
   },
   endLive() {
     console.log('endLive');
@@ -184,6 +299,34 @@ Page({
     wx.navigateTo({
       url
     });
+  },
+  cancelPassword() {
+
+  },
+  confirmPassword(e) {
+    let self = this;
+    const { password } = e.detail;
+    console.log('password', password);
+    wx.request({
+      url: BaseUrl + '/app/check_room_password',
+      method: 'POST',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "room_id": self.data.selectRoomID,
+        "room_password": password
+      },
+      success(res) {
+        if (result.statusCode === 200) {
+          console.log('del playback suc', res);
+          self.enterRoom();
+        }
+      },
+      fail(e) {
+        console.error('del playback fail', e);
+      }
+    })
   },
   goToAdmin() {
     wx.navigateTo({
@@ -209,7 +352,7 @@ Page({
       isShowModal: false
     });
     this.getRole(() => {
-      this.getRoomList();
+      this.fetchRooms();
     });
   },
   getRole(callback) {
@@ -217,11 +360,40 @@ Page({
     // 登录
     loginApp(self.data.userInfo.nickName).then(role => {
       console.log('role', role);
-      self.setData({ role });
+      self.setData({
+        role,
+      });
       callback && callback();
     });
   },
   tabChange(e) {
+    const { index, item } = e.detail;
     console.log('tab change', e)
+    const state = this.data.list[index].id;
+    this.setData({
+      state
+    }, () => {
+      this.fetchRooms();
+    });
+  },
+  delReplay(e) {
+    const { room_id } = e.detail.content;
+    console.log('delReplay', room_id);
+    wx.request({
+      url: BaseUrl + '/app/delete_playback',
+      method: 'POST',
+      data: {
+        "session_id": wx.getStorageSync('sessionId'),
+        "live_appid": liveAppID,
+        "uid": wx.getStorageSync('uid'),
+        "room_id": room_id,
+      },
+      success(res) {
+        console.log('del playback suc', res);
+      },
+      fail(e) {
+        console.error('del playback fail', e);
+      }
+    })
   }
 });

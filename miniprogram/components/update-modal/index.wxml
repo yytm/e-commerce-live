@@ -1,0 +1,25 @@
+<!-- components/confirm-modal/index.wxml -->
+<view wx:if="{{isShow}}" class="modal-container">
+    <view class="modal-mask" bind:tap="modalMaskClick"></view>
+    <view class="modal-box" style="bottom:{{bottom}}rpx;">
+        <view class="modal-tip">{{title}}</view>
+        <view class="close-btn-container" bind:tap="cancel">
+                <image src="../images/close-btn.png" class="close-btn" />
+        </view>
+        <view class="tip" wx:if="{{isShowTip}}">
+            <image src="../images/warn.png" class="warn-img"></image>
+            <view class="warn-text">用户名只能包含中英文、数字</view>
+        </view>
+        <view class="avatar-btn" bind:tap="btnClick">
+            <image class="avatar-img" src="{{avatar}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+        </view>
+        <view class="modal-content"></view>
+            <view class="input-conteiner" style="{{focus?'border:2rpx solid rgba(238,44,67,1);':''}}">
+                <input class="input-content" value="{{nickName}}" placeholder="名称" placeholder-style='color: #DADBDF; font-size: 28rpx;' bindinput="bindMessageInput" focus="auto" bindfocus="foucus" bindblur="blur" cursor-spacing="15" adjust-position='{{false}}' confirm-hold='{{keyboardHold}}' hold-keyboard='{{keyboardHold}}' confirm-type='send' />
+            </view>
+            <view class="modal-btns">
+                <!-- <view class="modal-btn cancel-btn" bindtap="cancel">{{cancelText}}</view> -->
+                <view class="modal-btn confirm-btn {{isShowTip?'invalid':''}}" bindtap="confirm">{{confirmText}}</view>
+            </view>
+    </view>
+</view>
