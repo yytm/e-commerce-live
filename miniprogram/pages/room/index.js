@@ -16,8 +16,8 @@ Page({
    */
   data: {
     liveAppID: liveAppID,
-    wsServerURL: "wss://webliveroom1078978582-api.yunyikao.com/ws", 
-    logServerURL: "https://weblogger1078978582-api.yunyikao.com/httplog",
+    wsServerURL: "wss://webliveroom1078978582-api.e-business.net.cn/ws", 
+    logServerURL: "https://weblogger1078978582-api.e-business.net.cn/httplog",
     shareImg: "/resource/share.png",
     preferPublishSourceType: 1, // 0：推流到 cdn；1：推流到 bgp
     preferPlaySourceType: 1, // 0：auto；1：从 bgp 拉流
