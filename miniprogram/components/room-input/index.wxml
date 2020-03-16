@@ -1,0 +1,10 @@
+<!--components/room-input/index.wxml-->
+<view class="room-input-container">
+      <input 
+        placeholder="{{placeholder}}" 
+        placeholder-style='{{placeholderStyle}}'
+        value="{{inputTest}}"
+        bindinput="holdInput"
+        maxlength="{{maxlength}}"
+      ></input>
+</view>

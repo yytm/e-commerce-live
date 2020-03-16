@@ -1,0 +1,46 @@
+<!--components/goods-box/index.wxml-->
+<view class="goods-container" wx:if="{{!is_close}}" >
+  <view class="goods-background" catchtap="close"></view>
+  <view class="goods-box">
+    <view class="goods-header" >
+      <text class="goods-title">商品列表</text>
+      <image 
+        role="img" 
+        class="goods-close" 
+        src="../images/goods-close.png"
+        catchtap="close"
+      ></image>
+    </view>
+    <view class="goods-body" >
+      <view class="goods-list" wx:if="{{goods_list.length > 0}}">
+        <goodsItem
+          wx:for="{{goods_list}}"
+          wx:key="goods_id"
+          goods_obj="{{item}}"
+          is_show_buttom="{{item.is_show_buttom}}"
+          goods_button_isunable="{{item.goods_button_isunable}}"
+          goods_button_style="{{item.goods_button_style}}"
+          goods_button_text="{{item.goods_button_text}}"
+          goods_img="{{item.goods_img}}"
+          goods_desc="{{item.goods_desc}}"
+          price_text="{{item.price_text}}"
+          bindgoodsTap="goodsTap"
+          bindbuttomTap="buttomTap"
+        ></goodsItem>
+      </view>
+      <view class="nothing" wx:if="{{goods_list.length <= 0}}">
+        <image 
+          role="img" 
+          src="../images/nothing.png" 
+          class="nothing-img"
+        ></image>
+        <text class="nothing-title">暂无商品</text>
+        <text class="nothing-desc">请前往管理平台上架商品</text>
+        <view 
+          class="nothing-refresh"
+          catchtap="refreshTap"
+        ><text>刷新</text></view>
+      </view>
+    </view>
+  </view>
+</view>

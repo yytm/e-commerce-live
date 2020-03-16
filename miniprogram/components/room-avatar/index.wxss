@@ -1,0 +1,27 @@
+/* components/room-avatar/index.wxss */
+.room-avatar-container{
+  width:180rpx;
+  height:56rpx;
+  background:rgba(0,0,0,0.2);
+  border-radius:28rpx;
+  display: flex;
+  flex-direction:row;
+  align-items:flex-start;
+}
+
+.room-avatar-container .avatar{
+  width:44rpx;
+  height:44rpx;
+  margin-top:6rpx;
+  margin-left:6rpx;
+  margin-right:15rpx;
+  border-radius:50%;
+}
+
+.room-avatar-container text{
+  margin-top:15rpx;
+  height:21rpx;
+  font-size:20rpx;
+  font-weight:500;
+  color:#fff;
+}

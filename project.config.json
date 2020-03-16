@@ -87,6 +87,19 @@
 					"pathName": "pages/replay/index",
 					"query": "loginType=anchor",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/enterLive/index",
+					"pathName": "pages/enterLive/index",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/enterLive/index",
+					"pathName": "pages/enterLive/index",
+					"query": "uid=3344",
+					"scene": null
 				}
 			]
 		}

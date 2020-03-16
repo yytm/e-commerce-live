@@ -32,8 +32,9 @@ export const EventEmitter = new eventEmitter()
 /**
  * 给返回promise的函数 加上防抖
  * @param {*} promiseFunction 可以返回promise的函数
+ * @param {*} timeSpan 需要hold的时间 单位毫秒  默认500
  */
-export const throttleByPromise = function(promiseFunction){
+export const throttleByPromise = function(promiseFunction = () => Promise.resolve(),timeSpan = 500){
     //查看是否已经被添加过防抖 
     //已经添加过的话 直接返回
     if(promiseFunction.__isThrottle__){ return promiseFunction }
@@ -53,11 +54,10 @@ export const throttleByPromise = function(promiseFunction){
 
     let responseFn = function(){
         let now = Date.now()
-        if(now - startTime <= 500){ 
-            let resolve,reject
-            let ret = new Promise((res,rej) => { resolve = res,reject = rej })
-            task.push({ resolve,reject })
-            return ret
+        if(now - startTime <= timeSpan){ 
+            let sender = {}
+            task.push(sender)
+            return new Promise((res,rej) => { sender.resolve = res,sender.reject = rej })
         }
         startTime = now
         return promiseFunction().then(response => {

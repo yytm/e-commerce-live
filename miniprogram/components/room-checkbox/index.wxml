@@ -1,0 +1,25 @@
+<!--components/room-checkbox/index.wxml-->
+<view class="room-checkbox-box">
+    <image 
+      class="checkbox" 
+      role="img" 
+      src="{{isCheck? '../images/checkbox-true.png':'../images/checkbox-false.png'}}"
+      bindtap="checkEvent"
+    ></image>
+    <text>{{ innerText }}</text>
+    <image 
+      wx:if="{{isShowICon}}" 
+      role="img" 
+      class="checkbox-icon" 
+      src="{{iconPath}}"
+      catchtap="showTips"
+    ></image>
+    <view class="tips" wx:if="{{isShowTips}}">
+      <image 
+        role="img"
+        src="../images/icon-message.png"
+        class="checkbox-message-icon"
+      ></image>
+      <text class="tips-text">{{tipsText}}</text>
+    </view>
+</view>

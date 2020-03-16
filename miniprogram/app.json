@@ -1,11 +1,12 @@
 {
   "pages": [
+    "pages/enterLive/index",
     "pages/roomList/index",
     "pages/main/index",
     "pages/web/index",
     "pages/room/index",
     "pages/register/index",
-    "pages/enterLive/index",
+    
     "pages/index/index",
     "pages/replay/index"
   ],

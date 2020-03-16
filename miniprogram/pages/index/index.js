@@ -1,5 +1,5 @@
 // miniprogram/pages/index/index.js
-let { loginApp } = require("../../utils/server.js");
+import { loginApp } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 

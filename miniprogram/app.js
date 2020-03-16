@@ -10,7 +10,7 @@ App({
     //获取用户信息
     this.getUserInfo().catch(error => {
       //提示用户授权
-      CallWxFunction('showModal',{
+      return CallWxFunction('showModal',{
         title: '提示',
         confirmText:'去授权',
         showCancel:true,
@@ -18,7 +18,10 @@ App({
       }).then((response = {}) => {
         let { confirm } = response
         //用户点击了 去授权 重新获取用户信息
-        if(confirm){ this.getUserInfo() }
+        //这里应该跳转授权页面把
+        if(confirm){ return this.getUserInfo() }
+        //返回错误信息
+        return Promise.reject({ ret:{ code:10000,msg:'用户未授权01' } })
       })
     })
   },

@@ -19,6 +19,19 @@ let formatResponse = function (response = {}){
   //业务接口成功
   return Promise.resolve(data)
 }
+
+/**
+ * 确保函数被调用之前 用户已经授权过
+ * 主要获取getLogin里面的session_id
+ * @param {*} func 
+ */
+let wrap = function (func){
+  return function (){
+    //getUserInfo 统一app.js里面的方法
+    return app.getUserInfo().then(() => func.apply(func,Array.from(arguments)))
+  }
+} 
+
 /**
  * 用于处理请求业务接口
  * @param {*} options = { url,method,data }
@@ -115,7 +128,7 @@ export let loginApp = function (nickName = ""){
  * }
  * @returns {*} 返回promise result = { ret:{ code,msg },room_img }
  */
-export let requestSetRoom = function (options = {}){
+let setRoom = function (options = {}){
   const {  room_name,need_playback,is_private,room_password = "",room_img } = options
   
   //请求链接
@@ -156,7 +169,55 @@ export let requestSetRoom = function (options = {}){
 }
 
 
+/**
+ * 获取商品列表
+ * @param {*} options = { 
+ *  uid, //主播ID
+ *  page, //页面编码
+ *  count  //每页显示数量
+ * }
+ * @returns {*} 返回promise result = { ret:{ code,msg },goods_count,goods_list:[] }
+ */
+let listGoods = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid = '',page = 1,count = 10 } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  uid = !!!String(uid)? `anchor${ wx.getStorageSync('uid') || '' }` : uid
 
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/list_goods`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //主播ID
+      uid,
+      //页面编码
+      page,
+      //每页显示数量
+      count
+    }
+  })
+  //格式化返回数据
+  .then(response => formatResponse(response))
+} 
+
+
+/**
+ * 做一层代理 确保在调用之前 可以拿到用户到session_id
+ */
+export let requestSetRoom = wrap(setRoom)
+export let requestListGoods = wrap(listGoods)
+
+//监听事件
+//用户已经授权获取到了用户信息
+//逻辑在app.js里面
 EventEmitter.on('getUserInfo',userInfo => {
-  console.log(userInfo,555)
+  let { nickName } = userInfo
+  //自动登陆 获取相关信息
+  loginApp(nickName)
 })
