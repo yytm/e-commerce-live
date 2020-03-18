@@ -483,7 +483,7 @@ Page({
         extraData: {
           foo: 'bar'
         },
-        envVersion: 'trial',
+        envVersion: 'release',
         success(res) {
           // 打开成功
           console.log(res)
@@ -519,7 +519,7 @@ Page({
         extraData: {
           foo: 'bar'
         },
-        envVersion: 'trial',
+        envVersion: 'release',
         success(res) {
           // 打开成功
           console.log(res)
@@ -581,7 +581,7 @@ Page({
               let link;
               if (url.startsWith('pages')) {
                 link = {
-                  appId: 'wx867aca1a67a6709e',
+                  appId: 'wx5220c5112fc35d49',
                   path: url
                 }
               } else {
