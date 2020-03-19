@@ -135,8 +135,7 @@ Page({
       statusBarHeight: systemInfo.statusBarHeight
     });
     this.getState().then(() => {
-
-      
+      this.init();
     });
     
   },
