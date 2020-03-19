@@ -78,7 +78,7 @@
 					"id": 2,
 					"name": "pages/room/index",
 					"pathName": "pages/room/index",
-					"query": "loginType=anchor",
+					"query": "loginType=audience&roomID=e-82-1584622092526&nickName=chosan&anchorID=anchor82",
 					"scene": null
 				}
 			]

@@ -97,7 +97,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.getState();
     console.log('>>>onLoad', options)
     const { roomID, roomName, loginType, nickName, avatar } = options;
     const roomShowName = roomID && roomID.slice(2);
@@ -135,19 +134,17 @@ Page({
       navBarHeight,
       statusBarHeight: systemInfo.statusBarHeight
     });
+    this.getState().then(() => {
+      this.init();
+    });
+    
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
-      liveRoom = this.selectComponent('#live-room');
-      // liveRoom.startPreview();
-      liveRoom.init();
-      liveRoom.loginRoom(this.data.token);
-    });
-    this.getGoods();
+    
   },
 
   /**
@@ -335,6 +332,16 @@ Page({
     
   // },
 
+  init() {
+    this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
+      liveRoom = this.selectComponent('#live-room');
+      // liveRoom.startPreview();
+      console.error('init');
+      liveRoom.init();
+      liveRoom.loginRoom(this.data.token);
+    });
+    this.getGoods();
+  },
   setRoom(content) {
     console.log('setRoom');
     const { liveAppID, roomID } = content;
@@ -532,6 +539,7 @@ Page({
   },
 
   getRoomToken(userID, appID, callback) {
+    console.error('sessionId', wx.getStorageSync('sessionId'))
     let self = this;
     wx.request({
       url: BaseUrl + '/app/get_room_token',
@@ -661,7 +669,9 @@ Page({
         userInfo: e.detail.userInfo,
         isShowModal: false
       }, () => {
-        loginApp(this.data.userInfo.nickName);
+        loginApp(this.data.userInfo.nickName).then(() => {
+          this.init();
+        });
       })
     } else {
       wx.showModal({
@@ -672,41 +682,57 @@ Page({
   },
   getState() {
     let self = this;
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      });
-      loginApp(this.data.userInfo.nickName);
-    } else {
-        // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-        wx.getUserInfo({
-          success: res => {
-            // 可以将 res 发送给后台解码出 unionId
-            app.globalData.userInfo = res.userInfo
-            this.setData({
-              userInfo: res.userInfo,
-              hasUserInfo: true
-            })
-            loginApp(res.userInfo.nickName);
-
-            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-            // 所以此处加入 callback 以防止这种情况
-            if (this.userInfoReadyCallback) {
-              this.userInfoReadyCallback(res)
+    return new Promise((resolve, reject) => {
+      if (app.globalData.userInfo) {
+        this.setData({
+          userInfo: app.globalData.userInfo,
+          hasUserInfo: true
+        });
+        loginApp(this.data.userInfo.nickName).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        });
+      } else {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
+            success: res => {
+              // 可以将 res 发送给后台解码出 unionId
+              app.globalData.userInfo = res.userInfo
+              this.setData({
+                userInfo: res.userInfo,
+                hasUserInfo: true
+              })
+              loginApp(res.userInfo.nickName).then(res => {
+                resolve()
+              }).catch(e => {
+                reject(e)
+              });
+  
+              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+              // 所以此处加入 callback 以防止这种情况
+              if (this.userInfoReadyCallback) {
+                this.userInfoReadyCallback(res)
+              }
+            },
+            fail: e => {
+              console.error(e);
+              self.setData({
+                isShowModal: true
+              });
+              reject()
             }
-          },
-          fail: e => {
-            console.error(e);
-            self.setData({
-              isShowModal: true
-            });
-          }
+          })
+      }
+      if (!wx.getStorageSync('sessionId')) {
+        console.log('no sessionId');
+        this.data.userInfo && loginApp(this.data.userInfo.nickName).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
         })
-    }
-    if (!wx.getStorageSync('sessionId')) {
-      console.log('no sessionId');
-      this.data.userInfo && loginApp(this.data.userInfo.nickName)
-    }
+      }
+    })
+    
   }
 })
