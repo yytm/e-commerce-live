@@ -11,18 +11,18 @@ Page({
     userInfo: null,
     role: '',
     roomList: [
-      {
-        room_id: '123',
-        room_name: 'Givenchy/纪梵希高定香榭天鹅',
-        room_img: '../../resource/m0.png',
-        anchor_id_name: "xcxU1582085277557",
-        anchor_nick_name: "zhc",
-        play_count: 2345,
-        playback_duration: '05:03:34',
-        is_private: true,
-        room_password: "124563",
-        room_state: '回放',
-      },
+      // {
+      //   room_id: '123',
+      //   room_name: 'Givenchy/纪梵希高定香榭天鹅',
+      //   room_img: '../../resource/m0.png',
+      //   anchor_id_name: "xcxU1582085277557",
+      //   anchor_nick_name: "zhc",
+      //   play_count: 2345,
+      //   playback_duration: '05:03:34',
+      //   is_private: true,
+      //   room_password: "124563",
+      //   room_state: '回放',
+      // },
     ],
     isShowPassword: false,
     isShowModal: false,
@@ -355,7 +355,7 @@ Page({
       this.fetchRooms();
     });
   },
-  getRole(callback) {
+  getRole(callback = this.fetchRooms.bind(this)) {
     let self = this;
     // 登录
     loginApp(self.data.userInfo.nickName).then(role => {

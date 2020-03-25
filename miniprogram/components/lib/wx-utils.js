@@ -84,7 +84,12 @@ export const throttleByPromise = function(promiseFunction = () => Promise.resolv
 
 export const getCurrentPageWithArgs = function (){
     //获取加载的页面
-    let pages = getCurrentPages()    
+    let pages = getCurrentPages()  
+    if(pages.length <= 0){
+        //获得启动数据
+        let { path,query } = wx.getEnterOptionsSync()
+        pages = [{ route:path,options:query }]
+    }  
     //获取当前页面的对象
     let currentPage = pages[pages.length - 1]   
     //当前页面url 
