@@ -15,6 +15,7 @@
       class="setting-heard-img"
       role="img"
       src="../../components/images/room-heart.png"
+      catchtap="increaseRoomLoveCount"
     ></image>
     <text class="setting-heard-title">{{roomState.love_count}}</text>
     <image 

@@ -1,5 +1,5 @@
 // miniprogram/pages/room/index2.js
-import { requestHd } from '../../utils/server'
+import { requestHd,requestIncreaseRoomLoveCount } from '../../utils/server'
 
 Page({
   /**
@@ -148,12 +148,12 @@ Page({
     Array.isArray(userList) && userList.forEach(user => {
       let { action,idName,nickName,role } = user
       //离开房间  
-      if(Number(action) === 2 && userMap.has(idName)){
+      if(Number(action) === 2){
         this.addMessageList({ nickName,message:"退出了房间" })
         userMap.delete(idName)
       }
       //加入房间
-      if(Number(action) === 1 && !userMap.has(idName)){
+      if(Number(action) === 1){
         this.addWLQueue(user)
       }
     })
@@ -206,8 +206,9 @@ Page({
     }
     this.liveHandler && clearTimeout(this.liveHandler)
 
-    requestHd({ room_id:this.data.room_id }).then(response => {
+    requestHd({ room_id:this.data.roomid }).then(response => {
       let { visit_count,love_count,status } = response
+      //status = 1 未开始 2 直播中 4 已结束 8 禁播16 可回放
       this.setData({ roomState:{ ...this.data.roomState,visit_count,love_count,status } })
       return Promise.resolve()
     }).then(nextTick).catch(nextTick)
@@ -338,13 +339,20 @@ Page({
     }  
     this.setData({ wlRoom:{ ...this.data.wlRoom,isStartQueue:true } },nextTick)
   },
+  /**
+   * 点赞
+   */
+  increaseRoomLoveCount(){
+    requestIncreaseRoomLoveCount()
+    this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 } })
+  },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
     let { roomID } = options
-    roomID = 'room651585142040049'
+    //roomID = 'room651585142040049'
     this.setData({ roomid:roomID })
     console.log('page load',roomID)
   },

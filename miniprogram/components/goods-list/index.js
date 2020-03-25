@@ -60,18 +60,18 @@ Component({
         page:this.data.page,
         count:this.data.count
       }).then(({ ret, goods_count = 0, goods_list = [] }) => {
-        goods_list = [
-          {
-            "goods_id": 1,
-            "goods_no": "10010",
-            "goods_desc": "小米Mx全网通高适配版",
-            "goods_url": "xxx",
-            "price": 1399,
-            "price_text": "¥ 1,399",
-            "goods_img": "xxx",
-            "is_show_buttom":true
-          }
-        ]
+        // goods_list = [
+        //   {
+        //     "goods_id": 1,
+        //     "goods_no": "10010",
+        //     "goods_desc": "小米Mx全网通高适配版",
+        //     "goods_url": "xxx",
+        //     "price": 1399,
+        //     "price_text": "¥ 1,399",
+        //     "goods_img": "xxx",
+        //     "is_show_buttom":true
+        //   }
+        // ]
         let list = Array.isArray(goods_list) && 
           typeof this.onBeforeGoodsListRender === 'function' && 
           goods_list.map(this.onBeforeGoodsListRender) || []

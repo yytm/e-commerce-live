@@ -318,6 +318,37 @@ let getSelfRommList = function (options = {}){
 }
 
 /**
+ * 自增点赞数
+ * @param {*} options = {
+ *  //房间id
+ *  room_id 
+ * }
+ */
+let increaseRoomLoveCount = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid = '',room_id = '' } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/increase_room_love_count`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //直播间ID
+      room_id,
+      //主播ID
+      uid
+    }
+  })
+}
+
+/**
  * 做一层代理 确保在调用之前 可以拿到用户到session_id
  */
 export let requestSetRoom = wrap(setRoom)
@@ -327,6 +358,7 @@ export let requestGetRoomToken = wrap(getRoomToken)
 export let requestGetRoomList = throttleByPromise(wrap(getRoomList))
 export let requestGetSelfRoomList = throttleByPromise(wrap(getSelfRommList))
 export let requestHd = wrap(hd)
+export let requestIncreaseRoomLoveCount = wrap(increaseRoomLoveCount)
 
 //监听事件
 //用户已经授权获取到了用户信息
