@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -25,7 +25,7 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.10.1",
-	"appid": "wx371ac5dc128c4c5e",
+	"appid": "wxda1343baad77dc86",
 	"projectname": "t-ecommerce",
 	"debugOptions": {
 		"hidedInDevtools": []
@@ -78,7 +78,7 @@
 					"id": 2,
 					"name": "pages/room/index",
 					"pathName": "pages/room/index",
-					"query": "loginType=anchor",
+					"query": "roomID=room621585126148102",
 					"scene": null
 				},
 				{
@@ -92,12 +92,13 @@
 					"id": -1,
 					"name": "pages/enterLive/index",
 					"pathName": "pages/enterLive/index",
+					"query": "",
 					"scene": null
 				},
 				{
 					"id": -1,
-					"name": "pages/enterLive/index",
-					"pathName": "pages/enterLive/index",
+					"name": "pages/authroze/index",
+					"pathName": "pages/authroze/index",
 					"query": "uid=3344",
 					"scene": null
 				}

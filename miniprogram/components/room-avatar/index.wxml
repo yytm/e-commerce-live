@@ -5,5 +5,8 @@
     class="avatar" 
     src="{{avatar}}"
   ></image>
-  <text>{{nick}}</text>
+  <view class="{{title? 'fic' : ''}}">
+    <text>{{nick}}</text>
+    <text wx:if="{{title}}">{{title}}</text>
+  </view>
 </view>

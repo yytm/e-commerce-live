@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "live": "/components/live-room/index2",
+    "custom-nav":"/components/custom-nav/index",
+    "set-room":"/components/set-room/index",
+    "authroze-modal": "/components/authorize-modal/index"
+  },
+  "disableScroll": true,
+  "navigationStyle": "custom"
+}

@@ -25,7 +25,7 @@
           goods_desc="{{item.goods_desc}}"
           price_text="{{item.price_text}}"
           bindgoodsTap="goodsTap"
-          bindbuttomTap="buttomTap"
+          bindgoodsButtomTap="buttomTap"
         ></goodsItem>
       </view>
       <view class="nothing" wx:if="{{goods_list.length <= 0}}">

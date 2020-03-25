@@ -25,3 +25,18 @@
   font-weight:500;
   color:#fff;
 }
+
+.fic text:first-child{
+  margin-top:8rpx;
+  height:19rpx;
+}
+.fic text:last-child{
+  margin-top:5rpx;
+  height:16rpx;
+  font-size:16rpx;
+  font-weight:400;
+}
+.fic{
+  display: flex;
+  flex-direction:column;
+}

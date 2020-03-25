@@ -17,6 +17,7 @@ Component({
       //     "price": 1399,
       //     "price_text": "¥ 1,399",
       //     "goods_img": "xxx",
+      //     "is_show_buttom":true
       //   }
       // ]
     },

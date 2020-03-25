@@ -1,201 +1,380 @@
-// miniprogram/pages/live/index.js
-let { sharePage } = require("../../utils/util.js");
-let { loginApp } = require("../../utils/server.js");
-const Multipart = require('../../utils/Multipart.min.js');
-
-const app = getApp();
-let { liveAppID, BaseUrl } = app.globalData;
-
-let liveRoom;
-let merT = null;
+// miniprogram/pages/room/index2.js
+import { requestHd } from '../../utils/server'
 
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    liveAppID: liveAppID,
-    wsServerURL: "wss://wsliveroom1739272706-api.zego.im:8282/ws", 
-    logServerURL: "https://wsslogger-demo.zego.im/httplog",
-    shareImg: "/resource/share.png",
-    preferPublishSourceType: 1, // 0：推流到 cdn；1：推流到 bgp
-    preferPlaySourceType: 1, // 0：auto；1：从 bgp 拉流
+    uid:'',
+    //主播是否离开
+    isLeave:false,
+    //在线人数
+    userCount:0,
+    //房间ID
+    roomid:'',
+    //是否禁用麦克风
+    disable_mic:false,
+    //是否是主播
+    isAnchor:false,
+    //主播id
+    anchor_id_name:'',
+    //主播昵称
+    anchor_nick_name:'',
+    roomState:{
+      //房间状态 1 未开始 2 直播中 4 已结束 8 禁播 16 可回放
+      status:1,
+      //访问人数
+      visit_count:0,
+      //点赞人数
+      love_count:0,
+    },
+    //人员列表
+    //userMap:new Map(),
+    //消息列表 { nickName:"Johnny",message:"加入房间",id:"1" }
+    messageList:[],
+    //欢迎列表控制
+    wlRoom:{
+      isShow:false,
+      nickName:'',
+      //当前被欢迎的用户
+      nowUser:null,
+      //是否已经开始了欢迎队列
+      isStartQueue:false
+    },
+    //消息框配置
+    messageBox:{
+      //是否显示发送消息框
+      isShowMessageBox: false,
+      message:'',
+      //input获得焦点
+      focus:false,
+      //键盘
+      keyboardHold:false
+    },
+    //商品列表配置
+    goodsBox:{
+      goods_list:[],
+      is_show_goods_list:false
+    },
+    //推送商品相关
+    hotGoods:{
+      is_show_shop:false,
+      goods_desc:'',
+      price_text:'',
+      goods_img:'',
+      goods_url:'',
+      goods_id:'',
+      goods_no:''
+    }
+  },
 
-    roomID: "",
-    loginType: "",
-    roomShowName: '',
-    token: '',
-    isLiving: false,
+  /**
+   * 连麦申请
+   */
+  recvJoinLive(){},
+  onPublishStateUpdate(){},
+  onPlayStateUpdate(){},
+  /**
+   * 当发送成功了消息
+   * @param {*} message 
+   */
+  onSendMessage(e){
+    let { message } = e.detail
+    let nickName = wx.getStorageSync('nickName') || ''
+    !!message && this.addMessageList({ nickName,message })
+  },
+  /**
+   * 接收到聊天信息
+   * @param {*} messageList  消息列表
+   * @param {*} roomId 
+   */
+  onRecvBigRoomMessage(e){
+    let { messageList,roomId } = e.detail
+    Array.isArray(messageList) && messageList.forEach(msg => {
+      let { nickName,messageId:id,content } = msg
+      !!content && this.addMessageList({ nickName,message:content,id })
+    })
+  },
+  /**
+    * 接收可靠消息 比如商品推送
+    * @param {*} type  
+    * @param {*} seq 消息序列号
+    * @param {*} message  可为json字符串
+  */
+  onRecvReliableMessage(e){
+    let { type,seq,message } = e.detail
+    //推送的商品
+    if(typeof type === 'string' && type === 'shop'){
+      try{
+        let { 
+          goods_desc = '',
+          price_text = '',
+          goods_img = '',
+          goods_url = '',
+          goods_id = '',
+          goods_no = ''
+        } = JSON.parse(message)
+        this.setData({ 
+          hotGoods:{
+            is_show_shop:true,
+            goods_desc,price_text,goods_img,goods_url,goods_id,goods_no
+          } 
+        })
+      }catch(e){}
+    }
+  },
+  /**
+   * 房间所有成员回调
+   * @param {*} roomId 
+   * @param {*} userList 
+   */
+  onGetTotalUserList(e){
+    let { roomId, userList = [],component } = e.detail
+    this.liveRoomComponent = component
 
-    userInfo: null,
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    isShowModal: false,
+    Array.isArray(userList) && userList.forEach(this.addWLQueue.bind(this))
+  },
+  /**
+   * 房间成员变化回调
+   * @param {*} roomId 
+   * @param {*} userList 
+   */
+  onUserStateUpdate(roomId,userList){
+    //记录之前已经存在的用户列表
+    let userMap = this.userMap = this.userMap || new Map()
 
-    hideModal: true, //模态框的状态  true-隐藏  false-显示
-    animationData: {},
+    //遍历
+    Array.isArray(userList) && userList.forEach(user => {
+      let { action,idName,nickName,role } = user
+      //离开房间  
+      if(Number(action) === 2 && userMap.has(idName)){
+        this.addMessageList({ nickName,message:"退出了房间" })
+        userMap.delete(idName)
+      }
+      //加入房间
+      if(Number(action) === 1 && !userMap.has(idName)){
+        this.addWLQueue(user)
+      }
+    })
+  },
+  /**
+   * 更新在线人数
+   * @param {*} userCount 在线人数
+   */
+  onUpdateOnlineCount(e){
+    let { userCount } = e.detail
+    this.setData({ userCount })
+  },
+  /**
+   * 
+   * @param {*} isAnchor 是否是主播
+   * @param {*} liveRoomComponent 
+   */
+  onStart(e){
+    let { isAnchor,anchor_id_name,anchor_nick_name } = e.detail
+    //已经开始推流或者拉流
+    this.setData({ isAnchor,anchor_id_name,anchor_nick_name })
+    //保持心跳
+    this.live()
+  },
+  /**
+   * 主播离开事件
+   */
+  onLeave(e){
+    let { isLeave } = e.detail
+    this.setData({ isLeave })
+  },
+  /**
+   * 当热门商品被点击
+   */
+  onHotShopTap(){
+    //跳转逻辑
+  },
+  /**
+   * 关闭热推商品
+   */
+  onHotShopClose(){
+    this.setData({ hotGoods:{ ...this.data.hotGoods,is_show_shop:false } })
+  },
+  /**
+   * 心跳 更新房间信息
+   */
+  live(){
+    let nextTick = () => {
+      this.liveHandler = setTimeout(this.live.bind(this),this.data.isAnchor? 5000 : 20000)
+    }
+    this.liveHandler && clearTimeout(this.liveHandler)
 
-    uid: -1,
-    merchandises: [],
-    // merchandises: [
-    //   {
-    //     name: 'Givenchy/纪梵希高定香榭天鹅绒唇膏',
-    //     img: '../../resource/m0.png',
-    //     price: '345',
-    //     id: 0,
-    //     link: {
-    //       appId: '0',
-    //       path: "../web/index",
-    //       extraData: {
-    //         url: "https://shop-ecommerce.yunyikao.com/product.html"
-    //       }
-    //     }
-    //   },
-    //   {
-    //     name: 'OACH蔻驰Charlie 27 Carryal单肩斜挎手提包女包包2952过长样式挎手提包女包包2952过',
-    //     img: '../../resource/m1.png',
-    //     price: '1599',
-    //     id: 1,
-    //     // link: {
-    //     //   appId: 'wx2b8909dae7727f25',
-    //     //   path: "pages/liveroom/roomlist/roomlist",
-    //     // }
-    //     link: {
-    //       appId: '0',
-    //       path: "../web/index",
-    //       extraData: {
-    //         url: "https://shop-ecommerce.yunyikao.com/product1.html"
-    //       }
-    //     }
-    //   },
-    //   {
-    //     name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-    //     img: '../../resource/m2.png',
-    //     price: '749',
-    //     id: 2,
-    //     link: {
-    //       appId: '0',
-    //       path: "../web/index",
-    //       extraData: {
-    //         url: "https://shop-ecommerce.yunyikao.com/product2.html"
-    //       }
-    //     }
-    //   },
-    // ],
-    pushInx: -1,
-    pushMer: {},
-    stopLoadMore: false,
-    page: 1,
-    isbeginLive: false,
-    filePath: '',
-    showEndModal: false,
-    isShared: false,
+    requestHd({ room_id:this.data.room_id }).then(response => {
+      let { visit_count,love_count,status } = response
+      this.setData({ roomState:{ ...this.data.roomState,visit_count,love_count,status } })
+      return Promise.resolve()
+    }).then(nextTick).catch(nextTick)
+  },
+  /**
+   * 商品自定义按钮被点击
+   */
+  buttomTap(e){
+    let { goodsObj, itemView, listView,boxView } = e.detail
+    //推送商品
+    if(this.data.isAnchor){
+      return this.sendShop(goodsObj)
+    }
+    //观众前往购买商品
+  },
+  /**
+   * 商品列表 商品被点击
+   */
+  goodsTap(e){
+    let { goodsObj, itemView, listView,boxView } = e.detail
+    //前往商品
+  },
+  /**
+   * 显示商品列表
+   */
+  showGoodsList(){
+    this.setData({ goodsBox:{ ...this.data.goodsBox,is_show_goods_list:true } })
+  },
+  onGoodsListHidden(e){
+    let { boxView } = e.detail
+    this.setData({ goodsBox:{ ...this.data.goodsBox,is_show_goods_list:false } })
+  },
+  /**
+   * 显示编辑消息框
+   */
+  showMessageBox(){
+    this.setData({  messageBox:{ isShowMessageBox:true,focus:true  }  })
+  },
+  /**
+   * 关闭消息框
+   */
+  hiddenMessageBox(){
+    this.setData({ messageBox:{ isShowMessageBox:false,message:'',focus:false } })
+  },
+  /**
+   * 辅助 暂时无作用
+   */
+  holdMessageBoxLoop(){},
+  /**
+   * 输入消息
+   * @param {*} e 
+   */
+  messageInput(e){
+    let { value } = e.detail
+    this.setData({ messageBox:{ ...this.data.messageBox,message:value } })
+  },
+  /**
+   * 推送商品
+   * @param {*} shop 
+   */
+  sendShop(shop = {}){
+    this.liveRoomComponent.sendRoomMessage('shop',JSON.stringify(shop))
+  },
+  /**
+   * 发送房间消息
+   * 如果消息发送成功 会触发onSendMessage回调
+   * @param {*} message 
+   */
+  sendMessage(message){
+    let msg = typeof message === 'string'? message : this.data.messageBox.message
+    //空消息就不发送了
+    typeof msg === 'string' && !!msg && this.liveRoomComponent.sendMessage(msg)
+    this.hiddenMessageBox()
+  },
+  /**
+   * 添加消息
+   * @param {*} messageSender 
+   */
+  addMessageList(messageSender){
+    let { message,nickName = "",id = len + 1 } = typeof messageSender === 'string'? { message:messageSender } : messageSender
+    let len = this.data.messageList.length
+    this.data.messageList.push({ message,nickName,id})
+
+    //保持100条消息
+    let delCount = this.data.messageList.length - 100
+    delCount = delCount > 0? delCount : 0
+    //删除多余的消息
+    this.data.messageList.splice(0,delCount)
+    this.setData({ messageList:this.data.messageList })
+  },
+  /**
+   * 添加欢迎队列
+   * @param {*} user 
+   */
+  addWLQueue(user){
+    if(!!!user){ return }
+    //记录之前已经存在的用户列表
+    let userMap = this.userMap = this.userMap || new Map()
+    //欢迎队列
+    let wlQueue = this.wlQueue = this.wlQueue || []
+    let { idName,nickName } = user
+    //加入欢迎列表
+    if(!userMap.has(idName)){
+      wlQueue.push(user)
+      userMap.set(idName,user)
+      this.addMessageList({ nickName,message:"加入了房间" })
+    }
+    //执行欢迎队列
+    this.startWLQueue()
+  },
+  /**
+   * 展示欢迎队列
+   */
+  startWLQueue(){
+    //已经开始了队列
+    if(this.data.wlRoom.isStartQueue){ return }
+    let handler
+    let nextTick = () => {
+      handler && clearTimeout(handler)
+      let wlQueue = this.wlQueue = this.wlQueue || []
+      let nowUser = wlQueue.shift()
+      let nickName = nowUser && nowUser.nickName || ''
+      //是否显示欢迎
+      let isShow = !!nowUser
+      this.setData({ wlRoom:{ ...this.data.wlRoom,isShow,nickName,nowUser,isStartQueue:isShow } })
+      //三秒循环
+      isShow && (handler = setTimeout(() => nextTick(),3000))
+    }  
+    this.setData({ wlRoom:{ ...this.data.wlRoom,isStartQueue:true } },nextTick)
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    this.getState();
-    console.log('>>>onLoad', options)
-    const { roomID, roomName, loginType, nickName, avatar } = options;
-    const roomShowName = roomID && roomID.slice(2);
-    let timestamp = new Date().getTime();
-    let userID;
-    if (loginType === 'anchor') {
-      userID = 'anchor' + wx.getStorageSync('uid');
-      this.data.uid = wx.getStorageSync('uid');
-      this.setData({
-        filePath: options.filePath
-      })
-    } else if (loginType === 'audience') {
-      userID = "xcxU" + timestamp;
-      console.log('anchor', options.anchorID, typeof options.anchorID);
-      this.data.uid = parseInt(options.anchorID.replace('anchor', ''));
-    }
-    this.setData({
-      liveAppID,
-      roomID,
-      roomName,
-      loginType,
-      roomShowName,
-      userID,
-      nickName,
-      avatar
-    });
-    console.log('nickName', this.data.nickName);
-    let systemInfo = wx.getSystemInfoSync();
-    let rect = wx.getMenuButtonBoundingClientRect();
-    console.log(rect.top, systemInfo);
-    let gap = rect.top - systemInfo.statusBarHeight; //动态计算每台手机状态栏到胶囊按钮间距
-    let navBarHeight = gap + rect.bottom;
-    console.log('navBarHeight', rect, navBarHeight);
-    this.setData({
-      navBarHeight,
-      statusBarHeight: systemInfo.statusBarHeight
-    });
+  onLoad(options) {
+    let { roomID } = options
+    roomID = 'room651585142040049'
+    this.setData({ roomid:roomID })
+    console.log('page load',roomID)
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
-    this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
-      liveRoom = this.selectComponent('#live-room');
-      // liveRoom.startPreview();
-      liveRoom.init();
-      liveRoom.loginRoom(this.data.token);
-    });
-    this.getGoods();
+  onReady() {
+    this.liveRoomComponent = this.selectComponent('#live')
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    console.log('room onShow');
-    if (this.data.isShared) {
-      this.setData({
-        isShared: false
-      });
-      return;
-    }
-    
-    wx.setKeepScreenOn({
-      keepScreenOn: true,
-      success: (result) => {
-        console.log('setKeepScreenOn', result);
-      },
-      fail: () => { 
-        console.error('setKeepScreenOn fail');
-      },
-      complete: () => { }
-    });
-    if (liveRoom) {
-      console.log('liveRoom', this.data.token);
-      this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
-        liveRoom.loginRoom(this.data.token);
-      });
-    }
+
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    console.log('onHide');
-    if (this.data.loginType === 'anchor' && !this.data.isShared) {
-      liveRoom && liveRoom.endLiveRoom();
-    }
+
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    console.log('onUnload');
-    liveRoom = null;
+
   },
 
   /**
@@ -215,504 +394,40 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage() {
-    console.log('onShareAppMessage');
-    let self = this;
-    self.setData({
-      isShared: true
-    });
-    console.log('roomImg', wx.getStorageSync('roomImg'));
-    const imgUrl = wx.getStorageSync('roomImg') || self.data.shareImg;
-    let obj = sharePage(imgUrl, this.data.userInfo.nickName, {
-      roomID: this.data.roomID,
-      roomName: this.data.roomName,
-      loginType: 'audience',
-      anchorID: 'anchor' + self.data.uid,
-      nickName: this.data.userInfo.nickName,
-      avatar: this.data.userInfo.avatarUrl
-    });
-    console.log('onShareAppMessage', obj);
-    return obj;
-  },
-  // 获取拉流配置
-  getPreferType() {
-    const preferType = 0;
-    this.setData({
-      preferPlaySourceType: preferType
-    });
-  },
-  onRoomEvent(ev) {
-    console.log('onRoomEvent', ev);
-    let { tag, content } = ev.detail;
-    switch (tag) {
-      case 'onRoomCreate': {
-        console.log('onRoomCreate', content);
-        this.setRoom(content);
-        break;
-      }
-      case 'onMerchandise': {
-        console.log('onMerchandise', content);
-        this.showModal();
-        if (this.data.merchandises.length === 0) {
-          setTimeout(() => {
-            wx.showToast({
-              title: '您的商品袋空空如也，请先添加商品',
-              icon: 'none'
-            });
-          }, 1000);
-        }
-        break;
-      }
-      case 'onBack': {
-        console.log('onBack', content);
-        this.back();
-        break;
-      }
-      case 'onModalClick': {
-        console.log('onModalClick', content);
-        if (!this.data.hideModal) {
-          this.hideModal();
-        }
-        break;
-      }
-      case 'onRecvMer': {
-        console.log('onRecvMer', content);
-        const { indx, merTime, merBot } = content;
-        merT && clearTimeout(merT);
-        const pushMer = this.data.merchandises.find(item => item.id == indx);
-        this.setData({
-          pushInx: indx,
-          merBot: merBot,
-          pushMer
-        });
-        merT = setTimeout(() => {
-          this.setData({
-            pushInx: -1,
-            pushMer: {},
-            merBot: merBot
-          });
-          clearTimeout(merT);
-          merT = null;
-        }, merTime * 1000);
-        break;
-      }
-      case 'onPushMerSuc': {
-        console.log('onPushMerSuc', content);
-        if (!this.data.hideModal) {
-          this.hideModal();
-        }
-        wx.showToast({
-          title: '商品推送成功',
-          icon: 'none'
-        });
-        break;
-      }
-      case 'onRoomDestory': {
-        console.log('onRoomCreate', content);
-        this.clearRoom(content);
-        this.back();
-        break;
-      }
-      default: {
-        // console.log('onRoomEvent default: ', e);
-        break;
-      }
-    }
-  },
-  // startLogin(e) {
-  //   console.log('startLogin', e)
-  //   const { detail: { filePath, loginType, roomID, roomName } } = e;
-  //   if (loginType === 'anchor') {
+  onShareAppMessage: function () {
 
-  //   }
-  //   const roomShowName = roomID.slice(2);
-  //   this.setData({
-  //     roomID,
-  //     roomName,
-  //     loginType,
-  //     roomShowName
-  //   }, () => {
-  //     this.getRoomToken(this.data.userID, this.data.liveAppID, () => {
-  //           liveRoom = this.selectComponent('#live-room');
-  //           liveRoom.init();
-  //           liveRoom.loginRoom(this.data.token);
-  //     });
-  //   })
-    
-  // },
-
-  setRoom(content) {
-    console.log('setRoom');
-    const { liveAppID, roomID } = content;
-    const fields=[{
-            name:'req',
-            value:`{"session_id":"${wx.getStorageSync('sessionId')}","live_appid":${liveAppID},"uid":${wx.getStorageSync('uid')},"room_id":"${roomID}"}`
-          }]
-    const files=[]
-    console.log('filePath: ', this.data.filePath);
-    if (this.data.filePath) {
-      files.push( {
-           filePath: this.data.filePath, filename:'example.png', name:'img'
-      })
-    } 
-    new Multipart({
-      fields,
-      files
-    }).submit(BaseUrl + '/app/set_room')
-    .then(res => {
-      console.log('set room suc', res);
-      const result = res.data;
-      if (result.ret && result.ret.code === 0) {
-        result.room_img && wx.setStorageSync('roomImg', result.room_img);
-      }
-    }).catch(e => {
-      console.error('set room fail', e);
-    })
-    // wx.request({
-    //   url: BaseUrl + '/app/set_room',
-    //   method: 'POST',
-    //   data: {
-    //     "session_id": wx.getStorageSync('sessionId'),
-    //     "live_appid": liveAppID,
-    //     "uid": wx.getStorageSync('uid'),
-    //     "room_id": roomID,
-    //   },
-    //   success(res) {
-    //     if (res.statusCode === 200) {
-    //       if (res.data.ret.code === 0) {
-    //         console.log('set room succeed');
-    //       }
-    //     }
-    //   },
-    //   fail(e) {
-    //     console.error('fail ', e);
-    //   }
-    // })
-  },
-
-  clearRoom(content) {
-    const { liveAppID, roomID } = content;
-    wx.request({
-      url: BaseUrl + '/app/clear_room',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": wx.getStorageSync('uid'),
-        "room_id": roomID,
-      },
-      header: {'content-type':'application/json'},
-      method: 'POST',
-      success: (result)=>{
-        if (result.statusCode === 200) {
-          const res = result.data;
-          console.log(res.ret.code);
-          wx.setStorageSync('roomImg', '');
-        }
-
-      },
-      fail: ()=>{},
-      complete: ()=>{}
-    });
-  },
-
-  pushMer(e) {
-    const { currentTarget: { dataset: { indx } } } = e;
-    console.log(indx);
-    liveRoom.pushMer(indx);
-  },
-  // 显示遮罩层 
-  showModal: function () {
-    var that = this;
-    that.setData({
-      hideModal: false
-    })
-    var animation = wx.createAnimation({
-      duration: 150, //动画的持续时间 默认400ms 数值越大，动画越慢 数值越小，动画越快 
-      timingFunction: 'linear', //动画的效果 默认值是linear 
-    })
-    this.animation = animation
-    setTimeout(function () {
-      that.fadeIn(); //调用显示动画 
-    }, 10)
-  },
-
-  // 隐藏遮罩层 
-  hideModal: function () {
-    console.log('hideModal');
-    var that = this;
-    // var animation = wx.createAnimation({
-    //   duration: 800, //动画的持续时间 默认400ms 数值越大，动画越慢 数值越小，动画越快 
-    //   timingFunction: 'linear', //动画的效果 默认值是linear 
-    // })
-    // this.animation = animation
-    // that.fadeDown(); //调用隐藏动画 
-    // setTimeout(function() {
-    that.setData({
-      hideModal: true
-    })
-    that.fadeDown();
-    // }, 720) //先执行下滑动画，再隐藏模块 
-  },
-
-  //动画集 
-  fadeIn: function () {
-    this.animation.translateY(0).step()
-    this.setData({
-      animationData: this.animation.export() //动画实例的export方法导出动画数据传递给组件的animation属性 
-    })
-  },
-  fadeDown: function () {
-    console.log(this.animation);
-    this.animation.translateY(450).step()
-    this.setData({
-      animationData: this.animation.export(),
-    })
-  },
-  clickMech(e) {
-    this.setData({
-      isShared: true
-    });
-    const mer = this.data.merchandises.find(item => item.id == e.currentTarget.id)
-    if (!mer || !mer.link) return;
-    const link = mer.link;
-    if (link.appId === '0') {
-      const toUrl = link.path + "?url=" + encodeURIComponent(link.extraData.url);
-      console.log('toUrl', toUrl);
-      wx.navigateTo({
-        url: toUrl,
-      });
-    } else {
-      console.log('link', link);
-      wx.navigateToMiniProgram({
-        appId: link.appId,
-        path: link.path,
-        extraData: {
-          foo: 'bar'
-        },
-        envVersion: 'trial',
-        success(res) {
-          // 打开成功
-          console.log(res)
-        },
-        fail(e) {
-          console.error(e);
-        }
-      })
-    }
-
-  },
-  clickPush() {
-    console.log(this.data.pushInx)
-    this.setData({
-      isShared: true
-    });
-    console.log(this.data.merchandises);
-    const mer = this.data.merchandises.find(item => item.id == this.data.pushInx)
-    if (!mer || !mer.link) return;
-    var link = mer.link;
-    console.log('link', link);
-    if (link.appId === '0') {
-      const toUrl = link.path + "?url=" + encodeURIComponent(link.extraData.url);
-      console.log('toUrl', toUrl);
-      wx.navigateTo({
-        url: toUrl,
-      });
-    } else {
-      console.log('link', link);
-      wx.navigateToMiniProgram({
-        appId: link.appId,
-        path: link.path,
-        extraData: {
-          foo: 'bar'
-        },
-        envVersion: 'trial',
-        success(res) {
-          // 打开成功
-          console.log(res)
-        },
-        fail(e) {
-          console.error(e);
-        }
-      })
-    }
-  },
-
-  getRoomToken(userID, appID, callback) {
-    let self = this;
-    wx.request({
-      url: BaseUrl + '/app/get_room_token',
-      method: 'POST',
-      data: {
-        'session_id': wx.getStorageSync('sessionId'),
-        'live_appid': appID,
-        'user_name': userID
-      },
-      success: function (res) {
-        if (res.data.ret && res.data.ret.code === 0) {
-          const token = res.data['room_token'];
-          self.setData({
-            token
-          });
-          callback();
-        }
-      },
-      fail: function (e) {
-        console.error(e);
-      }
-    })
-  },
-
-  getGoods() {
-    let self = this;
-    self.data.stopLoadMore = true;
-    wx.request({
-      url: BaseUrl + '/app/list_goods',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": self.data.uid,
-        "page": self.data.page,
-        "count": 10,
-      },
-      success: function (res) {
-        if (res.statusCode !== 200) return;
-        console.log('goods', res);
-        const result = res.data;
-        if (result.ret && result.ret.code === 0) {
-          if (result.goods_count > 0 && result.goods_list && result.goods_list.length) {
-            const merchandises = result['goods_list'].map(item => {
-              const price = item.price === 0 ? item.price_text : '¥' + item.price;
-              const url = item['goods_url'];
-              let link;
-              if (url.startsWith('pages')) {
-                link = {
-                  appId: 'wx867aca1a67a6709e',
-                  path: url
-                }
-              } else {
-                link = {
-                  // url: item['goods_url']
-                  appId: '0',
-                  path: "../web/index",
-                  extraData: {
-                    url: url
-                  }
-                }
-              }
-              return {
-                id: item['goods_id'],
-                num: item['goods_no'],
-                name: item['goods_desc'],
-                link: link,
-                price: price,
-                img: item['goods_img']
-              }
-            });
-            self.data.merchandises = self.data.merchandises.concat(merchandises);
-            self.setData({
-              merchandises: self.data.merchandises
-            });
-          } else {
-            if (self.data.merchandises.length > 0) {
-              wx.showToast({
-                title: '没有更多商品了',
-                icon: 'none'
-              });
-            }
-          }
-          self.data.stopLoadMore = false;
-        }
-      },
-      fail: function (e) {
-        console.error(e);
-      }
-    })
-  },
-  lower: function() {
-    const self = this;
-    if (self.data.stopLoadMore) {
-      return;
-    }
-    self.setData({
-      page: self.data.page + 1 //上拉到底时将page+1后再调取列表接口
-    });
-    self.getGoods();
- 
-  },
-  backClick() {
-    if (this.data.loginType === 'anchor') {
-      this.setData({
-        showEndModal: true
-      });
-    } else {
-      this.back();
-    }
-    
-  },
-  back() {
-    if(getCurrentPages().length>1){
-        wx.navigateBack();
-    }else{
-        wx.redirectTo({
-            url:'/pages/roomList/index'
-        });
-    }
-  },
-  bindGetUserInfo(e) {
-    console.log(e, e.detail.userInfo);
-    if (e.detail.userInfo) {
-      app.globalData.userInfo = e.detail.userInfo;
-      this.setData({
-        userInfo: e.detail.userInfo,
-        isShowModal: false
-      }, () => {
-        loginApp(this.data.userInfo.nickName);
-      })
-    } else {
-      wx.showModal({
-        title: '提示',
-        content: '需获取信息用于登录，请重新登录',
-      })
-    }
-  },
-  getState() {
-    let self = this;
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      });
-      loginApp(this.data.userInfo.nickName);
-    } else {
-        // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-        wx.getUserInfo({
-          success: res => {
-            // 可以将 res 发送给后台解码出 unionId
-            app.globalData.userInfo = res.userInfo
-            this.setData({
-              userInfo: res.userInfo,
-              hasUserInfo: true
-            })
-            loginApp(res.userInfo.nickName);
-
-            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-            // 所以此处加入 callback 以防止这种情况
-            if (this.userInfoReadyCallback) {
-              this.userInfoReadyCallback(res)
-            }
-          },
-          fail: e => {
-            console.error(e);
-            self.setData({
-              isShowModal: true
-            });
-          }
-        })
-    }
-    if (!wx.getStorageSync('sessionId')) {
-      console.log('no sessionId');
-      this.data.userInfo && loginApp(this.data.userInfo.nickName)
-    }
   }
+
+
+
+    // /**
+    //  * 检查是否有在播房间
+    //  */
+    // isRevertRoom(){
+    //   //获取当前用户在播房间
+    //   return requestGetSelfRoomList({ status:2 }).then(response => {
+    //     let { room_list = [] } = response
+    //     //当前直播的房间列表
+    //     if(room_list.length > 0){
+    //       return this.switchRoom(room_list).catch(() => ({ roomid:this.data.roomid }))
+    //     }
+    //     //返回默认roomid
+    //     return Promise.resolve({ roomid:this.data.roomid })
+    //   })
+    // },
+    // //根据已存在的直播房间列表 让用户选择恢复哪个房间的直播
+    // switchRoom(room_list = []){
+    //   //获得一个
+    //   let room = room_list.shift()
+    //   //没有可以选择的直播房间了
+    //   if(!room){ return Promise.reject() }
+    //   //让用户选择恢复哪个直播房间
+    //   return CallWxFunction('showModal',{
+    //     title:'信息',
+    //     content:`您有正在直播的房间:${room.room_name}，是否进行恢复直播？`
+    //   }).then(response => {
+    //     let { confirm } = response
+    //     return confirm? Promise.resolve(room) : switchRoom(room_list)
+    //   })
+    // },
 })

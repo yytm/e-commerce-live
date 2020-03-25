@@ -1,0 +1,16 @@
+<!--components/setting-scope/index.wxml-->
+<view class="setting-scope">
+    <text>{{title}}</text>
+    <view class="scope-box">
+      <view class="scope-number" style="width:{{width}}rpx;">
+        <view 
+          class="scope-hold-box" 
+          bindtouchstart="touchstart"
+          bindtouchmove="touchmove"
+          bindtouchend="touchend"
+        ></view>
+        <view class="scope-hodl"></view>
+      </view>
+    </view>
+    <text>{{scope}}</text>
+</view>

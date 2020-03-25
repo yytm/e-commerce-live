@@ -1,5 +1,5 @@
 // components/goods-list/index.js
-import { CallWxFunction } from '../../utils/wx-utils'
+import { CallWxFunction } from '../lib/wx-utils'
 import { requestListGoods } from '../../utils/server'
 
 
@@ -60,11 +60,27 @@ Component({
         page:this.data.page,
         count:this.data.count
       }).then(({ ret, goods_count = 0, goods_list = [] }) => {
-        this.setData({ goods_count,goods_list })
+        goods_list = [
+          {
+            "goods_id": 1,
+            "goods_no": "10010",
+            "goods_desc": "小米Mx全网通高适配版",
+            "goods_url": "xxx",
+            "price": 1399,
+            "price_text": "¥ 1,399",
+            "goods_img": "xxx",
+            "is_show_buttom":true
+          }
+        ]
+        let list = Array.isArray(goods_list) && 
+          typeof this.onBeforeGoodsListRender === 'function' && 
+          goods_list.map(this.onBeforeGoodsListRender) || []
+        this.setData({ goods_count,goods_list:list })
       }).catch(error => {
         console.log(error)
       })
     },
+
     //商品被点击
     goodsTap(e) {
       let { goodsObj, itemView, listView } = e.detail

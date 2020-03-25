@@ -1,0 +1,30 @@
+/* miniprogram/pages/authroze/index.wxss */
+.authroze{
+  width:100vw;
+  height:100vh;
+}
+text{
+  display: block;
+  text-align: center;
+}
+.title{
+  margin-top:200rpx;
+  width:100vw;
+  height:30rpx;
+  line-height: 30rpx;
+  font-size:35rpx;
+  font-weight:500;
+}
+.info{
+  margin-top:40rpx;
+  height:25rpx;
+  line-height:25rpx;
+  font-size:24rpx;
+  color:#4e4e4e;
+}
+.btn{
+  margin-top:40rpx;
+  border-radius: 15rpx;
+  background-color: #000;
+  color:#fff;
+}

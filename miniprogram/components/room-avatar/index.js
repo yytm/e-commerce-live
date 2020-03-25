@@ -10,8 +10,17 @@ Component({
       type:String,
       value:""
     },
+    isAutoAvatar:{
+      type:Boolean,
+      value:true
+    },
     //昵称
     nick:{
+      type:String,
+      value:""
+    },
+    //二标题
+    title:{
       type:String,
       value:""
     }
@@ -35,7 +44,7 @@ Component({
   lifetimes: {
     //在组件实例进入页面节点树时执行
     attached() {
-      if (!!!this.data.avatar){
+      if (this.data.isAutoAvatar && !this.data.avatar){
         //获取用户信息
         app.getUserInfo().then((response = {}) => {
           let { userInfo = {} } = response

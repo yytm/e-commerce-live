@@ -1,4 +1,4 @@
-import { CallWxFunction,EventEmitter } from './wx-utils'
+import { CallWxFunction,EventEmitter,throttleByPromise } from '../components/lib/wx-utils'
 import multipart from './Multipart.min.js'
 
 const app = getApp()
@@ -52,7 +52,7 @@ export let request = function (options = {}){
  * @param {*} nickName 用户昵称
  * @returns {*} 返回字符串化的role = [admin,anchor,audience]
  */
-export let loginApp = function (nickName = ""){
+export let loginApp =  function (nickName = ""){
   //获取appID 或者 使用测试的wxAppID
   const appID = wx.getAccountInfoSync().miniProgram.appId || wxAppID
 
@@ -106,10 +106,13 @@ export let loginApp = function (nickName = ""){
         break
     }
 
+    // uid = 99
+    // nickName = "99ni"
+
     //缓存数据
     wx.setStorageSync('sessionId', session_id);
     wx.setStorageSync('uid', uid);
-    wx.setStorageSync('nickName', nickname);
+    wx.setStorageSync('nickName', nickname || 'Johnny');
     wx.setStorageSync('roomImg', room_img);
     wx.setStorageSync('role', strRole);
 
@@ -133,6 +136,7 @@ let setRoom = function (options = {}){
   
   //请求链接
   let requestURL = `${BaseUrl}/app/set_room`
+  let uid = wx.getStorageSync('uid') || ''
 
   let req = {  
     //session信息
@@ -140,9 +144,11 @@ let setRoom = function (options = {}){
     //腾讯提供的appid 
     live_appid: liveAppID,
     //主播ID
-    uid: `anchor${ wx.getStorageSync('uid') || '' }`,
+    uid,
     //房间名称
     room_name,
+    //房间ID
+    room_id:`room${uid}${Date.now()}`,
     //房间密码
     //room_password: this.data.room_password,
     //是否录制
@@ -165,7 +171,12 @@ let setRoom = function (options = {}){
   }
 
   //数据请求
-  return new multipart(request).submit(requestURL).then(response => formatResponse(response))
+  return new multipart(request)
+    .submit(requestURL).then(response => formatResponse(response))
+    .then(response => {
+      response.room_id = req.room_id
+      return Promise.resolve(response)
+    })
 }
 
 
@@ -182,7 +193,7 @@ let listGoods = function (options = {}){
   //如果没有传递UID 默认使用自己的UID尝试请求数据
   let {  uid = '',page = 1,count = 10 } = options
   //如果uid为空 默认使用自己的uid尝试请求
-  uid = !!!String(uid)? `anchor${ wx.getStorageSync('uid') || '' }` : uid
+  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
 
   //请求数据
   return request({
@@ -202,16 +213,120 @@ let listGoods = function (options = {}){
       count
     }
   })
-  //格式化返回数据
-  .then(response => formatResponse(response))
 } 
 
+/**
+ * 获取登录直播间token
+ */
+let getRoomToken = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid = '' } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/get_room_token`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //进入房间的idName string类型
+      user_name:String(uid)
+    }
+  })
+}
+
+/**
+ * 获取房间列表
+ * @param {*} options = {
+ *  uid, //根据主播id进行过滤
+ *  status //根据状态过滤 1 未开始 2 直播中 4 已结束 8 禁播 16 可回放
+ * }
+ */
+let getRoomList = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid,status  } = options
+
+  //请求参数
+  let params = {
+    //session信息
+    session_id: wx.getStorageSync('sessionId'),
+    //腾讯提供的appid 
+    live_appid: liveAppID
+  }
+
+  //根据主播id过滤
+  if(!isNaN(uid)){
+    params['uid'] = uid
+  }
+  //根据状态过滤
+  if(!isNaN(status)){
+    params['status'] = status
+  }
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/get_room_list`,
+    method:'POST',
+    data:params
+  })
+}
+/**
+ * 心跳
+ * @param {*} options = {
+ *  uid,
+ *  room_id
+ * }
+ */
+let hd = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid = '',room_id = '' } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/hb`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //直播间ID
+      room_id,
+      //主播ID
+      uid
+    }
+  })
+}
+
+/**
+ * 获取自己的房间列表
+ * @param {*} options = {
+ *  status //根据状态过滤 1 未开始 2 直播中 4 已结束 8 禁播 16 可回放
+ * }
+ */
+let getSelfRommList = function (options = {}){
+  let uid = wx.getStorageSync('uid')
+  return getRoomList({ ...options,uid })
+}
 
 /**
  * 做一层代理 确保在调用之前 可以拿到用户到session_id
  */
 export let requestSetRoom = wrap(setRoom)
 export let requestListGoods = wrap(listGoods)
+export let requestGetRoomToken = wrap(getRoomToken)
+//防止500毫秒内 多次调用
+export let requestGetRoomList = throttleByPromise(wrap(getRoomList))
+export let requestGetSelfRoomList = throttleByPromise(wrap(getSelfRommList))
+export let requestHd = wrap(hd)
 
 //监听事件
 //用户已经授权获取到了用户信息

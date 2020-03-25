@@ -1,14 +1,7 @@
 <!-- miniprogram/pages/enterLive/index.wxml -->
 <view class="room-preview">
     <live-pusher url="rtmp://**" class="push-content"></live-pusher>
-    <set-room bindstartLogin="startLogin"></set-room>
-    <authroze-modal 
-        isShow="{{isShowModal}}"
-        id='dialog'
-        title='微信授权'
-        subTitle='建行到家CCBgo在线申请获取以下权限'
-        content='获取到你公开信息(呢称，头像等)'
-        confirmText='授权登录'
-        bind:GetUserInfo='bindGetUserInfo'>
-    </authroze-modal>
+    <set-room 
+        is_show_goods_list="{{false}}"
+    ></set-room>
 </view>

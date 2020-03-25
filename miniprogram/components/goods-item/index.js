@@ -10,11 +10,11 @@ Component({
     },
     goods_desc:{
       type:String,
-      value:"商品描述"
+      value:""
     },
     price_text:{
       type:String,
-      value:"¥ 0"
+      value:""
     },
     //是否显示按钮
     is_show_buttom:{
@@ -28,7 +28,7 @@ Component({
     //按钮是否不可以点击
     goods_button_isunable:{
       type:Boolean,
-      value:true
+      value:false
     },
     goods_button_text:{
       type:String,

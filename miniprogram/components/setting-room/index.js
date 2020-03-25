@@ -1,5 +1,5 @@
 // components/setting-room/index.js
-import { CallWxFunction } from '../../utils/wx-utils'
+import { CallWxFunction } from '../lib/wx-utils'
 import { requestSetRoom } from '../../utils/server'
 
 const clearObj = {
@@ -163,13 +163,28 @@ Component({
         room_img = ""
       } = this.data
 
+      //加载loading
+      CallWxFunction('showLoading',{ title:'加载中' })
       //请求后台接口 创建房间
       requestSetRoom({
         room_name,need_playback,is_private,room_password,room_img
       }).then(response => {
+        let { room_id } = response
+        CallWxFunction('redirectTo',{
+          url:`/pages/room/index?roomID=${room_id}`
+        })
         console.log(response,'success')
       }).catch(error => {
+        let { ret:{ msg,message } } = error
+        let errorMessage = msg || message || '系统错误 请稍后重试'
         console.log(error,'error')
+        //消失loading
+        CallWxFunction('hideLoading')
+        //展示错误信息
+        CallWxFunction('showToast',{
+          title:errorMessage,
+          duration:2500
+        })
       })
     },
   },
