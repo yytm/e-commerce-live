@@ -343,8 +343,9 @@ Page({
    * 点赞
    */
   increaseRoomLoveCount(){
-    requestIncreaseRoomLoveCount()
-    this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 } })
+    requestIncreaseRoomLoveCount({ room_id:this.data.roomid }).then(reponse => {
+      this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 } })
+    })
   },
 
   /**

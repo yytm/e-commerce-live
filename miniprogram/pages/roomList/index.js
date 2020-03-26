@@ -161,7 +161,7 @@ Page({
   fetchRooms() {
     if (wx.getStorageSync('sessionId')) {
       if (this.data.state === 'list') {
-        this.getRoomList(18);
+        this.getRoomList(2);
       } else if (this.data.state === 'center') {
         this.getRoomList(16, wx.getStorageSync('uid'));
       }

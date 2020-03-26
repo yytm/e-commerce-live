@@ -47,9 +47,8 @@ Component({
       if (this.data.isAutoAvatar && !this.data.avatar){
         //获取用户信息
         app.getUserInfo().then((response = {}) => {
-          let { userInfo = {} } = response
           //获取昵称 以及 头像
-          let { avatarUrl: avatar = "", nickName: nick = "" } = userInfo
+          let { avatarUrl: avatar = "", nickName: nick = "" } = response
           //显示头像以及昵称
           this.setData({
             avatar, nick
