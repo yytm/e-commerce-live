@@ -4,6 +4,7 @@
     id="{{mainPusher.stream_id}}" 
     url="{{mainPusher.url}}" 
     class="push-content" 
+    enable-mic="{{!disable_mic}}"
     muted="{{disable_mic}}" 
     wx:if="{{isAnchor}}" 
     waiting-image="{{waitingImage}}" 
@@ -18,6 +19,7 @@
     wx:if="{{!isAnchor}}" 
     id="mainPlayer" 
     src="{{mainPlayer.url}}" 
+    autoplay
     mode="RTC"
     object-fit="fillCrop"
     min-cache="0.1"
@@ -27,29 +29,43 @@
     bindnetstatus="onPlayNetStateChange"
 ></live-player>
 
-<live-pusher 
-    mode="RTC"
-    wx:if="{{!isAnchor && recvJoinLiver}}" 
-    id="{{mainPlayer.stream_id}}"
-    url="{{mainPlayer.url}}" 
-    muted="{{disable_mic}}" 
-    beauty="{{beauty}}" 
-    whiteness="{{whiteness}}" 
-    bindstatechange="onPushStateChange" 
-    bindnetstatus="onPushNetStateChange" 
-></live-pusher> 
 
-<live-player 
-    wx:for="{{subPlayer}}" 
-    wx:key="stream_id"
-    src="{{item.url}}" 
-    id="{{item.stream_id}}" 
-    autoplay="{{true}}" 
-    object-fit="fillCrop"
-    min-cache="0.1"
-    max-cache="0.3"
-    beauty="{{beauty}}" 
-    whiteness="{{whiteness}}"
-    bindstatechange="onPlayStateChange" 
-    bindnetstatus="onPlayNetStateChange"
-></live-player>
+
+<view class="subPlayer-box" wx:if="{{subPlayer.length || (!isAnchor && recvJoinLiver)}}">
+    <live-pusher 
+        class="subPlayer"
+        mode="RTC"
+        object-fit="contain"
+        wx:if="{{!isAnchor && recvJoinLiver}}" 
+        id="{{subPusher.stream_id}}"
+        url="{{subPusher.url}}" 
+        muted="{{disable_mic}}" 
+        beauty="{{beauty}}" 
+        whiteness="{{whiteness}}" 
+        bindstatechange="onPushStateChange" 
+        bindnetstatus="onPushNetStateChange" 
+    ></live-pusher>
+    <live-player 
+        class="subPlayer"
+        wx:for="{{subPlayer}}" 
+        wx:key="stream_id"
+        src="{{item.url}}" 
+        id="{{item.stream_id}}" 
+        autoplay
+        object-fit="fillCrop"
+        min-cache="0.1"
+        max-cache="0.3"
+        beauty="{{beauty}}" 
+        whiteness="{{whiteness}}"
+        bindstatechange="onPlayStateChange" 
+        bindnetstatus="onPlayNetStateChange"
+    ></live-player>
+
+    <view class="subPlayer-box-close-box" catchtap="onTapEndJoinLive">
+        <image 
+            role="img" 
+            src="../images/goods-close.png"
+            class="subPlayer-box-close"
+        ></image>
+    </view>
+</view>

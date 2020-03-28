@@ -2,7 +2,10 @@
   "usingComponents": {
     "live": "/components/live-room/index",
     "roomAvatar": "/components/room-avatar/index",
-    "goodsList": "/components/anchor-goods-list/index"
+    "goodsList": "/components/anchor-goods-list/index",
+    "back": "/components/page-back/index",
+    "alert": "/components/alert-modal/index",
+    "settingBox":"/components/setting-box/index"
   },
   "disableScroll": true,
   "navigationStyle": "custom"

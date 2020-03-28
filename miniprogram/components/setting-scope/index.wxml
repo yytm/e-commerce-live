@@ -1,16 +1,18 @@
 <!--components/setting-scope/index.wxml-->
 <view class="setting-scope">
     <text>{{title}}</text>
-    <view class="scope-box">
-      <view class="scope-number" style="width:{{width}}rpx;">
-        <view 
-          class="scope-hold-box" 
-          bindtouchstart="touchstart"
-          bindtouchmove="touchmove"
-          bindtouchend="touchend"
-        ></view>
-        <view class="scope-hodl"></view>
-      </view>
-    </view>
+    <slider 
+      class="scope-box"
+      block-size="16" 
+      backgroundColor="rgba(255, 255, 255, 0.4)" 
+      activeColor="#fff" 
+      min="{{min_scope}}" 
+      max="{{max_scope}}" 
+      step="1" 
+      value="{{scope}}" 
+      bindchange="handleChange" 
+      activeColor="#EE2C43"
+      backgroundColor="#E9EFF5"
+    />
     <text>{{scope}}</text>
 </view>

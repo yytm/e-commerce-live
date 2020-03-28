@@ -15,20 +15,51 @@ Component({
       type:String,
       value:''
     },
+    //美颜
+    beauty:{
+      type:Number,
+      value:1,
+      observer(newVal){
+        console.log(newVal,'美颜值变化了')
+      }
+    },
+    //美白
+    whiteness:{
+      type:Number,
+      value:1
+    },
     //是否禁声
     disable_mic:{
       type:Boolean,
       value:false
     },
+    //切换前后摄像头
+    switch_camera:{
+      type:Boolean,
+      value:true,
+      //切换前后摄像头
+      observer(){
+        let pusherContent = this.data.mainPusher.pusherContext = this.data.mainPusher.pusherContext || wx.createLivePusherContext()
+        pusherContent && pusherContent.switchCamera()
+      }
+    },
     //推流地址选项 数值; 默认0: 自动， 1：Zego服务器
     preferPublishSourceType:{
       type:Number,
-      value:0
+      value:0,
+      observer(newVal){
+        //设置推流地址 默认0: 自动， 1：Zego服务器
+        this.zegoLib && this.zegoLib.CallZegoLib('setPreferPublishSourceType',newVal)
+      }
     },
     //拉流地址选项 数值; 默认0: 自动， 1：Zego服务器
     preferPlaySourceType:{
       type:Number,
-      value:0
+      value:0,
+      observer(newVal){
+        //设置推流地址 默认0: 自动， 1：Zego服务器
+        this.zegoLib && this.zegoLib.CallZegoLib('setPreferPlaySourceType',newVal)
+      }
     }
   },
 
@@ -51,7 +82,7 @@ Component({
     //主播配置
     mainPusher:{
       //随机生成
-      stream_id:`zego${Date.now()}`,
+      stream_id:`zego${Date.now()}Main`,
       url: ''
     },
     //作为观众 主播的播放屏幕
@@ -61,11 +92,13 @@ Component({
     },
     //正在请求连麦的人
     recvJoinLiver:null,
+    //观众是否正在请求连麦
+    isStartRequestJoinLive:false,
     
     //子主播配置
     subPusher:{
       //随机生成
-      stream_id:`zego${Date.now()}`,
+      stream_id:`zego${Date.now()}Sub`,
       url:''
     },
     //子播列表
@@ -90,9 +123,6 @@ Component({
    * 监听变化
    */
   observers:{
-    disable_mic(newVal,oldVal){
-
-    },
     preferPlaySourceType(newVal){
       //设置推流地址 默认0: 自动， 1：Zego服务器
       this.zegoLib && this.zegoLib.CallZegoLib('setPreferPlaySourceType',newVal)
@@ -111,9 +141,15 @@ Component({
       //发送事件
       this.triggerEvent('isConnection',{ isConnection:newVal })
     },
-    // roomid(newVal,oldVal){
-    //   !!newVal && this.loginRoom()
-    // }
+    //观众是否正在连麦请求中
+    isStartRequestJoinLive(newVal){
+      if(newVal){
+        return CallWxFunction('showLoading',{
+          title:'正在向主播请求连麦'
+        })
+      }
+      CallWxFunction('hideLoading')
+    }
   },
 
   /**
@@ -145,7 +181,9 @@ Component({
       lib.CallZegoLib('updatePlayerNetStatus',e.target.id, e)
     },
     //错误状态
-    onPushError(e){},
+    onPushError(e){
+      console.error(e)
+    },
     /**
      * 如果是主播进入房间 况且当前的roomid不存在于roomList中 则认为可以直播（新创建的直播房间）
      * 如果当前是主播 但是当前roomid存在于roomList 但是room数据里面的主播id和当前用户的主播不匹配 则认为当前主播是游客
@@ -212,7 +250,7 @@ Component({
       if(typeof lib === 'undefined'){ return }
       //设置房间人数变化 需要通知事件
       lib.CallZegoLib('setUserStateUpdate',true)
-
+      
       //推流后，服务器主动推过来的，流状态更新 
       lib.on('onPublishStateUpdate',this.onPublishStateUpdate.bind(this))
       //拉流状态变更通知
@@ -399,14 +437,22 @@ Component({
 
     /* -------------------------- 连麦相关 --------------------------- */
     /**
+     * 主动点击了结束连麦
+     */
+    onTapEndJoinLive(){
+      //通知结束直播事件  可以通过调用当前组件的 endJoinLive 达到结束连麦的目的
+      this.triggerEvent('onTapEndJoinLive',{ recvJoinLiver:this.data.recvJoinLiver,component:this,endJoinLive:this.endJoinLive.bind(this) })
+    },
+    /**
      * 关闭连麦
      */
     endJoinLive(joinLiver = this.data.recvJoinLiver){
       let lib = this.zegoLib
-      if(typeof lib === 'undefined'){ return }
+      if(typeof lib === 'undefined' || !!!joinLiver){ return }
       //非主播 默认关闭主播连麦
-      let from_userid = this.data.isAnchor? joinLiver.joinLiver : this.data.mainPlayer.anchor_id_name
+      let from_userid = this.data.isAnchor? joinLiver.from_userid : this.data.mainPlayer.anchor_id_name
 
+      this.setData({ recvJoinLiver:(this.data.recvJoinLiver = '') })
       //关麦
       lib.CallZegoLib('endJoinLive',from_userid)
       
@@ -426,9 +472,27 @@ Component({
      */
     requestJoinLive(destIdName = this.data.mainPlayer.anchor_id_name){
       let lib = this.zegoLib
-      if(typeof lib === 'undefined'){ return }
+      //还未连接上服务器
+      if(!this.data.isConnection || typeof lib === 'undefined'){
+        let title = !this.data.isConnection? '还未连接上服务器 请稍后重试' : '你还没有输入消息'
+        return CallWxFunction('showToast',{
+          title,
+          icon: 'none',
+          duration: 2000
+        })
+      }
+      //防止多次请求
+      if(this.data.isStartRequestJoinLive){ return }
+      this.setData({ isStartRequestJoinLive:true })
       //请求连麦
-      lib.client.requestJoinLive(destIdName,() => {},() => {},(result, fromUserId, fromUserName) => {
+      lib.client.requestJoinLive(destIdName,response => {
+        console.log('requestJoinLive 请求成功',response)
+      },error => {
+        this.setData({ isStartRequestJoinLive:false })
+        console.log('requestJoinLive 请求失败',error)
+      },(result, fromUserId, fromUserName) => {
+        let newStreamID = this.createStreamID()
+        this.setData({ isStartRequestJoinLive:false,subPusher:{ ...this.data.subPusher,stream_id:newStreamID } })
         //拒绝连麦
         //或者主播正在连麦
         //subPusher > 0 说明有连麦
@@ -448,7 +512,7 @@ Component({
         //更新
         this.setData({ recvJoinLiver:{ from_userid:fromUserId, from_username:fromUserName }  })
         //推流
-        !this.data.isAnchor && this.startPublishing(this.data.subPusher.stream_id)
+        !this.data.isAnchor && this.startPublishing(newStreamID)
       })
     },
     /**
@@ -464,7 +528,7 @@ Component({
       //回复
       lib.CallZegoLib('respondJoinLive',requestId,result)
       //记录
-      result && this.setData({ recvJoinLiver:joinLiver })
+      this.setData({ recvJoinLiver:result?joinLiver : '' })
     },
     /**
      * 收到结束连麦信令
@@ -475,9 +539,12 @@ Component({
      */
     onRecvEndJoinLiveCommand(requestId, from_userid, from_username, roomid){
       //当前是观众 停止观众自己的推流
-      if(!this.isAnchor){
+      if(!this.data.isAnchor){
         //停止推流
         this.stopPusherByObj(this.data.subPusher)
+      }else{
+        //停止子主播的拉流
+        this.stopSubPlayer()
       }
       //清空数据
       this.setData({ recvJoinLiver:(this.data.recvJoinLiver = '') })
@@ -496,7 +563,7 @@ Component({
         //更新列表
         this.setData({ recvJoinLiver },() => {
           //去显示toast 逻辑  
-          this.triggerEvent('recvJoinLive',{ recvJoinLiver,component:this })
+          this.triggerEvent('onRecvJoinLiveRequest',{ recvJoinLiver,component:this })
         })
         return
       }
@@ -530,12 +597,15 @@ Component({
      * @param {*} streamList streamList：增量流列表
      */
     onStreamUpdated(updatedType,streamList){
-      let dataSender = { mainPusher:this.data.mainPusher,subPlayer:this.data.subPlayer }
+      let dataSender = { 
+        mainPusher:{ ...this.data.mainPusher },
+        subPlayer:[...this.data.subPlayer]
+      }
       let task = []
       Array.isArray(streamList) && streamList.forEach(streamObj => {
         let { stream_id,anchor_id_name,anchor_nick_name } = streamObj
         //删除流
-        if(updatedType === 0){
+        if(updatedType === 1){
           this.stopPlayer(stream_id)
           return
         }
@@ -563,7 +633,8 @@ Component({
           : dataSender['subPlayer'][index] = { ...dataSender['subPlayer'][index],...streamObj }
       })
       //批量更新
-      this.setData({ ...this.data,...dataSender },() => {
+      this.setData(dataSender,() => {
+        console.log('执行 批量')
         //确保数据更新完毕 批量执行任务
         task.map(fn => fn())
       })
@@ -679,6 +750,8 @@ Component({
       this.stopPusherByObj(pusher)
     },
     stopPusherByObj(pusher = {}){
+      let lib = this.zegoLib
+      if(typeof lib === 'undefined'){ return }
       let { stream_id,pusherContext } = pusher
       //停止推流
       lib.CallZegoLib('stopPublishingStream', stream_id)
@@ -705,10 +778,12 @@ Component({
         return
       }
       //观众停止连麦 删除
-      this.data.subPusher.splice(index,1)
-      this.setData({ subPusher:this.data.subPusher })
+      this.data.subPlayer.splice(index,1)
+      this.setData({ subPlayer:this.data.subPlayer,recvJoinLiver:'' })
     },
     stopPlayerByObj(player = {}){
+      let lib = this.zegoLib
+      if(typeof lib === 'undefined'){ return }
       let { stream_id,playerContent } = player
       //停止拉流
       lib.CallZegoLib('stopPlayingStream',stream_id)
@@ -738,6 +813,10 @@ Component({
       this.stopPusher(true)
       this.stopPlayerByObj(this.data.mainPlayer)
       this.stopSubPlayer()
+      this.endJoinLive()
+
+      //发送事件
+      this.triggerEvent('logout',{ component:this })
     },
     /**
      * 登陆房间
@@ -755,6 +834,7 @@ Component({
         //初始化房间
         return this.initRoom(this.data.roomid)
       }).then(streamList => {
+        console.log(streamList,'登陆获取到到streamList')
         //辅助作用
         let startStreamList = streamList
         //主播的信息
@@ -764,6 +844,7 @@ Component({
         //主播是否离开
         let isLeave = this.data.isAnchor? false : index <= -1
         
+
         if(index > -1){
           mainPlayer = { ...this.data.mainPlayer,...startStreamList[index] }
           //子主播列表中 去除主播信息
@@ -806,6 +887,10 @@ Component({
         //关闭加载框
         CallWxFunction('hideLoading')
       })
+    },
+    //创建一个streamID
+    createStreamID(){
+      return `${this.data.roomid}zego${Date.now()}Sub`
     }
   },
 
@@ -813,14 +898,11 @@ Component({
   pageLifetimes: {
     // 组件所在页面的生命周期函数
     show() { 
-      this.setData({
-        //stream_id生成规则 方便后台解析  room[uid][Date.now()]zego[Date.now()]
-        mainPusher:{ ...this.data.mainPusher,stream_id:`${this.data.roomid}${this.data.mainPusher.stream_id}` },
-        subPusher:{ ...this.data.subPusher,stream_id:`${this.data.roomid}${this.data.subPusher.stream_id}` }
-      })
       this.loginRoom()
     },
-    hide() { },
+    hide() { 
+      this.logout()
+    },
     resize() { },
   },
 

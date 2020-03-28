@@ -6,7 +6,7 @@
     <view class="setting-container" >
       <view class="setting-header"><text>设置</text></view>
 
-      <view class="setting-image-container">
+      <view class="setting-image-container" catchtap="switchCamera">
         <view class="setting-image-item">
           <image 
             class="setting-item-img" 
@@ -34,7 +34,7 @@
           <text>美颜效果</text>
         </view>
 
-        <view class="setting-image-item">
+        <view class="setting-image-item" catchtap="closeRoom">
           <image 
             class="setting-item-img" 
             role="img" 
@@ -72,16 +72,18 @@
     <view class="setting-image-container column">
       <setScope
         title="美颜"
-        max_scope="256"
-        min_scope="0"
+        max_scope="9"
+        min_scope="1"
         scope="{{beauty}}"
+        bindscopeChange="onBeautyChange"
       ></setScope>
 
       <setScope
         title="美白"
-        max_scope="256"
-        min_scope="0"
+        max_scope="9"
+        min_scope="1"
         scope="{{whiteness}}"
+        bindscopeChange="onWhitenessChange"
       ></setScope>
     </view>
   </view>

@@ -5,6 +5,13 @@
     <text>主播暂时离开 请稍后...</text>
   </view>
 
+  <back 
+    id="backBtn"
+    bindback="onUnload" 
+    isAutoBack="{{!isAnchor}}" 
+    bindonBackTap="onBackTap"
+  ></back>
+
   <roomAvatar 
     class="room-avatar"
     title="{{userCount + ' 人观看'}}"
@@ -22,12 +29,13 @@
       class="setting-share-img"
       role="img"
       src="../../components/images/room-share.png"
-    ></image>
+    ><button open-type="share" class="setting-share-img-btn"></button></image>
     <image 
-      wx:if="{{false}}"
+      wx:if="{{anchor_id_name && !isAnchor}}"
       class="setting-joinlive-img"
       role="img"
-      src="../../components/images/room-joinlive.png"
+      src="../../components/images/room-heart.png"
+      catchtap="requestJoinLive"
     ></image>
     <image 
       class="setting-message-img"
@@ -82,7 +90,10 @@
   <live
     id="live"
     roomid="{{roomid}}"
-    disable_mic="{{disable_mic}}"
+    beauty="{{settingBox.beauty}}"
+    switch_camera="{{settingBox.switch_camera}}"
+    whiteness="{{settingBox.whiteness}}"
+    disable_mic="{{!settingBox.enable_mic}}"
     preferPublishSourceType="0"
     preferPlaySourceType="0"
     recvJoinLive="recvJoinLive"
@@ -96,6 +107,8 @@
     bindonLeave="onLeave"
     bindonRecvReliableMessage="onRecvReliableMessage"
     bindonRecvBigRoomMessage="onRecvBigRoomMessage"
+    bindonRecvJoinLiveRequest="onRecvJoinLiveRequest"
+    bindonTapEndJoinLive="onTapEndJoinLive"
   ></live>
 
   <goodsList
@@ -129,4 +142,50 @@
       <view class="message-send" catchtap="sendMessage">发送</view>
     </view>
   </view>
+
+
+  <alert
+    wx:if="{{isShowConfirm}}"
+    confirmText="结束直播"
+    cancelText="取消"
+    content="是否结束直播"
+    showCancel="{{true}}"
+    bindcancel="onCancel"
+    bindconfirm="onConfirm"
+  ></alert>
+
+  <alert
+    wx:if="{{isShowEndJoinLiveConfirm}}"
+    confirmText="结束连麦"
+    cancelText="取消"
+    content="是否结束连麦"
+    showCancel="{{true}}"
+    bindcancel="onJoinLiveCancel"
+    bindconfirm="onJoinLiveConfirm"
+  ></alert>
+
+  <view class="joinLive" wx:if="{{JoinLive.isShowBox}}">
+    <view class="joinlive-head">
+      <text>{{JoinLive.recvJoinLiver.from_username}} 请求连麦 是否同意？</text>
+    </view>
+    <view class="joinlive-footer">
+      <text bindtap="onRejJoinLive">拒绝</text>
+      <text bindtap="onRevJoinLive">同意</text>
+    </view>
+  </view>
+
+  <settingBox
+    is_show_setting_box="{{settingBox.is_show_setting_box}}"
+    enable_mic="{{settingBox.enable_mic}}"
+    beauty="{{settingBox.beauty}}"
+    whiteness="{{settingBox.whiteness}}"
+    room_password=""
+    bindcloseRoom="onBackTap"
+    bindswitchCameraChange="onSwitchCameraChange"
+    bindswitchMic="onSwitchMic"
+    bindbeautyChange="onBeautyChange"
+    bindwhitenessChange="onWhitenessChange"
+  ></settingBox>
+
+  <view wx:if="{{isAnchor}}" class="setting-btn" catchtap="showSettingBox">设置 ></view>
 </view>

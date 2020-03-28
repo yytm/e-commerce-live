@@ -1,6 +1,6 @@
 <!-- miniprogram/pages/enterLive/index.wxml -->
 <view class="room-preview">
-    <live-pusher url="rtmp://**" class="push-content"></live-pusher>
+    <live-pusher autopush url="rtmp://**" class="push-content"></live-pusher>
     <set-room 
         is_show_goods_list="{{false}}"
     ></set-room>

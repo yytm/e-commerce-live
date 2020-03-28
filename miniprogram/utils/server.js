@@ -4,33 +4,6 @@ import multipart from './Multipart.min.js'
 const app = getApp()
 const { globalData:{ BaseUrl,liveAppID,wxAppID } } = app
 
-/**
- * 格式化业务返回的数据
- * @param {*} response  wx.request 返回的数据
- */
-let formatResponse = function (response = {}){
-  let { statusCode = 0,data = {} } = response
-  //系统错误 转换了一下 返回业务类型的错误
-  if(Number(statusCode) !== 200){ return Promise.reject({ ret:{ code:10000,msg:'系统错误001',statusCode } }) }
-  //解析业务接口
-  let { ret:{ code = 10000,msg = "系统错误" } } = data
-  //业务接口 code 不为0 的时候 代表业务接口报错
-  if(Number(code) !== 0){ return Promise.reject(data) }
-  //业务接口成功
-  return Promise.resolve(data)
-}
-
-/**
- * 确保函数被调用之前 用户已经授权过
- * 主要获取getLogin里面的session_id
- * @param {*} func 
- */
-let wrap = function (func){
-  return function (){
-    //getUserInfo 统一app.js里面的方法
-    return app.getUserInfo().then(() => func.apply(func,Array.from(arguments)))
-  }
-} 
 
 /**
  * 用于处理请求业务接口
@@ -39,7 +12,7 @@ let wrap = function (func){
 export let request = function (options = {}){
   //调用wx.request
   return CallWxFunction("request",{  
-    url:"",method:"POST",data:{},
+    url: "", method: "POST", data: {}, timeout:60000,
     ...options
   }).then(response => formatResponse(response))
 }
@@ -52,7 +25,7 @@ export let request = function (options = {}){
  * @param {*} nickName 用户昵称
  * @returns {*} 返回字符串化的role = [admin,anchor,audience]
  */
-export let loginApp =  function (nickName = ""){
+let login =  function (nickName = ""){
   //获取appID 或者 使用测试的wxAppID
   const appID = wx.getAccountInfoSync().miniProgram.appId || wxAppID
 
@@ -82,7 +55,8 @@ export let loginApp =  function (nickName = ""){
     let { 
       ret:{ code,msg },
       session_id = "",
-      uid = "",
+      //观众没有uid
+      uid = `temp${Date.now()}`,
       nickname = "",
       name = "",
       cellphone = "",
@@ -105,9 +79,6 @@ export let loginApp =  function (nickName = ""){
         strRole = 'audience'
         break
     }
-
-    // uid = 99
-    // nickName = "99ni"
 
     //缓存数据
     wx.setStorageSync('sessionId', session_id);
@@ -266,7 +237,6 @@ let getRoomList = function (options = {}){
   if(!isNaN(status)){
     params['status'] = status
   }
-
   //请求数据
   return request({
     //请求地址
@@ -349,6 +319,79 @@ let increaseRoomLoveCount = function (options = {}){
 }
 
 /**
+ * 关闭房间
+ * @param {*} options = {
+ *  room_id 房间ID
+ * }
+ */
+let clearRoom = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  uid = '',room_id = '' } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/clear_room`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //直播间ID
+      room_id,
+      //主播ID
+      uid
+    }
+  })
+}
+
+/**
+ * 格式化业务返回的数据
+ * @param {*} response  wx.request 返回的数据
+ */
+let formatResponse = function (response = {}){
+  let { statusCode = 0,data = {} } = response
+  //系统错误 转换了一下 返回业务类型的错误
+  if(Number(statusCode) !== 200){ return Promise.reject({ ret:{ code:10000,msg:'系统错误001',statusCode } }) }
+  //解析业务接口
+  let { ret:{ code = 10000,msg = "系统错误" } } = data
+  //业务接口 code 不为0 的时候 代表业务接口报错
+  if(Number(code) !== 0){ return Promise.reject(data) }
+  //业务接口成功
+  return Promise.resolve(data)
+}
+
+//登陆
+//只要登陆成功过 就缓存数据  之后取的数据都是缓存数据
+export let loginApp = throttleByPromise(function (){
+  let { time = 0,response } = login.__cache__ = login.__cache__ || {}
+  //是否有缓存 缓存有效时间1小时
+  if(response && !isNaN(time) && Date.now() - Number(time) <= 1000 * 60 * 60){
+    return Promise.resolve(response)
+  }
+  //getUserInfo 统一app.js里面的方法
+  return app.getUserInfo().then(({ nickName }) => login(nickName)).then(response => {
+    //缓存数据
+    login.__cache__ = { time:Date.now(),response }
+    //返回结果
+    return Promise.resolve(response)
+  })
+})
+/**
+ * 确保函数被调用之前 用户已经授权过
+ * 主要获取login里面的session_id
+ * @param {*} func 
+ */
+let wrap = function (func){
+  return function (){
+    return loginApp().then(() => func(...arguments))
+  }
+} 
+
+/**
  * 做一层代理 确保在调用之前 可以拿到用户到session_id
  */
 export let requestSetRoom = wrap(setRoom)
@@ -359,12 +402,13 @@ export let requestGetRoomList = throttleByPromise(wrap(getRoomList))
 export let requestGetSelfRoomList = throttleByPromise(wrap(getSelfRommList))
 export let requestHd = wrap(hd)
 export let requestIncreaseRoomLoveCount = wrap(increaseRoomLoveCount)
+export let requestClearRoom = wrap(clearRoom)
+
 
 //监听事件
 //用户已经授权获取到了用户信息
 //逻辑在app.js里面
-EventEmitter.on('getUserInfo',userInfo => {
-  let { nickName } = userInfo
+EventEmitter.on('getUserInfo',({ nickName }) => {
   //自动登陆 获取相关信息
   loginApp(nickName)
 })

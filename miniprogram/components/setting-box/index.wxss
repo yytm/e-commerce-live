@@ -48,11 +48,11 @@
 .beauty .setting-header text{
   height:22rpx;
   line-height: 22rpx;
+  padding-left:9rpx;
 }
 .beauty .setting-header image{
   width:13rpx;
   height:22rpx;
-  margin-right:9rpx;
   margin-top:5rpx;
 }
 

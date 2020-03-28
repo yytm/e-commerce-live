@@ -183,6 +183,7 @@ Component({
         //展示错误信息
         CallWxFunction('showToast',{
           title:errorMessage,
+          icon:'none',
           duration:2500
         })
       })

@@ -11,7 +11,7 @@
   font-weight:400;
   color:rgba(22,23,24,1);
   line-height:40rpx;
-  width:54rpx;
+  width:65rpx;
 }
 .setting-scope text:first-child{
   margin-right:24rpx;
@@ -23,34 +23,7 @@
 .scope-box{
   flex: 1;
   height:8rpx;
-  background:rgba(233,239,245,1);
   border-radius:4px;
-  margin-top:15rpx;
-}
-.scope-number{
-  position:relative;
-  background:rgba(238,44,67,1);
-  border-radius:4rpx;
-  width:10%;
-  height:100%;
-}
-.scope-hold-box{
-  position: absolute;
-  right:-16rpx;
-  top:-11rpx;
-  width:32rpx;
-  height:32rpx;
-  background:rgba(255,255,255,1);
-  box-shadow:0rpx 5rpx 8rpx 0rpx rgba(0, 0, 0, 0.3);
-  border-radius:50%;
-}
-.scope-hodl{
-  position: absolute;
-  right:-9rpx;
-  top:-4rpx;
-  width:18rpx;
-  height:18rpx;
-  background:rgba(238,44,67,1);
-  box-shadow:0rpx 5rpx 8rpx 0rpx rgba(0, 0, 0, 0.3);
-  border-radius:50%;
+  vertical-align:baseline;
+  transform: translate(0,-22rpx);
 }

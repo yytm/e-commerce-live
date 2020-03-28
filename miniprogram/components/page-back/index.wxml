@@ -1,0 +1,7 @@
+<!--components/page-back/index.wxml-->
+<view class="back" catchtap="backTap">
+  <image 
+    role="img" 
+    src="../images/setting-back.png"
+  ></image>
+</view>

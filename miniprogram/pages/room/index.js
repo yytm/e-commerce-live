@@ -1,5 +1,6 @@
 // miniprogram/pages/room/index2.js
-import { requestHd,requestIncreaseRoomLoveCount } from '../../utils/server'
+import { requestHd,requestIncreaseRoomLoveCount,requestClearRoom } from '../../utils/server'
+import { CallWxFunction } from '../../components/lib/wx-utils'
 
 Page({
   /**
@@ -13,8 +14,19 @@ Page({
     userCount:0,
     //房间ID
     roomid:'',
-    //是否禁用麦克风
-    disable_mic:false,
+    //设置框
+    settingBox:{
+      //前后摄像头
+      switch_camera:true,
+      //是否可用麦克风
+      enable_mic:true,
+      //美颜值
+      beauty:1,
+      //美白值
+      whiteness:1,
+      //是否显示设置光
+      is_show_setting_box:false
+    },
     //是否是主播
     isAnchor:false,
     //主播id
@@ -66,13 +78,17 @@ Page({
       goods_url:'',
       goods_id:'',
       goods_no:''
-    }
+    },
+    //连麦配置
+    JoinLive:{
+      recvJoinLiver:{},
+      isShowBox:false
+    },
+    //是否显示取消弹窗
+    isShowConfirm:false,
+    //主动点击结束直播的弹窗
+    isShowEndJoinLiveConfirm:false
   },
-
-  /**
-   * 连麦申请
-   */
-  recvJoinLive(){},
   onPublishStateUpdate(){},
   onPlayStateUpdate(){},
   /**
@@ -179,6 +195,15 @@ Page({
     this.live()
   },
   /**
+   * 退出直播间
+   * @param {*} component 直播组件
+   */
+  onRoomLogout(e){
+    this.data.isAnchor && requestClearRoom({ room_id:this.data.roomid })
+    //退出房间
+    this.onConfirm()
+  },
+  /**
    * 主播离开事件
    */
   onLeave(e){
@@ -186,10 +211,34 @@ Page({
     this.setData({ isLeave })
   },
   /**
-   * 当热门商品被点击
+   * 展示主播设置框
    */
-  onHotShopTap(){
-    //跳转逻辑
+  showSettingBox(){
+    this.setData({ settingBox:{ ...this.data.settingBox,is_show_setting_box:true } })
+  },
+  /**
+   * 切换前后摄像头
+   */
+  onSwitchCameraChange(){
+    this.setData({ settingBox:{ ...this.data.settingBox,switch_camera:!this.data.settingBox.switch_camera } })
+  },
+  /**
+   * 改变mic的状态
+   */
+  onSwitchMic(e){
+    this.setData({ settingBox:{ ...this.data.settingBox,enable_mic:e.detail } })
+  },
+  /**
+   * 美颜值改变
+   */
+  onBeautyChange(e){
+    this.setData({ settingBox:{ ...this.data.settingBox,beauty:e.detail } })
+  },
+  /**
+   * 美白值改变
+   */
+  onWhitenessChange(e){
+    this.setData({ settingBox:{ ...this.data.settingBox,whiteness:e.detail } })
   },
   /**
    * 关闭热推商品
@@ -198,11 +247,49 @@ Page({
     this.setData({ hotGoods:{ ...this.data.hotGoods,is_show_shop:false } })
   },
   /**
+   * 向主播发起连麦请求
+   */
+  requestJoinLive(){
+    console.log('requestJoinLive tap')
+    this.liveRoomComponent.requestJoinLive()
+  },
+  /**
+   * 关闭连麦请求
+   */
+  endJoinLive(){
+    this.liveRoomComponent.endJoinLive(this.data.JoinLive.recvJoinLive)
+  },
+  /**
+   * 收到连麦请求
+   * @param {*} recvJoinLiver 连麦者信息
+   */
+  onRecvJoinLiveRequest(e){
+    let { recvJoinLiver,component } = e.detail
+    //回复连麦请求
+    this.setData({ JoinLive:{ recvJoinLiver,isShowBox:true } })
+    //this.liveRoomComponent.responseJoinLive(recvJoinLiver,true/false)
+  },
+  /**
+   * 同意连麦
+   */
+  onRevJoinLive(){
+    this.liveRoomComponent.responseJoinLive(this.data.JoinLive.recvJoinLiver,true)
+    this.setData({ JoinLive:{ ...this.data.JoinLive,isShowBox:false } })
+  },
+  /**
+   * 拒绝连麦
+   */
+  onRejJoinLive(){
+    this.liveRoomComponent.responseJoinLive(this.data.JoinLive.recvJoinLiver,false)
+    this.setData({ JoinLive:{ ...this.data.JoinLive,isShowBox:false } })
+  },
+  /**
    * 心跳 更新房间信息
    */
   live(){
     let nextTick = () => {
-      this.liveHandler = setTimeout(this.live.bind(this),this.data.isAnchor? 5000 : 20000)
+      //this.liveHandler = setTimeout(this.live.bind(this),this.data.isAnchor? 5000 : 20000)
+      this.liveHandler = setTimeout(this.live.bind(this),5000)
     }
     this.liveHandler && clearTimeout(this.liveHandler)
 
@@ -223,6 +310,25 @@ Page({
       return this.sendShop(goodsObj)
     }
     //观众前往购买商品
+    let { url_type = 1,goods_url = "",app_id } = goodsObj
+    //url
+    if(Number(url_type) === 1){
+      return CallWxFunction(this.dta.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+    }
+    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+  },
+  /**
+   * 当热门商品被点击
+   */
+  onHotShopTap(){
+    //跳转逻辑
+    //前往商品
+    let { url_type = 1,goods_url = "" } = this.data.hotGoods
+    //url
+    if(Number(url_type) === 1){
+      return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+    }
+    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
   },
   /**
    * 商品列表 商品被点击
@@ -230,6 +336,12 @@ Page({
   goodsTap(e){
     let { goodsObj, itemView, listView,boxView } = e.detail
     //前往商品
+    let { url_type = 1,goods_url = "" } = goodsObj
+    //url
+    if(Number(url_type) === 1){
+      return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+    }
+    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
   },
   /**
    * 显示商品列表
@@ -238,7 +350,6 @@ Page({
     this.setData({ goodsBox:{ ...this.data.goodsBox,is_show_goods_list:true } })
   },
   onGoodsListHidden(e){
-    let { boxView } = e.detail
     this.setData({ goodsBox:{ ...this.data.goodsBox,is_show_goods_list:false } })
   },
   /**
@@ -270,6 +381,15 @@ Page({
    * @param {*} shop 
    */
   sendShop(shop = {}){
+    this.setData({ 
+      hotGoods:{
+        ...shop,
+        is_show_shop:true
+      } 
+    })
+    //关闭商品列表
+    this.onGoodsListHidden()
+    //推送商品
     this.liveRoomComponent.sendRoomMessage('shop',JSON.stringify(shop))
   },
   /**
@@ -378,12 +498,51 @@ Page({
   onHide: function () {
 
   },
-
+  /**
+   * 返回按钮被点击了
+   * @param {*} e 
+   */
+  onBackTap(e){
+    this.setData({ isShowConfirm:true })
+  },
+  /**
+   * 主动点击了结束连麦
+   */
+  onTapEndJoinLive(e){
+    this.setData({ isShowEndJoinLiveConfirm:true })
+  },
+  /**
+   * 结束连麦框 点击了取消
+   */
+  onJoinLiveCancel(){
+    this.setData({ isShowEndJoinLiveConfirm:false })
+  },
+  /**
+   * 结束连麦框 点击了结束
+   */
+  onJoinLiveConfirm(){
+    this.liveRoomComponent.endJoinLive()
+    this.setData({ isShowEndJoinLiveConfirm:false })
+  },
+  /**
+   * 取消结束直播
+   */
+  onCancel() {
+    this.setData({ isShowConfirm: false })
+  },
+  /**
+   * 结束直播
+   */
+  onConfirm() {
+    let backBtn = this.backBtn = this.backBtn || this.selectComponent('#backBtn')
+    typeof backBtn.back === 'function' && backBtn.back()
+    this.setData({ isShowConfirm: false })
+  },
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    //this.liveRoomComponent.logout()
   },
 
   /**
@@ -404,6 +563,10 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    return {
+      title: `${this.data.anchor_nick_name}正在直播 快来观看`,
+      path: `/pages/room/index?roomID=${this.data.roomid}`,
+      imageUrl: wx.getStorageSync('roomImg') || '../../resource/invi.png',
+    }
   }
 })

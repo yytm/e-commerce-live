@@ -46,15 +46,37 @@ Component({
   /**
    * 组件的初始数据
    */
-  data: {
-
-  },
+  data: { },
 
   /**
    * 组件的方法列表
    */
   methods: {
-    //开关麦克风
+    onBeautyChange(e){
+      let beauty = e.detail
+      this.setData({ beauty })
+      //通知事件
+      this.triggerEvent('beautyChange', beauty)
+    },
+    onWhitenessChange(e){
+      let whiteness = e.detail
+      this.setData({ whiteness })
+      //通知事件
+      this.triggerEvent('whitenessChange', whiteness)
+    },
+    //关闭直播通知
+    closeRoom(){
+      this.setData({ is_show_setting_box:false })
+      //通知事件
+      this.triggerEvent('closeRoom')
+    },
+    //切换摄像头通知
+    switchCamera(){
+      const switch_camera = !this.data.switch_camera
+      this.setData({ switch_camera })
+      this.triggerEvent('switchCameraChange',switch_camera)
+    },
+    //开关麦克风通知
     switchMic(){
       const enable_mic = !this.data.enable_mic
       this.setData({ enable_mic })

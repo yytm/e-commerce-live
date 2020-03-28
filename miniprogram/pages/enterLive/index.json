@@ -7,5 +7,6 @@
   "navigationBarTitleText": "开始直播",
   "navigationBarTextStyle": "white",
   "enablePullDownRefresh": false,
-  "navigationStyle":"custom"
+  "navigationStyle":"custom",
+  "disableScroll": true
 }

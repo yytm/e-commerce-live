@@ -48,7 +48,7 @@ Component({
     },
     onBeforeGoodsListRender(goods){
       let other = {
-        goods_button_isunable: true,
+        is_show_buttom: true,
         goods_button_text: this.data.isAnchor ? '推送' : '前往购买',
         goods_button_isunable:false,
         goods_obj: goods

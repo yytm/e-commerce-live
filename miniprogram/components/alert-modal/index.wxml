@@ -1,0 +1,24 @@
+<!--components/alert-modal/index.wxml-->
+<view class="alert-box" wx:if="{{isShow}}">
+    <view class="alert-container">
+      <view class="alert-head">
+        <text>{{content}}</text>
+        <image 
+          role="img" 
+          src="../images/goods-close.png"
+          bindtap="close"
+        ></image>
+      </view>
+      <view class="alert-footer">
+        <view 
+          class="alert-button left" 
+          wx:if="{{showCancel}}"
+          bindtap="cancel"
+        >{{cancelText}}</view>
+        <view 
+          class="alert-button right"
+          bindtap="confirm"
+        >{{confirmText}}</view>
+      </view>
+    </view>
+</view>

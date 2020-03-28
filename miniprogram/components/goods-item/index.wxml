@@ -3,7 +3,7 @@
    <view class="goods-item-container" catchtap="goodsTap">
     <image 
       role="img" 
-      src="{{goods_img}}"
+      src="{{goods_img || '../images/shop-default.png'}}"
       class="goods-img"
     ></image>
     <view class="goods-details">

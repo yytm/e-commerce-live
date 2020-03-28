@@ -83,7 +83,7 @@ App({
       typeof userInfoReadyCallback === 'function'
         && userInfoReadyCallback(res)
       //返回给Promise
-      return Promise.resolve(res)
+      return Promise.resolve(res.userInfo)
     })
   },
   onShow: function(options) {
@@ -96,8 +96,6 @@ App({
     }).catch(error => {
       console.log('setKeepScreenOn error', error)
     })
-
-    console.log(getCurrentPageWithArgs(),8888)
 
     //获取用户信息
     this.getUserInfo().catch(error => {
@@ -146,8 +144,8 @@ App({
     //用户信息
     userInfo: null,
     //BaseUrl: 'https://shop-backend.yunyikao.com',
-    BaseUrl:'http://shop-backend-test.yunyikao.com',
+    BaseUrl:'https://shop-aliyuntest.yunyikao.com',
     wxAppID: 'wx371ac5dc128c4c5e',
     liveAppID: 1739272706 
   },
-})
+}) 

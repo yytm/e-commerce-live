@@ -12,7 +12,7 @@ Page({
     role: '',
     roomList: [
       // {
-      //   room_id: '123',
+      //   room_id: 'room651585275243553',
       //   room_name: 'Givenchy/纪梵希高定香榭天鹅',
       //   room_img: '../../resource/m0.png',
       //   anchor_id_name: "xcxU1582085277557",
@@ -159,9 +159,10 @@ Page({
   },
 
   fetchRooms() {
+    //return
     if (wx.getStorageSync('sessionId')) {
       if (this.data.state === 'list') {
-        this.getRoomList(2);
+        this.getRoomList(18);
       } else if (this.data.state === 'center') {
         this.getRoomList(16, wx.getStorageSync('uid'));
       }
@@ -193,7 +194,7 @@ Page({
           console.error('roomList ', res.data.room_list);
           if (res.data.room_list && res.data.room_list.length) {
             const roomList = res.data.room_list
-              .filter(item => item.room_id.startsWith('e-'))
+              //.filter(item => item.room_id.startsWith('e-'))
               .map(item => {
                 item.room_show_name = item.room_id.slice(2);
                 console.log('show_name', item.room_show_name);
@@ -224,7 +225,7 @@ Page({
         }
       },
       fail(e) {
-
+        this.stopRefresh()
       }
     })
   },
@@ -318,7 +319,7 @@ Page({
         "room_password": password
       },
       success(res) {
-        if (result.statusCode === 200) {
+        if (res.statusCode === 200) {
           console.log('del playback suc', res);
           self.enterRoom();
         }

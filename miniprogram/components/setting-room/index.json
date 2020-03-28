@@ -4,6 +4,7 @@
     "checkbox": "/components/room-checkbox/index",
     "roomInput": "/components/room-input/index",
     "roomAvatar":"/components/room-avatar/index",
-    "goodsList":"/components/goods-list/index"
+    "goodsList":"/components/goods-list/index",
+    "back": "/components/page-back/index"
   }
 }

@@ -65,7 +65,7 @@ export const throttleByPromise = function(promiseFunction = () => Promise.resolv
         }
         startTime = now
         lastResult = lastErrorResult = null
-        return promiseFunction().then(response => {
+        return promiseFunction(...arguments).then(response => {
             lastResult = response
             responseAll(response)
             return Promise.resolve(response)

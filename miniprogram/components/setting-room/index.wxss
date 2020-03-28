@@ -1,4 +1,9 @@
 /* components/setting-room/index.wxss */
+back{
+  position: fixed;
+  left:30rpx;
+  top:87rpx;
+}
 .room-avatar{
   position: fixed;
   left:102rpx;
