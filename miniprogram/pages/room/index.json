@@ -5,7 +5,8 @@
     "goodsList": "/components/anchor-goods-list/index",
     "back": "/components/page-back/index",
     "alert": "/components/alert-modal/index",
-    "settingBox":"/components/setting-box/index"
+    "settingBox":"/components/setting-box/index",
+    "password-modal": "/components/password-modal/index"
   },
   "disableScroll": true,
   "navigationStyle": "custom"

@@ -1,5 +1,11 @@
 // miniprogram/pages/room/index2.js
-import { requestHd,requestIncreaseRoomLoveCount,requestClearRoom } from '../../utils/server'
+import { 
+  requestHd,
+  requestIncreaseRoomLoveCount,
+  requestClearRoom,
+  requestGetRoomList,
+  requestCheckRoomPassword
+} from '../../utils/server'
 import { CallWxFunction } from '../../components/lib/wx-utils'
 
 Page({
@@ -14,6 +20,10 @@ Page({
     userCount:0,
     //房间ID
     roomid:'',
+    //当前房间信息
+    roomInfo:{},
+    //是否显示输入房间密码框
+    isShowRoomPwd:false,
     //设置框
     settingBox:{
       //前后摄像头
@@ -91,6 +101,19 @@ Page({
   },
   onPublishStateUpdate(){},
   onPlayStateUpdate(){},
+  /**
+   * 被踢下线
+   */
+  onKickOut(){
+    CallWxFunction('showModal',{
+      title: '提示',
+      confirmText:'确定',
+      showCancel:false,
+      content: '您已被踢下线 请重新进入房间'
+    }).then(() => {
+      this.onRoomLogout()
+    })
+  },
   /**
    * 当发送成功了消息
    * @param {*} message 
@@ -467,15 +490,85 @@ Page({
       this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 } })
     })
   },
-
+  /**
+   * 输入房间密码
+   */
+  onConfirmPassword(e){
+    let { password } = e.detail
+    requestCheckRoomPassword({ room_id:this.data.roomInfo.room_id,room_password:password })
+      .then(response => {
+        return typeof this.pwdResolve === 'function' && this.pwdResolve()
+      })
+      .catch(error => {
+        if(this.pwdRetryCount >= 3){  
+          return typeof this.pwdReject === 'function' && this.pwdReject(error)
+        }
+        this.pwdRetryCount = this.pwdRetryCount || 0
+        this.pwdRetryCount ++
+        let { ret:{ message,msg } } = error
+        let errorText = msg || message || '系统错误 请稍后重试'
+        //继续展示
+        this.setData({ isShowRoomPwd:true })
+        CallWxFunction('showToast',{
+          title: errorText,
+          icon:'none',
+          duration:2500
+        })
+      })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
     let { roomID } = options
     //roomID = 'room651585142040049'
-    this.setData({ roomid:roomID })
+    //this.setData({ roomid:roomID })
     console.log('page load',roomID)
+
+    //获取房间信息
+    requestGetRoomList({ room_id:roomID })
+      .then((response = {}) => {
+        let { room_list = [] } = response
+        //说明房间存在
+        if(Array.isArray(room_list) && room_list.length){
+          return Promise.resolve(room_list[0])
+        }
+        //说明房间不存在
+        return Promise.reject({ ret:{ msg:'您进入的直播间已不存在' } })
+      })
+      .then(room => {
+        //has_password 直播间是否需要输入密码
+        let { has_password,love_count,status,anchor_id } = room
+        //房间信息
+        let roomState = { ...this.data.roomState,love_count,status }
+        //用户当前的id
+        let uid = wx.getStorageSync('uid') || ''
+        //有房间密码的情况
+        //并且不是自己创建的房间
+        if(!!has_password && String(anchor_id) !== String(uid)){
+          this.setData({ roomState,roomInfo:room,isShowRoomPwd:true })
+          return new Promise((res,rej) => { this.pwdResolve = res,this.pwdReject = rej })
+        }
+        return Promise.resolve()
+      })
+      .then(() => {
+        //正式进入房间
+        this.setData({ roomid:roomID })
+      })
+      .catch(error => {
+        let { ret:{ message,msg } } = error
+        let errorText = msg || message || '系统错误 请稍后重试'
+        //异常信息提示 然后退出房间
+        CallWxFunction('showModal',{
+          title: '提示',
+          confirmText:'确定',
+          showCancel:false,
+          content: errorText
+        }).then(() => {
+          //退出房间
+          this.onRoomLogout()
+        })
+      })
   },
 
   /**
@@ -566,7 +659,7 @@ Page({
     return {
       title: `${this.data.anchor_nick_name}正在直播 快来观看`,
       path: `/pages/room/index?roomID=${this.data.roomid}`,
-      imageUrl: wx.getStorageSync('roomImg') || '../../resource/invi.png',
+      imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }
   }
 })

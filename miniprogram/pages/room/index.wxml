@@ -94,8 +94,8 @@
     switch_camera="{{settingBox.switch_camera}}"
     whiteness="{{settingBox.whiteness}}"
     disable_mic="{{!settingBox.enable_mic}}"
-    preferPublishSourceType="0"
-    preferPlaySourceType="0"
+    preferPublishSourceType="{{1}}"
+    preferPlaySourceType="{{1}}"
     recvJoinLive="recvJoinLive"
     bindonGetTotalUserList="onGetTotalUserList"
     bindonPublishStateUpdate="onPublishStateUpdate"
@@ -109,6 +109,7 @@
     bindonRecvBigRoomMessage="onRecvBigRoomMessage"
     bindonRecvJoinLiveRequest="onRecvJoinLiveRequest"
     bindonTapEndJoinLive="onTapEndJoinLive"
+    bindonKickOut="onKickOut"
   ></live>
 
   <goodsList
@@ -188,4 +189,14 @@
   ></settingBox>
 
   <view wx:if="{{isAnchor}}" class="setting-btn" catchtap="showSettingBox">设置 ></view>
+
+  <password-modal 
+    class="confirm-modal" 
+    isShow="{{isShowRoomPwd}}" 
+    title="直播密码" 
+    cancelText="取消" 
+    confirmText="进入直播" 
+    bindcancel="onRoomLogout" 
+    bindconfirm="onConfirmPassword"
+  ></password-modal>
 </view>

@@ -13,15 +13,15 @@ Component({
     //房间id
     roomid:{
       type:String,
-      value:''
+      value:'',
+      observer(newVal){
+        newVal && this.loginRoom()
+      }
     },
     //美颜
     beauty:{
       type:Number,
-      value:1,
-      observer(newVal){
-        console.log(newVal,'美颜值变化了')
-      }
+      value:1
     },
     //美白
     whiteness:{
@@ -111,10 +111,10 @@ Component({
       remoteLogLevel:0,
       //本地log级别 0:debug 1:info 2:warn 3:error 98:report 100:disable
       logLevel:0,
-      //即构服务器地址
-      server:'wss://wsliveroom1739272706-api.zego.im:8282/ws',
-      //远程log服务器地址 websocket地址
-      logUrl:'https://wsslogger-demo.zego.im/httplog',
+      //即构服务器地址  'wss://wsliveroom1739272706-api.zego.im:8282/ws'
+      server:app.globalData.server ,
+      //远程log服务器地址 websocket地址  'https://wsslogger-demo.zego.im/httplog'
+      logUrl:app.globalData.logUrl ,
       //观众是否可以创建房间
       audienceCreateRoom:true
     }
@@ -185,7 +185,7 @@ Component({
       console.error(e)
     },
     /**
-     * 如果是主播进入房间 况且当前的roomid不存在于roomList中 则认为可以直播（新创建的直播房间）
+     * 
      * 如果当前是主播 但是当前roomid存在于roomList 但是room数据里面的主播id和当前用户的主播不匹配 则认为当前主播是游客
      * 如果当前是主播 roomid存在于roomList 而且room数据里面的主播id和当前主播匹配 则认为当前是主播
      * 
@@ -194,26 +194,20 @@ Component({
     getRoomRole(){
       //当前用户登陆的角色 admin anchor audience
       let role = wx.getStorageSync('role')
+      //当前主播的id
+      let uid = wx.getStorageSync('uid')
       //如果当前角色是游客 直接返回
       if(role === 'audience'){ return Promise.resolve(false) }
       //获取当前appid下的直播列表
-      return requestGetRoomList().then(response => {
+      return requestGetRoomList({ room_id:this.data.roomid,uid }).then(response => {
         let { room_list = [] } = response
         //查看当前的roomid 是否存在于正在直播的roomList中
         let room = room_list.find(rm => {
-          return rm.room_id === this.data.roomid
+          //roomid相同 并且room的主播id等于自身
+          return rm.room_id === this.data.roomid && String(uid) === String(rm.anchor_id)
         })
-        //roomid不存在于正在直播的房间当中 属于新创建
-        //管理员也可以创建直播
-        if(!room){ return Promise.resolve(true) }
-        //当前主播的id
-        let uid = String(wx.getStorageSync('uid'))
-        //拿到room_id 和当前roomid做对比
-        //room为正在直播中的数据
-        let { anchor_id } = room
-        //如果anchor_id === uid说明主播断线重连
-        //如果anchor_id ！== uid说明 B主播来到了A主播的房间观看
-        return Promise.resolve(String(anchor_id) === String(uid))
+        //查看是否有在播房间的
+        return Promise.resolve(!!room)
       }).catch(() => false)
     },
     /**
@@ -897,9 +891,7 @@ Component({
   //页面生命周期
   pageLifetimes: {
     // 组件所在页面的生命周期函数
-    show() { 
-      this.loginRoom()
-    },
+    show() {  },
     hide() { 
       this.logout()
     },

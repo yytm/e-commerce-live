@@ -219,7 +219,7 @@ let getRoomToken = function (options = {}){
  */
 let getRoomList = function (options = {}){
   //如果没有传递UID 默认使用自己的UID尝试请求数据
-  let {  uid,status  } = options
+  let {  uid,status,room_id  } = options
 
   //请求参数
   let params = {
@@ -236,6 +236,10 @@ let getRoomList = function (options = {}){
   //根据状态过滤
   if(!isNaN(status)){
     params['status'] = status
+  }
+  //根据房间ID过滤
+  if(!!room_id){
+    params['room_id'] = room_id
   }
   //请求数据
   return request({
@@ -349,6 +353,39 @@ let clearRoom = function (options = {}){
 }
 
 /**
+ * 校验直播间密码
+ * @param {*} options = {
+ *  room_id
+ *  room_password
+ * }
+ */
+let checkRoomPassword = function (options = {}){
+  //如果没有传递UID 默认使用自己的UID尝试请求数据
+  let {  room_id = '',room_password = '' } = options
+  //如果uid为空 默认使用自己的uid尝试请求
+  let uid =  wx.getStorageSync('uid') || ''
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/check_room_password`,
+    method:'POST',
+    data:{
+      //session信息
+      session_id: wx.getStorageSync('sessionId'),
+      //腾讯提供的appid 
+      live_appid: liveAppID,
+      //直播间ID
+      room_id,
+      //主播ID
+      uid,
+      //输入的房间的密码
+      room_password
+    }
+  })
+}
+
+/**
  * 格式化业务返回的数据
  * @param {*} response  wx.request 返回的数据
  */
@@ -403,6 +440,7 @@ export let requestGetSelfRoomList = throttleByPromise(wrap(getSelfRommList))
 export let requestHd = wrap(hd)
 export let requestIncreaseRoomLoveCount = wrap(increaseRoomLoveCount)
 export let requestClearRoom = wrap(clearRoom)
+export let requestCheckRoomPassword = wrap(checkRoomPassword)
 
 
 //监听事件

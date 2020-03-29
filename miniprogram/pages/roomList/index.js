@@ -249,7 +249,7 @@ Page({
     console.log(e);
     const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar, roomPassword } } } = e;
     console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
-
+    const uid = wx.getStorageSync('uid') || ''
     // 防止两次点击操作间隔太快
     let nowTime = new Date();
     if (nowTime - this.data.tapTime < 1000) {
@@ -259,7 +259,8 @@ Page({
       tapTime: nowTime,
       selectRoomID: id
     })
-    if (roomPassword) {
+    //房间有密码 而且当前用户不是房间创建人  就需要输入密码
+    if (roomPassword && String(anchorId) !== String(uid)) {
       this.setData({
         isShowPassword: true,
       })
@@ -319,10 +320,16 @@ Page({
         "room_password": password
       },
       success(res) {
-        if (res.statusCode === 200) {
+        let { statusCode,data:{ ret:{ code = 1000,msg,message } } } = res
+        if (Number(statusCode) === 200 && Number(code) === 0) {
           console.log('del playback suc', res);
-          self.enterRoom();
+          return self.enterRoom();
         }
+        let errorText = msg || message || '密码错误'
+        wx.showToast({
+          title:errorText,
+          icon:'none'
+        })
       },
       fail(e) {
         console.error('del playback fail', e);
