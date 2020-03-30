@@ -8,7 +8,8 @@
     "pages/register/index",
     "pages/index/index",
     "pages/replay/index",
-    "pages/authroze/index"
+    "pages/authroze/index",
+    "pages/video/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

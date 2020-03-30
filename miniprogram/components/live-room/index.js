@@ -15,6 +15,9 @@ Component({
       type:String,
       value:'',
       observer(newVal){
+        let mainPusherStreamID = this.createStreamID(true)
+        let subPusherStreamID = this.createStreamID()
+        this.setData({ mainPusher:{ ...this.data.mainPusher,stream_id:mainPusherStreamID },subPusher:{ ...this.data.subPusher,stream_id:subPusherStreamID } })
         newVal && this.loginRoom()
       }
     },
@@ -883,8 +886,8 @@ Component({
       })
     },
     //创建一个streamID
-    createStreamID(){
-      return `${this.data.roomid}zego${Date.now()}Sub`
+    createStreamID(isAnchor){
+      return `${this.data.roomid}zego${Date.now()}${isAnchor? 'Main':'Sub'}`
     }
   },
 

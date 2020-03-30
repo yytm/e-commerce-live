@@ -1,0 +1,71 @@
+<!--miniprogram/pages/video/index.wxml-->
+<view class="video-container">
+  <video
+    src="{{videoURL}}"
+    autoplay="{{true}}"
+    controls="{{true}}"
+    show-fullscreen-btn="{{false}}"
+  ></video>
+
+
+  <back 
+    id="backBtn"
+    bindback="onUnload" 
+  ></back>
+
+  <roomAvatar 
+    class="room-avatar"
+    isAutoAvatar="{{false}}"
+    avatar="{{roomInfo.avatar}}"
+    nick="{{roomInfo.anchor_name}}"
+  ></roomAvatar>
+
+  <view class="icon-box">
+    <image 
+      class="setting-del-img"
+      role="img"
+      src="../../components/images/reback-del.png"
+      catchtap="delPlayBack"
+    ></image>
+    <image 
+      class="setting-share-img"
+      role="img"
+      src="../../components/images/room-share.png"
+    ><button open-type="share" class="setting-share-img-btn"></button></image>
+    <image 
+      class="setting-shop-img"
+      role="img"
+      src="../../components/images/shop.png"
+      catchtap="showGoodsList"
+    ></image>
+  </view>
+
+
+  <password-modal 
+    class="confirm-modal" 
+    isShow="{{isShowRoomPwd}}" 
+    title="直播密码" 
+    cancelText="取消" 
+    confirmText="进入直播" 
+    bindcancel="onRoomLogout" 
+    bindconfirm="onConfirmPassword"
+  ></password-modal>
+
+  <alert
+    wx:if="{{isShowDel}}"
+    confirmText="删除回放"
+    cancelText="取消"
+    content="是否删除回放视频"
+    showCancel="{{true}}"
+    bindcancel="onCancel"
+    bindconfirm="onConfirm"
+  ></alert>
+
+  <goodsList
+    is_show_goods_list="{{is_show_goods_list}}"
+    isAnchor="{{false}}"
+    anchor_id_name="{{roomInfo.anchor_id_name}}"
+    bindclose="onGoodsListHidden"
+    bindgoodsTap="goodsTap"
+  ></goodsList>
+</view>

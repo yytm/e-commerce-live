@@ -101,6 +101,13 @@
 					"pathName": "pages/authroze/index",
 					"query": "uid=3344",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/video/index",
+					"pathName": "pages/video/index",
+					"query": "roomID=room651585143640587",
+					"scene": null
 				}
 			]
 		}

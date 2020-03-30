@@ -1,0 +1,43 @@
+/* miniprogram/pages/video/index.wxss */
+.video-container,video{
+  width:100vw;
+  height:100vh;
+}
+.icon-box{
+  position:fixed;
+  z-index:2;
+  bottom:100rpx;
+  right:24rpx;
+  width:88rpx;
+}
+
+.setting-del-img,
+.setting-shop-img,
+.setting-share-img,
+.setting-share-img-btn{
+  width:88rpx;
+  height:88rpx;
+}
+.setting-share-img{
+  position:relative;
+}
+.setting-share-img-btn{
+  position:absolute;
+  left:0;
+  top:0;
+  background:none;
+}
+
+back{
+  position: fixed;
+  z-index:2;
+  left:30rpx;
+  top:87rpx;
+}
+
+.room-avatar{
+  position: fixed;
+  z-index: 2;
+  left:102rpx;
+  top:87rpx;
+}

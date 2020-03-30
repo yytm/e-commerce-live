@@ -272,8 +272,18 @@ Page({
   enterRoom() {
     const selectRoom = this.data.roomList.find(item => item.room_id === this.data.selectRoomID);
     console.log('selectRoom', selectRoom);
-    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img } = selectRoom;
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url } = selectRoom;
     const userID = 'anchor' + wx.getStorageSync('uid');
+
+    //可以回放 并且有回放地址
+    if(has_playback && !!playback_url){
+      const url = `/pages/video/index?roomID=${room_id}`
+      wx.navigateTo({
+        url: url,
+      })
+      return
+    }
+
     if (anchor_id_name === userID) {
 
       const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
