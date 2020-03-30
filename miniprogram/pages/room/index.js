@@ -76,7 +76,6 @@ Page({
     },
     //商品列表配置
     goodsBox:{
-      goods_list:[],
       is_show_goods_list:false
     },
     //推送商品相关

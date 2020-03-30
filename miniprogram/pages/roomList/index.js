@@ -199,7 +199,7 @@ Page({
                 item.room_show_name = item.room_id.slice(2);
                 console.log('show_name', item.room_show_name);
                 // item.roomState = '直播中';
-                item.has_playback = true;
+                //item.has_playback = true;
                 return item;
               });;
             if (self.data.isFirst) {

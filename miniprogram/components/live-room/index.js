@@ -595,7 +595,7 @@ Component({
      */
     onStreamUpdated(updatedType,streamList){
       let dataSender = { 
-        mainPusher:{ ...this.data.mainPusher },
+        mainPlayer:{ ...this.data.mainPlayer },
         subPlayer:[...this.data.subPlayer]
       }
       let task = []
@@ -603,17 +603,16 @@ Component({
         let { stream_id,anchor_id_name,anchor_nick_name } = streamObj
         //删除流
         if(updatedType === 1){
-          this.stopPlayer(stream_id)
-          return
+          task.push(() => this.stopPlayer(stream_id))
+          return 
         }
 
         //添加一个任务
         task.push(() => this.startPlaying(stream_id))
         //添加主播拉流
-        if(anchor_id_name === this.data.mainPusher.anchor_userid){
+        if(anchor_id_name === this.data.mainPlayer.anchor_id_name){
           //添加需要修改的项目
-          dataSender['mainPusher'] = {
-            ...this.data.mainPusher,
+          dataSender['mainPlayer'] = {
             anchor_id_name,
             anchor_nick_name,
             stream_id
@@ -630,11 +629,11 @@ Component({
           : dataSender['subPlayer'][index] = { ...dataSender['subPlayer'][index],...streamObj }
       })
       //批量更新
-      this.setData(dataSender,() => {
-        console.log('执行 批量')
-        //确保数据更新完毕 批量执行任务
+      this.setData(dataSender)
+      //批量更新
+      setTimeout(() => {
         task.map(fn => fn())
-      })
+      },300)
     },
 
     /* --------------- onStreamUrlUpdate ----------------- */
@@ -682,7 +681,8 @@ Component({
           mainPlayer:{
             ...this.data.mainPlayer,
             stream_id:streamid,url
-          }
+          },
+          isLeave:false
         },() => {
           let playerContent = this.data.mainPlayer.playerContent = this.data.mainPlayer.playerContent || wx.createLivePlayerContext('mainPlayer',this)
           playerContent && playerContent.play()
@@ -763,7 +763,7 @@ Component({
       let index = this.data.subPlayer.findIndex(({ stream_id }) => stream_id === streamid)
       //找到停止拉流的配置
       let player = isAnchor
-        ? this.data.mainPlayer.playerContent
+        ? this.data.mainPlayer
         : this.data.subPlayer[index]
       //没有找到
       if(!player){ return }
@@ -896,7 +896,7 @@ Component({
     // 组件所在页面的生命周期函数
     show() {  },
     hide() { 
-      this.logout()
+      //this.logout()
     },
     resize() { },
   },
