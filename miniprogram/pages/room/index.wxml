@@ -155,7 +155,7 @@
     content="是否结束直播"
     showCancel="{{true}}"
     bindcancel="onCancel"
-    bindconfirm="onConfirm"
+    bindconfirm="onRoomLogout"
   ></alert>
 
   <alert

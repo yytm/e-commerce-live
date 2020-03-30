@@ -625,10 +625,11 @@ Page({
     this.setData({ isShowConfirm: false })
   },
   /**
-   * 结束直播
+   * 退出房间
    */
   onConfirm() {
     let backBtn = this.backBtn = this.backBtn || this.selectComponent('#backBtn')
+    typeof this.liveRoomComponent.logout === 'function' && this.liveRoomComponent.logout()
     typeof backBtn.back === 'function' && backBtn.back()
     this.setData({ isShowConfirm: false })
   },

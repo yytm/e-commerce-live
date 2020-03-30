@@ -479,5 +479,5 @@ export let requestDeletePlayback = wrap(deletePlayback)
 //逻辑在app.js里面
 EventEmitter.on('getUserInfo',({ nickName }) => {
   //自动登陆 获取相关信息
-  loginApp(nickName)
+  //loginApp(nickName)
 })

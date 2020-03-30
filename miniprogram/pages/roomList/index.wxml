@@ -13,11 +13,11 @@
     </view> -->
     <scroll-view class="rooms" scroll-y refresher-enabled="{{true}}" bindrefresherrefresh="refresh">
         <view wx:if="{{roomList.length}}" class="room-list">
-            <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.room_password}}" bindtap="onClickItem">
+            <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
                 <view class="room-cover-container">
                     <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
                     <view class="room-info">
-                        <view wx:if="{{item.has_playback}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
+                        <view wx:if="{{item.has_playback && item.status >= 4}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
                             <image class="replay-photo" src="../../resource/photo.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
                             </image>
                             <view class="replay-state-text">回放</view>

@@ -80,6 +80,8 @@ Component({
     isLeave:false,
     //是否是主播
     isAnchor:false,
+    //是否可以开播 由room.status决定 status<=2 可以开播
+    isCanPublish:false,
     //是否连接上sdk服务器
     isConnection:false,
     //主播配置
@@ -210,8 +212,9 @@ Component({
           return rm.room_id === this.data.roomid && String(uid) === String(rm.anchor_id)
         })
         //查看是否有在播房间的
-        return Promise.resolve(!!room)
-      }).catch(() => false)
+        //status = 2 / status = 1未开始 直播中状态
+        return Promise.resolve({ isAnchor:!!room,isCanPublish:room.status <= 2 })
+      }).catch(() => ({ isAnchor:false,isCanPublish:false }))
     },
     /**
      * 初始化房间
@@ -824,9 +827,13 @@ Component({
       app.getUserInfo().then(() => {
         //获取当前用户的角色
         return this.getRoomRole()
-      }).then(isAnchor => {
+      }).then(({ isAnchor,isCanPublish }) => {
         //存储用户角色
-        this.setData({ isAnchor })
+        this.setData({ isAnchor,isCanPublish })
+        //当前是主播创建 但是当前房间状态不属于未开始或者在直播中
+        if(isAnchor && !isCanPublish){
+          return Promise.reject({ ret:{ msg:'当前房间不可复播 请稍后重试' } })
+        }
         //初始化房间
         return this.initRoom(this.data.roomid)
       }).then(streamList => {
@@ -879,9 +886,17 @@ Component({
         //关闭加载框
         CallWxFunction('hideLoading')
       }).catch(error => {
+        let { ret:{ msg,message } } = error
         console.log('初始化房间失败:',error)
         //关闭加载框
         CallWxFunction('hideLoading')
+        //关闭加载框
+        CallWxFunction('showModal',{
+          title: '提示',
+          confirmText:'确定',
+          showCancel:false,
+          content: msg || message || '房间初始化失败'
+        })
       })
     },
     //创建一个streamID
