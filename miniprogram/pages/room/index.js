@@ -656,7 +656,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title: `${this.data.anchor_nick_name}正在直播 快来观看`,
+      title: `${this.data.roomInfo.anchor_name || this.data.anchor_nick_name || ''}正在直播 快来观看`,
       path: `/pages/room/index?roomID=${this.data.roomid}`,
       imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }
