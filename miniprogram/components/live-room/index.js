@@ -630,10 +630,9 @@ Component({
       })
       //批量更新
       this.setData(dataSender)
-      //批量更新
-      setTimeout(() => {
-        task.map(fn => fn())
-      },300)
+      //批量更新  setData的success方法 有时候没有回调 所以使用了setTimeout
+      //mainPlayer 改变的时候 subPlayer不改变 setData的success没有回调
+      setTimeout(() => task.map(fn => fn()),300)
     },
 
     /* --------------- onStreamUrlUpdate ----------------- */

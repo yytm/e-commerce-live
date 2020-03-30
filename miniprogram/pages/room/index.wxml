@@ -14,6 +14,9 @@
 
   <roomAvatar 
     class="room-avatar"
+    isAutoAvatar="{{false}}"
+    avatar="{{roomInfo.avatar || '../../components/images/avatar-logo.png'}}"
+    nick="{{roomInfo.anchor_name}}"
     title="{{userCount + ' 人观看'}}"
   ></roomAvatar>
 
@@ -31,7 +34,7 @@
       src="../../components/images/room-share.png"
     ><button open-type="share" class="setting-share-img-btn"></button></image>
     <image 
-      wx:if="{{anchor_id_name && !isAnchor}}"
+      wx:if="{{roomInfo.anchor_id && !isAnchor}}"
       class="setting-joinlive-img"
       role="img"
       src="../../components/images/room-heart.png"
@@ -115,7 +118,7 @@
   <goodsList
     is_show_goods_list="{{goodsBox.is_show_goods_list}}"
     isAnchor="{{isAnchor}}"
-    anchor_id_name="{{anchor_id_name}}"
+    anchor_id_name="{{roomInfo.anchor_id}}"
     bindclose="onGoodsListHidden"
     bindbuttomTap="buttomTap"
     bindgoodsTap="goodsTap"

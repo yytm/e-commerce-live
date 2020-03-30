@@ -7,7 +7,6 @@
     show-fullscreen-btn="{{false}}"
   ></video>
 
-
   <back 
     id="backBtn"
     bindback="onUnload" 
@@ -26,6 +25,7 @@
       role="img"
       src="../../components/images/reback-del.png"
       catchtap="delPlayBack"
+      wx:if="{{isAnchor}}"
     ></image>
     <image 
       class="setting-share-img"
@@ -64,7 +64,7 @@
   <goodsList
     is_show_goods_list="{{is_show_goods_list}}"
     isAnchor="{{false}}"
-    anchor_id_name="{{roomInfo.anchor_id_name}}"
+    anchor_id_name="{{roomInfo.anchor_id}}"
     bindclose="onGoodsListHidden"
     bindgoodsTap="goodsTap"
   ></goodsList>

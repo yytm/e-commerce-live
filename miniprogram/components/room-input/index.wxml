@@ -6,5 +6,6 @@
         value="{{inputTest}}"
         bindinput="holdInput"
         maxlength="{{maxlength}}"
+        type="{{inputType}}"
       ></input>
 </view>

@@ -22,6 +22,7 @@
       class="mg-btn-24"
       bindinput="roomPasswdHold"
       maxlength="6"
+      inputType="{{'number'}}"
     ></roomInput>
     
     <view 

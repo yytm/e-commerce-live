@@ -11,7 +11,7 @@ const clearObj = {
   //页面编码
   page:1,
   //页面条数
-  count:10
+  count:100
 }
 
 Component({
@@ -35,12 +35,12 @@ Component({
     //页面编码
     page:{
       type:Number,
-      value:1
+      value:clearObj.page
     },
     //页面条数
     count:{
       type:Number,
-      value:10
+      value:clearObj.count
     }
   },
 

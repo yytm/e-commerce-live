@@ -39,10 +39,7 @@ Page({
     },
     //是否是主播
     isAnchor:false,
-    //主播id
-    anchor_id_name:'',
-    //主播昵称
-    anchor_nick_name:'',
+    //房间状态
     roomState:{
       //房间状态 1 未开始 2 直播中 4 已结束 8 禁播 16 可回放
       status:1,
@@ -212,7 +209,7 @@ Page({
   onStart(e){
     let { isAnchor,anchor_id_name,anchor_nick_name } = e.detail
     //已经开始推流或者拉流
-    this.setData({ isAnchor,anchor_id_name,anchor_nick_name })
+    //this.setData({ isAnchor,anchor_id_name,anchor_nick_name })
     //保持心跳
     this.live()
   },
@@ -542,10 +539,15 @@ Page({
         let roomState = { ...this.data.roomState,love_count,status }
         //用户当前的id
         let uid = wx.getStorageSync('uid') || ''
+        //是否是主播
+        let isAnchor = String(anchor_id) === String(uid)
+        //保存信息
+        this.setData({ roomState,roomInfo:room,isAnchor })
         //有房间密码的情况
         //并且不是自己创建的房间
         if(!!has_password && String(anchor_id) !== String(uid)){
-          this.setData({ roomState,roomInfo:room,isShowRoomPwd:true })
+          //展示密码框
+          this.setData({ isShowRoomPwd:true })
           return new Promise((res,rej) => { this.pwdResolve = res,this.pwdReject = rej })
         }
         return Promise.resolve()
@@ -656,7 +658,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title: `${this.data.roomInfo.anchor_name || this.data.anchor_nick_name || ''}正在直播 快来观看`,
+      title: `${this.data.roomInfo.anchor_name || ''}正在直播 快来观看`,
       path: `/pages/room/index?roomID=${this.data.roomid}`,
       imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }

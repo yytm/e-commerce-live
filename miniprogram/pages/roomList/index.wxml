@@ -27,7 +27,7 @@
                         </view>
                         <view class="room-num">{{item.user_count}}人观看</view>
                     </view>
-                    <view class="room-info-bot">
+                    <view class="room-info-bot" wx:if="{{item.has_password}}">
                         <image src="../../resource/lock.png" class="replay-lock-img"/>
                     </view>
                 </view>

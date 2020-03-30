@@ -19,6 +19,10 @@ Component({
     maxlength:{
       type:Number,
       value:140
+    },
+    inputType:{
+      type:String,
+      value:'text'
     }
   },
 
