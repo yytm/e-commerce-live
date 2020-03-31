@@ -30,7 +30,7 @@
     <view class="replay-list">
         <view wx:if="{{replayList.length}}">
             <view wx:for="{{replayList}}" wx:key="index" class="item replay-item">
-                <view bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}" style="{{item.txtStyle}}" class="inner txt">
+                <view bindtap="itemTap" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}" data-item="{{item}}" style="{{item.txtStyle}}" class="inner txt">
                     <view class="replay-cover-container">
                         <image class="replay-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
                         <view class="replay-info">

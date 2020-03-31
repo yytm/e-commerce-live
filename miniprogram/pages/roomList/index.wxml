@@ -13,7 +13,7 @@
     </view> -->
     <scroll-view class="rooms" scroll-y refresher-enabled="{{true}}" bindrefresherrefresh="refresh">
         <view wx:if="{{roomList.length}}" class="room-list">
-            <view class="room-list-item" wx:for="{{roomList}}" wx:if="{{item.status === 20? !!item.playback_url : true}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
+            <view class="room-list-item" wx:for="{{roomList}}" wx:if="{{item.status === 20? !!item.playback_url : true}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-item="{{item}}" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
                 <view class="room-cover-container">
                     <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
                     <view class="room-info">
@@ -43,7 +43,7 @@
         </view>
     </scroll-view>
 </view>
-<center wx:elif="{{state=='center'}}" role="admin" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay"></center>
+<center wx:elif="{{state=='center'}}" role="admin" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
 <!-- <view class="button-container">
     <view wx:if="{{role==='admin' && !living}}" class="bot-button" bind:tap="goToAdmin">
         <image src="../../resource/create.png" class="create-img"></image>
@@ -56,5 +56,4 @@
 </view> -->
 <tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
 <confirm-modal class="confirm-modal" isShow="{{living}}" title="{{title}}" cancelText="{{cancelText}}" confirmText="{{confirmText}}" bottom="{{bottom}}" bindcancel="endLive" bindconfirm="enterLive"></confirm-modal>
-<password-modal class="confirm-modal" isShow="{{isShowPassword}}" title="直播密码" cancelText="取消" confirmText="进入直播" bindcancel="cancelPassword" bindconfirm="confirmPassword"></password-modal>
 <authroze-modal isShow="{{isShowModal}}" id='dialog' title='微信授权' subTitle='建行到家CCBgo在线申请获取以下权限' content='获取到你公开信息(呢称，头像等)' confirmText='授权登录' bind:GetUserInfo='bindGetUserInfo'></authroze-modal>

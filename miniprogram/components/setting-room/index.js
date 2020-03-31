@@ -97,6 +97,20 @@ Component({
       })
     },
 
+    /**
+     * 商品列表 商品被点击
+     */
+    goodsTap(e){
+      let { goodsObj, itemView, listView,boxView } = e.detail
+      //前往商品
+      let { url_type = 1,goods_url = "" } = goodsObj
+      //url
+      if(Number(url_type) === 1){
+        return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+      }
+      CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+    },
+
     //关闭了商品列表
     hiddenGoodsList(e){
       this.setData({ is_show_goods_list:false })

@@ -62,6 +62,19 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    itemTap(e){
+      let { currentTarget:{ dataset:{ item:room } } } = e
+
+      // 防止两次点击操作间隔太快
+      let nowTime = new Date()
+      let tapTime = this.tapTime = this.tapTime || nowTime
+      if(nowTime - tapTime <= 500){ return }
+      this.tapTime = nowTime
+
+      const { room_id } = room
+      //跳转页面
+      wx.navigateTo({ url:`/pages/video/index?roomID=${room_id}` })
+    },
     touchS: function (e) {
       if (e.touches.length == 1) {
         this.setData({
@@ -200,9 +213,22 @@ Component({
         .then(res => {
           console.log('set room suc', res);
           const result = res.data;
+          let toastTest = ''
           if (result.ret && result.ret.code === 0) {
             // result.room_img && wx.setStorageSync('roomImg', result.room_img);
+            toastTest = '修改成功'
+            app.globalData.userInfo = {
+              ...app.globalData.userInfo,
+              avatarUrl:filePath? filePath : this.data.avatar,
+              nickName:name
+            }
+            //通知事件
+            this.triggerEvent('onPersonUpdate')
+          }else{
+            let { ret:{ msg,message } } = result
+            toastTest = msg || message || '修改失败'
           }
+          wx.showToast({ title:toastTest,icon:'none' })
         }).catch(e => {
           console.error('set room fail', e);
         })

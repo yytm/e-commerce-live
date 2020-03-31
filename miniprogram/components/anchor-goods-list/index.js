@@ -15,6 +15,10 @@ Component({
     isAnchor:{
       type:Boolean,
       value:false
+    },
+    is_show_goods_button:{
+      type:Boolean,
+      value:true
     }
   },
 
@@ -48,7 +52,7 @@ Component({
     },
     onBeforeGoodsListRender(goods){
       let other = {
-        is_show_buttom: true,
+        is_show_buttom: this.data.is_show_goods_button,
         goods_button_text: this.data.isAnchor ? '推送' : '前往购买',
         goods_button_isunable:false,
         goods_obj: goods

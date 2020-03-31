@@ -47,7 +47,7 @@ Page({
         this.setData({ roomInfo:room,isAnchor })
         //有房间密码的情况
         //并且不是自己创建的房间
-        if(!!has_password && isAnchor){
+        if(!!has_password && !isAnchor){
           this.setData({ isShowRoomPwd:true })
           return new Promise((res,rej) => { this.pwdResolve = res,this.pwdReject = rej })
         }

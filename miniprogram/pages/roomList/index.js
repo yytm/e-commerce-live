@@ -1,7 +1,8 @@
 
 
+import { CallWxFunction } from '../../components/lib/wx-utils'
+import { loginApp,requestGetRoomList } from "../../utils/server.js"
 const app = getApp();
-let { loginApp } = require("../../utils/server.js");
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
@@ -10,20 +11,7 @@ Page({
     isFirst: true,
     userInfo: null,
     role: '',
-    roomList: [
-      // {
-      //   room_id: 'room651585275243553',
-      //   room_name: 'Givenchy/纪梵希高定香榭天鹅',
-      //   room_img: '../../resource/m0.png',
-      //   anchor_id_name: "xcxU1582085277557",
-      //   anchor_nick_name: "zhc",
-      //   play_count: 2345,
-      //   playback_duration: '05:03:34',
-      //   is_private: true,
-      //   room_password: "124563",
-      //   room_state: '回放',
-      // },
-    ],
+    roomList: [ ],
     isShowPassword: false,
     isShowModal: false,
     title: '当前直播未结束，是否重新进入？',
@@ -47,107 +35,39 @@ Page({
     }],
     selectRoomID: '',
     replayList: []
-    // replayList: [
-    //   { 
-    //     room_id: '123',
-    //     room_name: 'Givenchy/纪梵希高定香榭天鹅',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    //   {
-    //     room_id: '123',
-    //     room_name: 'OACH蔻驰Charlie 27 Carryal单肩斜挎手提包女包包2952过长样式挎手提包女包包2952过',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    //   {
-    //     room_id: '123',
-    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    //   {
-    //     room_id: '123',
-    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    //   {
-    //     room_id: '123',
-    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    //   {
-    //     room_id: '123',
-    //     room_name: 'Vero Moda2020春夏新款褶皱收腰蕾丝拼接雪纺连衣裙',
-    //     room_img: '../../resource/m0.png',
-    //     play_count: 2345,
-    //     playback_duration: '05:03:34',
-    //     is_private: true,
-    //     room_password: "124563",
-    //     room_state: '回放',
-    //   },
-    // ],
   },
   onLoad: function (options) {
     console.log('onLoad', options);
     let rect = wx.getMenuButtonBoundingClientRect();
     const top = rect.top;
     const height = rect.height;
-    this.setData({
-      top,
-      height
-    });
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo
-      });
-      this.getRole();
-    } else {
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo;
-          this.setData({
-            hasUserInfo: true,
-            userInfo: res.userInfo
-          });
-          this.getRole();
-        },
-        fail: e => {
-          console.error(e);
-          this.setData({
-            isShowModal: true
-          });
-        }
-      })
-
-    }
+    this.setData({ top,height });
   },
   onShow: function () {
-    console.log('sessionId', wx.getStorageSync('sessionId'));
-    // this.fetchRooms();
+    //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
+    //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
+    //再次嗅探用户是否授权或者用户信息
+    app.getUserInfo()
+      //业务逻辑登陆
+      .then(userInfo => loginApp())
+      .then(role => {
+        this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
+        return Promise.resolve()
+      })
+      //获取列表信息
+      .then(() => this.fetchRooms())
+      .catch((error = {}) => {
+        let { ret = {} } = error  
+        let { msg,message } = ret
+        let errorText = msg || message || '获取用户信息失败'
+        CallWxFunction('showToast',{
+          title: errorText,
+          icon:'none',
+          duration:2500
+        })
+      })
   },
+  
   onUnload: function () {
     this.stopRefresh();
   },
@@ -157,16 +77,28 @@ Page({
   onShareAppMessage: function (res) {
 
   },
-
-  fetchRooms() {
-    //return
-    if (wx.getStorageSync('sessionId')) {
-      if (this.data.state === 'list') {
-        this.getRoomList(18);
-      } else if (this.data.state === 'center') {
-        this.getRoomList(16, wx.getStorageSync('uid'));
-      }
-    }
+  /**
+   * 当个人中心被修改
+   */
+  onPersonUpdate(){
+    this.onShow()
+  },
+  /**
+   * 请求数据
+   */
+  fetchRooms(state = this.data.state) {
+    //是否个人中心
+    let isCenter = state === 'center'
+    //个人的uid  如果请求的是列表 那么uid为null
+    let uid = isCenter? wx.getStorageSync('uid') : null
+    //个人中心 state = 0x10 + 0x2, 列表 state = 0x10
+    let queryState = isCenter? 16 : 18
+    //请求数据
+    return this.getRoomList(queryState,uid)
+      .then(room_list => {
+        //更新列表
+        this.setData({ [isCenter? 'replayList':'roomList']:room_list })
+      })
   },
   /**
    * 
@@ -175,59 +107,24 @@ Page({
    */
   getRoomList(status = undefined, uid = undefined) {
     let self = this;
-    console.log(">>>[liveroom-roomList] begin to getRoomList");
-    wx.showLoading({
-      title: '获取房间列表'
-    })
-    wx.request({
-      url: BaseUrl + '/app/get_room_list',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": uid,
-        "status": status
-      },
-      success(res) {
-        self.stopRefresh();
-        if (res.data.ret && res.data.ret.code === 0) {
-          console.error('roomList ', res.data.room_list);
-          if (res.data.room_list && res.data.room_list.length) {
-            const roomList = res.data.room_list
-              //.filter(item => item.room_id.startsWith('e-'))
-              .map(item => {
-                item.room_show_name = item.room_id.slice(2);
-                console.log('show_name', item.room_show_name);
-                // item.roomState = '直播中';
-                //item.has_playback = true;
-                return item;
-              });;
-            if (self.data.isFirst) {
-              roomList.forEach(item => {
-                if (item.anchor_id_name === 'anchor' + wx.getStorageSync('uid')) {
-                  self.setData({
-                    // living: true,
-                    isFirst: false,
-                    livingRoomID: item.room_id,
-                    livingRoomName: item.room_name
-                  })
-                }
-              })
-            }
-            self.setData({
-              roomList
-            });
-          } else {
-            self.setData({
-              roomList: []
-            })
-          }
-        }
-      },
-      fail(e) {
-        this.stopRefresh()
-      }
-    })
+    CallWxFunction('showLoading',{ title:'获取房间列表' })
+    return requestGetRoomList({ uid,status })
+      .then(res => {
+        let { room_list = [] } = res
+        room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
+        CallWxFunction('hideLoading')
+        return Promise.resolve(room_list)
+        //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
+      })
+      .catch((error = { }) => {
+        console.error(error)
+        let { ret = {} } = error
+        let { msg,message } = ret
+        let errorText = msg || message || '获取房间列表失败'
+        CallWxFunction('hideLoading')
+        CallWxFunction('showToast',{ title:errorText,icon:'none' })
+        return Promise.resolve([])
+      })
   },
   /**
      * 页面相关事件处理函数--监听用户下拉动作
@@ -246,59 +143,31 @@ Page({
   },
   // 点击进入房间
   onClickItem(e) {
-    console.log(e);
-    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar, roomPassword } } } = e;
-    console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
-    const uid = wx.getStorageSync('uid') || ''
+    const { currentTarget:{ dataset:{ item } } } = e
+
     // 防止两次点击操作间隔太快
-    let nowTime = new Date();
-    if (nowTime - this.data.tapTime < 1000) {
-      return;
-    }
-    this.setData({
-      tapTime: nowTime,
-      selectRoomID: id
-    })
-    //房间有密码 而且当前用户不是房间创建人  就需要输入密码
-    // if(roomPassword && String(anchorId) !== String(uid)) {
-    //   this.setData({
-    //     isShowPassword: true,
-    //   })
-    //   return;
-    // }
-    this.enterRoom();
+    let nowTime = new Date()
+    let tapTime = this.tapTime = this.tapTime || nowTime
+    if(nowTime - tapTime <= 500){ return }
+    this.tapTime = nowTime
 
+    this.enterRoom(item)
   },
-  enterRoom() {
-    const selectRoom = this.data.roomList.find(item => item.room_id === this.data.selectRoomID);
-    console.log('selectRoom', selectRoom);
-    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url,status } = selectRoom;
-    const userID = 'anchor' + wx.getStorageSync('uid');
-
+  /**
+   * 进入房间
+   * @param {*} room 
+   */
+  enterRoom(room) {
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url,status } = room;
+    let url = ''
     //可以回放 并且有回放地址
     if(has_playback && status === 20){
-      const url = `/pages/video/index?roomID=${room_id}`
-      wx.navigateTo({
-        url: url,
-      })
-      return
+      url = `/pages/video/index?roomID=${room_id}`
+    }else{
+      url = `/pages/room/index?roomID=${room_id}`
     }
-
-    if (anchor_id_name === userID) {
-
-      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&loginType=anchor' + '&nickName=' + nickname + '&avatar=' + avatar
-      // + '&roomImg=' + roomImg;
-      wx.navigateTo({
-        url: url,
-      });
-
-    } else {
-      const url = '../room/index?roomID=' + room_id + '&roomName=' + room_name + '&anchorID=' + anchor_id_name + '&nickName=' + nickname + '&avatar=' + avatar + '&roomImg=' + room_img + '&loginType=audience';
-
-      wx.navigateTo({
-        url: url
-      })
-    }
+    //跳转页面
+    CallWxFunction('navigateTo',{ url })
   },
   endLive() {
     console.log('endLive');
@@ -311,40 +180,6 @@ Page({
     wx.navigateTo({
       url
     });
-  },
-  cancelPassword() {
-
-  },
-  confirmPassword(e) {
-    let self = this;
-    const { password } = e.detail;
-    console.log('password', password);
-    wx.request({
-      url: BaseUrl + '/app/check_room_password',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": wx.getStorageSync('uid'),
-        "room_id": self.data.selectRoomID,
-        "room_password": password
-      },
-      success(res) {
-        let { statusCode,data:{ ret:{ code = 1000,msg,message } } } = res
-        if (Number(statusCode) === 200 && Number(code) === 0) {
-          console.log('del playback suc', res);
-          return self.enterRoom();
-        }
-        let errorText = msg || message || '密码错误'
-        wx.showToast({
-          title:errorText,
-          icon:'none'
-        })
-      },
-      fail(e) {
-        console.error('del playback fail', e);
-      }
-    })
   },
   goToAdmin() {
     wx.navigateTo({
@@ -362,28 +197,8 @@ Page({
       url: '../enterLive/index?role=anchor'
     })
   },
-  bindGetUserInfo(e) {
-    console.log('bindGetUserInfo', e);
-    app.globalData.userInfo = e.detail.userInfo;
-    this.setData({
-      userInfo: e.detail.userInfo,
-      isShowModal: false
-    });
-    this.getRole(() => {
-      this.fetchRooms();
-    });
-  },
-  getRole(callback = this.fetchRooms.bind(this)) {
-    let self = this;
-    // 登录
-    loginApp(self.data.userInfo.nickName).then(role => {
-      console.log('role', role);
-      self.setData({
-        role,
-      });
-      callback && callback();
-    });
-  },
+  
+  
   tabChange(e) {
     const { index, item } = e.detail;
     console.log('tab change', e)

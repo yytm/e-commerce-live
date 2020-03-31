@@ -104,6 +104,7 @@ Component({
           const tempFilePaths = res.tempFilePaths
           self.setData({
             filePath: tempFilePaths[0],
+            avatar:tempFilePaths[0]
           })
           console.log('tempFilePaths', tempFilePaths);
           // console.log('sessionId', typeof wx.getStorageSync('sessionId'))

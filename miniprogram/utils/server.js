@@ -83,9 +83,20 @@ let login =  function (nickName = ""){
     //缓存数据
     wx.setStorageSync('sessionId', session_id);
     wx.setStorageSync('uid', uid);
-    wx.setStorageSync('nickName', nickname || 'Johnny');
+    wx.setStorageSync('nickName', nickname);
     wx.setStorageSync('roomImg', room_img);
     wx.setStorageSync('role', strRole);
+    wx.setStorageSync('avatar',avatar)
+
+    //给用户信息 赋值登陆信息
+    app.globalData.userInfo = { 
+      ...app.globalData.userInfo,
+      nickName:nickname,
+      avatarUrl:avatar,
+      role:strRole,
+      session_id,
+      uid
+    }
 
     return Promise.resolve(strRole)
   })
@@ -479,5 +490,5 @@ export let requestDeletePlayback = wrap(deletePlayback)
 //逻辑在app.js里面
 EventEmitter.on('getUserInfo',({ nickName }) => {
   //自动登陆 获取相关信息
-  //loginApp(nickName)
+  loginApp(nickName)
 })

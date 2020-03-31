@@ -6,7 +6,7 @@ App({
   CallWxFunction,
   onLaunch: function () {
     //给getUserInfo添加防抖
-    this.getUserInfo = throttleByPromise(this.getUserInfo,2000)
+    this.getUserInfo = throttleByPromise(this.getUserInfo)
   },
 
   /**
@@ -49,7 +49,8 @@ App({
   getUserInfo(){
     //判断是否已经获取过用户信息
     //已经获取过就使用缓存信息返回
-    if (this.globalData.userInfo){
+    if (Object.keys(this.globalData.userInfo).length){
+      //返回用户信息
       return Promise.resolve(this.globalData.userInfo)
     }
     //和微信交互获取用户信息
@@ -75,7 +76,8 @@ App({
     return getSetting.then(() => {
       //获取用户信息
       return CallWxFunction('getUserInfo')
-    }).then(res => {
+    })
+    .then(res => {
       this.globalData.userInfo = res.userInfo
       //通知获取用户信息事件
       this.EventEmitter.emit('getUserInfo', res.userInfo)
@@ -142,7 +144,7 @@ App({
     //是否授权过获取用户信息
     isGetSetting:false,
     //用户信息
-    userInfo: null,
+    userInfo: {},
     //BaseUrl: 'https://shop-backend.yunyikao.com',
     BaseUrl:'https://shop-aliyuntest.yunyikao.com',
     wxAppID: 'wx371ac5dc128c4c5e',

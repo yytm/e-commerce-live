@@ -62,7 +62,10 @@
   ></image>
 
   <goodsList 
+    is_show_goods_button="{{false}}"
+    isAnchor="{{true}}"
     is_show_goods_list="{{is_show_goods_list}}"
     bindclose="hiddenGoodsList"
+    bindgoodsTap="goodsTap"
   ></goodsList>
 </view>

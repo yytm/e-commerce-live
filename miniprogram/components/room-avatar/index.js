@@ -1,3 +1,5 @@
+import { CallWxFunction } from "../lib/wx-utils"
+
 // components/room-avatar/index.js
 const app = getApp()
 Component({
@@ -51,7 +53,7 @@ Component({
           let { avatarUrl: avatar = "", nickName: nick = "" } = response
           //显示头像以及昵称
           this.setData({
-            avatar, nick
+            avatar, nick:wx.getStorageSync('nickName') || nick
           })
         })
       }
