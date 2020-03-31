@@ -1,12 +1,13 @@
 
 
 import { CallWxFunction } from '../../components/lib/wx-utils'
-import { loginApp,requestGetRoomList } from "../../utils/server.js"
+import { loginApp,requestGetRoomList,requestGetSelfRoomList } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
+    refreshStatus:false,
     living: false,
     isFirst: true,
     userInfo: null,
@@ -52,6 +53,12 @@ Page({
       .then(userInfo => loginApp())
       .then(role => {
         this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
+        //查看是否有需要恢复直播的房间
+        if(role === 'admin' || role === 'anchor'){
+          this.isRevertRoom()
+            //选中需要跳转恢复直播的房间
+            .then(this.enterRoom.bind(this))
+        }
         return Promise.resolve()
       })
       //获取列表信息
@@ -84,6 +91,39 @@ Page({
     this.onShow()
   },
   /**
+   * 检查是否有在播房间
+   */
+  isRevertRoom(){
+    //获取当前用户在播房间
+    return requestGetSelfRoomList({ status:2 }).then(response => {
+      let { room_list = [] } = response
+      //当前直播的房间列表
+      if(room_list.length > 0){
+        return this.switchRoom(room_list)
+      }
+      //没有选中房间 或者没有房间
+      return Promise.reject()
+    })
+  },
+  /**
+   * 根据已存在的直播房间列表 让用户选择恢复哪个房间的直播
+   * @param {*} room_list 
+   */
+  switchRoom(room_list = []){
+    //获得一个
+    let room = room_list.shift()
+    //没有可以选择的直播房间了
+    if(!room){ return Promise.reject() }
+    //让用户选择恢复哪个直播房间
+    return CallWxFunction('showModal',{
+      title:'信息',
+      content:`您有正在直播的房间:${room.room_name}，是否进行恢复直播？`
+    }).then(response => {
+      let { confirm } = response
+      return confirm? Promise.resolve(room) : switchRoom(room_list)
+    })
+  },
+  /**
    * 请求数据
    */
   fetchRooms(state = this.data.state) {
@@ -97,7 +137,7 @@ Page({
     return this.getRoomList(queryState,uid)
       .then(room_list => {
         //更新列表
-        this.setData({ [isCenter? 'replayList':'roomList']:room_list })
+        this.setData({ [isCenter? 'replayList':'roomList']:room_list,refreshStatus:false })
       })
   },
   /**
@@ -126,13 +166,6 @@ Page({
         return Promise.resolve([])
       })
   },
-  /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-  // onPullDownRefresh() {
-  //   console.log('>>>[liveroom-roomList] onPullDownRefresh');
-  //   this.getRoomList();
-  // },
   refresh() {
     console.log('>>>[liveroom-roomList] refresh');
     this.fetchRooms();

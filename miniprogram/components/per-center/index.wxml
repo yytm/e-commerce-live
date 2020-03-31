@@ -46,8 +46,8 @@
                     <!-- <image class="replay-item-img" src="{{item.img}}"></image> -->
                     <view class="replay-detail">
                         <view class="replay-text">{{item.room_name}}</view>
-                        <view class="replay-action">
-                            <text class="passwrd">直播密码:{{item.room_password}}</text>
+                        <view class="replay-action" >
+                            <text class="passwrd">{{item.room_password? '直播密码:'+item.room_password:''}}</text>
                         </view>
                         <view class="extra-info">
                             <view class="extra-item">

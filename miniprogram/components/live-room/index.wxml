@@ -61,7 +61,7 @@
         bindnetstatus="onPlayNetStateChange"
     ></live-player>
 
-    <view class="subPlayer-box-close-box" catchtap="onTapEndJoinLive">
+    <view class="subPlayer-box-close-box" wx:if="{{recvJoinLiver}}" catchtap="onTapEndJoinLive">
         <image 
             role="img" 
             src="../images/goods-close.png"

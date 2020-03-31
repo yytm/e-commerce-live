@@ -8,41 +8,6 @@ App({
     //给getUserInfo添加防抖
     this.getUserInfo = throttleByPromise(this.getUserInfo)
   },
-
-  /**
-    * 检查是否有在播房间
-    */
-  isRevertRoom(){
-    //获取当前用户在播房间
-    return requestGetSelfRoomList({ status:2 }).then(response => {
-      let { room_list = [] } = response
-      //当前直播的房间列表
-      if(room_list.length > 0){
-        return this.switchRoom(room_list).catch(() => ({ roomid:this.data.roomid }))
-      }
-      //返回默认roomid
-      return Promise.resolve({ roomid:this.data.roomid })
-    })
-  },
-  /**
-   * 根据已存在的直播房间列表 让用户选择恢复哪个房间的直播
-   * @param {*} room_list 
-   */
-  switchRoom(room_list = []){
-    //获得一个
-    let room = room_list.shift()
-    //没有可以选择的直播房间了
-    if(!room){ return Promise.reject() }
-    //让用户选择恢复哪个直播房间
-    return CallWxFunction('showModal',{
-      title:'信息',
-      content:`您有正在直播的房间:${room.room_name}，是否进行恢复直播？`
-    }).then(response => {
-      let { confirm } = response
-      return confirm? Promise.resolve(room) : switchRoom(room_list)
-    })
-  },
-
   /**
    * @param {*} isFresh 是否强制重新获取 不拿缓存
    */

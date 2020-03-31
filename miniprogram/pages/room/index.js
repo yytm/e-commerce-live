@@ -52,6 +52,7 @@ Page({
     //userMap:new Map(),
     //消息列表 { nickName:"Johnny",message:"加入房间",id:"1" }
     messageList:[],
+    toView:1,
     //欢迎列表控制
     wlRoom:{
       isShow:false,
@@ -428,8 +429,8 @@ Page({
    * @param {*} messageSender 
    */
   addMessageList(messageSender){
-    let { message,nickName = "",id = len + 1 } = typeof messageSender === 'string'? { message:messageSender } : messageSender
     let len = this.data.messageList.length
+    let { message,nickName = "",id = len + 1 } = typeof messageSender === 'string'? { message:messageSender } : messageSender
     this.data.messageList.push({ message,nickName,id})
 
     //保持100条消息
@@ -437,7 +438,7 @@ Page({
     delCount = delCount > 0? delCount : 0
     //删除多余的消息
     this.data.messageList.splice(0,delCount)
-    this.setData({ messageList:this.data.messageList })
+    this.setData({ messageList:this.data.messageList,toView:`ITEM${id}` })
   },
   /**
    * 添加欢迎队列

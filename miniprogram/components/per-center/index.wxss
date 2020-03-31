@@ -344,6 +344,7 @@ view {
   color: rgba(22, 23, 24, 1);
   line-height: 36rpx;
   padding-bottom: 20rpx;
+  min-height:24rpx;
 }
 .extra-info {
   height: 66rpx;

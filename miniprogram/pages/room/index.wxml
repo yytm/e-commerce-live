@@ -37,7 +37,7 @@
       wx:if="{{roomInfo.anchor_id && !isAnchor}}"
       class="setting-joinlive-img"
       role="img"
-      src="../../components/images/room-heart.png"
+      src="../../components/images/room-joinLive.png"
       catchtap="requestJoinLive"
     ></image>
     <image 
@@ -65,8 +65,9 @@
       class="merchandise-list" 
       scroll-y='true' 
       bindscrolltolower='lower'
+      scroll-into-view="{{toView}}"
     > 
-      <view class="merchandise-item" wx:for="{{messageList}}" wx:key="id">
+      <view class="merchandise-item" wx:for="{{messageList}}" wx:key="id" id="{{'ITEM'+item.id}}">
         <text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>{{item.message}}
       </view>
     </scroll-view>
@@ -183,7 +184,7 @@
     enable_mic="{{settingBox.enable_mic}}"
     beauty="{{settingBox.beauty}}"
     whiteness="{{settingBox.whiteness}}"
-    room_password=""
+    room_password="{{roomInfo.room_password}}"
     bindcloseRoom="onBackTap"
     bindswitchCameraChange="onSwitchCameraChange"
     bindswitchMic="onSwitchMic"

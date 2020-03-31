@@ -3,6 +3,7 @@
   "navigationBarTitleText": "电商直播间",
   "navigationBarTextStyle": "white",
   "navigationStyle": "custom",
+  "disableScroll": true,
   "usingComponents": {
     "authroze-modal": "/components/authorize-modal/index",
     "tabbar": "/components/custom-tabbar/index",

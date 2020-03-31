@@ -59,11 +59,13 @@
     showCancel="{{true}}"
     bindcancel="onCancel"
     bindconfirm="onConfirm"
+    bindclose="onCancel"
   ></alert>
 
   <goodsList
+    is_show_goods_button="{{false}}"
     is_show_goods_list="{{is_show_goods_list}}"
-    isAnchor="{{false}}"
+    isAnchor="{{isAnchor}}"
     anchor_id_name="{{roomInfo.anchor_id}}"
     bindclose="onGoodsListHidden"
     bindgoodsTap="goodsTap"

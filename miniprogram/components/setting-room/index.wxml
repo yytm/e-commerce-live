@@ -15,7 +15,7 @@
       placeholder="{{'直播标题'}}"
       class="mg-btn-24"
       bindinput="roomNameHold"
-      maxlength="30"
+      maxlength="10"
     ></roomInput>
     <roomInput 
       placeholder="{{'6 位直播密码（选填）'}}"

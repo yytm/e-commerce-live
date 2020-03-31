@@ -97,7 +97,7 @@ Component({
     },
     //正在请求连麦的人
     recvJoinLiver:null,
-    //观众是否正在请求连麦
+    //观众是否正在请求连麦 主播不需要
     isStartRequestJoinLive:false,
     
     //子主播配置
@@ -149,8 +149,10 @@ Component({
     //观众是否正在连麦请求中
     isStartRequestJoinLive(newVal){
       if(newVal){
-        return CallWxFunction('showLoading',{
-          title:'正在向主播请求连麦'
+        return CallWxFunction('showToast',{
+          title: '正在请求连麦',
+          icon: 'none',
+          duration: 2000
         })
       }
       CallWxFunction('hideLoading')
@@ -527,8 +529,10 @@ Component({
       let { requestId } = joinLiver
       //回复
       lib.CallZegoLib('respondJoinLive',requestId,result)
+      //requestId
+      let recvJoinLiver = result? joinLiver : this.data.recvJoinLiver
       //记录
-      this.setData({ recvJoinLiver:result?joinLiver : '' })
+      this.setData({ recvJoinLiver })
     },
     /**
      * 收到结束连麦信令
@@ -861,7 +865,12 @@ Component({
           subPlayer:startStreamList,
           isLeave,
           //sdk已经链接上服务器
-          isConnection:true
+          isConnection:true,
+          //当前是主播 并且当前有人正在连麦
+          recvJoinLiver:this.data.isAnchor && startStreamList.length && {
+            from_userid:startStreamList[0].anchor_id_name,
+            from_username:startStreamList[0].anchor_nick_name
+          } || null
         },() => {
           let playerList =  this.data.isAnchor
               ? this.data.subPlayer

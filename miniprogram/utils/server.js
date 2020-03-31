@@ -260,14 +260,14 @@ let getRoomList = function (options = {}){
     data:params
   })
 }
+
+
 /**
- * 心跳
- * @param {*} options = {
- *  uid,
- *  room_id
- * }
+ * 根据roomID请求数据
+ * @param {*} requestURL  请求URL
+ * @param {*} options 请求参数
  */
-let hd = function (options = {}){
+let requestRoomID = function (requestURL = "",options = {}){
   //如果没有传递UID 默认使用自己的UID尝试请求数据
   let {  uid = '',room_id = '' } = options
   //如果uid为空 默认使用自己的uid尝试请求
@@ -276,7 +276,7 @@ let hd = function (options = {}){
   //请求数据
   return request({
     //请求地址
-    url:`${BaseUrl}/app/hb`,
+    url:`${BaseUrl}${requestURL}`,
     method:'POST',
     data:{
       //session信息
@@ -289,6 +289,23 @@ let hd = function (options = {}){
       uid:Number(uid)
     }
   })
+}
+/**
+ * 心跳
+ * @param {*} options = {
+ *  uid,
+ *  room_id
+ * }
+ */
+let hd = function (options = {}){
+  return requestRoomID('/app/hb',options)
+}
+/**
+ * 播放自增
+ * @param {*} options 
+ */
+let playback = function (options = {}){
+  return requestRoomID('/app/run_playback',options)
 }
 
 /**
@@ -310,27 +327,7 @@ let getSelfRommList = function (options = {}){
  * }
  */
 let increaseRoomLoveCount = function (options = {}){
-  //如果没有传递UID 默认使用自己的UID尝试请求数据
-  let {  uid = '',room_id = '' } = options
-  //如果uid为空 默认使用自己的uid尝试请求
-  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
-
-  //请求数据
-  return request({
-    //请求地址
-    url:`${BaseUrl}/app/increase_room_love_count`,
-    method:'POST',
-    data:{
-      //session信息
-      session_id: wx.getStorageSync('sessionId'),
-      //腾讯提供的appid 
-      live_appid: liveAppID,
-      //直播间ID
-      room_id,
-      //主播ID
-      uid:Number(uid)
-    }
-  })
+  return requestRoomID('/app/increase_room_love_count',options)
 }
 
 /**
@@ -340,27 +337,7 @@ let increaseRoomLoveCount = function (options = {}){
  * }
  */
 let clearRoom = function (options = {}){
-  //如果没有传递UID 默认使用自己的UID尝试请求数据
-  let {  uid = '',room_id = '' } = options
-  //如果uid为空 默认使用自己的uid尝试请求
-  uid = !!!String(uid)? (wx.getStorageSync('uid') || '') : uid
-
-  //请求数据
-  return request({
-    //请求地址
-    url:`${BaseUrl}/app/clear_room`,
-    method:'POST',
-    data:{
-      //session信息
-      session_id: wx.getStorageSync('sessionId'),
-      //腾讯提供的appid 
-      live_appid: liveAppID,
-      //直播间ID
-      room_id,
-      //主播ID
-      uid:Number(uid)
-    }
-  })
+  return requestRoomID('/app/clear_room',options)
 }
 
 /**
@@ -403,27 +380,7 @@ let checkRoomPassword = function (options = {}){
  * }
  */
 let deletePlayback = function (options = {}){
-  //如果没有传递UID 默认使用自己的UID尝试请求数据
-  let {  room_id = '' } = options
-  //如果uid为空 默认使用自己的uid尝试请求
-  let uid =  wx.getStorageSync('uid') || ''
-
-  //请求数据
-  return request({
-    //请求地址
-    url:`${BaseUrl}/app/delete_playback`,
-    method:'POST',
-    data:{
-      //session信息
-      session_id: wx.getStorageSync('sessionId'),
-      //腾讯提供的appid 
-      live_appid: liveAppID,
-      //直播间ID
-      room_id,
-      //主播ID
-      uid:Number(uid)
-    }
-  })
+  return requestRoomID('/app/delete_playback',options)
 }
 
 /**
@@ -483,6 +440,7 @@ export let requestIncreaseRoomLoveCount = wrap(increaseRoomLoveCount)
 export let requestClearRoom = wrap(clearRoom)
 export let requestCheckRoomPassword = wrap(checkRoomPassword)
 export let requestDeletePlayback = wrap(deletePlayback)
+export let reuqestPlayback = wrap(playback)
 
 
 //监听事件

@@ -2,7 +2,8 @@
 import { 
   requestGetRoomList,
   requestCheckRoomPassword,
-  requestDeletePlayback
+  requestDeletePlayback,
+  reuqestPlayback
 } from '../../utils/server'
 import { CallWxFunction } from '../../components/lib/wx-utils'
 Page({
@@ -25,7 +26,6 @@ Page({
    */
   onLoad(options) {
     let { roomID } = options
-
     requestGetRoomList({ room_id:roomID })
       .then((response = {}) => {
         let { room_list = [] } = response
@@ -75,6 +75,8 @@ Page({
           this.onRoomLogout()
         })
       })
+      //计数自动增长
+      reuqestPlayback({ room_id:roomID })
   },
   /**
    * 商品列表 商品被点击
@@ -85,7 +87,7 @@ Page({
     let { url_type = 1,goods_url = "" } = goodsObj
     //url
     if(Number(url_type) === 1){
-      return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+      return CallWxFunction('navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
     }
     CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
   },
