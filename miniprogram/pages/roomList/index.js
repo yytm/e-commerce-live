@@ -260,23 +260,23 @@ Page({
       selectRoomID: id
     })
     //房间有密码 而且当前用户不是房间创建人  就需要输入密码
-    if (roomPassword && String(anchorId) !== String(uid)) {
-      this.setData({
-        isShowPassword: true,
-      })
-      return;
-    }
+    // if(roomPassword && String(anchorId) !== String(uid)) {
+    //   this.setData({
+    //     isShowPassword: true,
+    //   })
+    //   return;
+    // }
     this.enterRoom();
 
   },
   enterRoom() {
     const selectRoom = this.data.roomList.find(item => item.room_id === this.data.selectRoomID);
     console.log('selectRoom', selectRoom);
-    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url } = selectRoom;
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url,status } = selectRoom;
     const userID = 'anchor' + wx.getStorageSync('uid');
 
     //可以回放 并且有回放地址
-    if(has_playback && !!playback_url){
+    if(has_playback && status === 20){
       const url = `/pages/video/index?roomID=${room_id}`
       wx.navigateTo({
         url: url,

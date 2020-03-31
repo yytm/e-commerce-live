@@ -175,7 +175,8 @@ Page({
    * @param {*} roomId 
    * @param {*} userList 
    */
-  onUserStateUpdate(roomId,userList){
+  onUserStateUpdate(e){
+    let { roomId,userList } = e.detail
     //记录之前已经存在的用户列表
     let userMap = this.userMap = this.userMap || new Map()
 

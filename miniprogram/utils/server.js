@@ -115,7 +115,7 @@ let setRoom = function (options = {}){
     //腾讯提供的appid 
     live_appid: liveAppID,
     //主播ID
-    uid,
+    uid:Number(uid),
     //房间名称
     room_name,
     //房间ID
@@ -177,7 +177,7 @@ let listGoods = function (options = {}){
       //腾讯提供的appid 
       live_appid: liveAppID,
       //主播ID
-      uid,
+      uid:Number(uid),
       //页面编码
       page,
       //每页显示数量
@@ -275,7 +275,7 @@ let hd = function (options = {}){
       //直播间ID
       room_id,
       //主播ID
-      uid
+      uid:Number(uid)
     }
   })
 }
@@ -317,7 +317,7 @@ let increaseRoomLoveCount = function (options = {}){
       //直播间ID
       room_id,
       //主播ID
-      uid
+      uid:Number(uid)
     }
   })
 }
@@ -347,7 +347,7 @@ let clearRoom = function (options = {}){
       //直播间ID
       room_id,
       //主播ID
-      uid
+      uid:Number(uid)
     }
   })
 }
@@ -378,7 +378,7 @@ let checkRoomPassword = function (options = {}){
       //直播间ID
       room_id,
       //主播ID
-      uid,
+      uid:Number(uid),
       //输入的房间的密码
       room_password
     }
@@ -410,7 +410,7 @@ let deletePlayback = function (options = {}){
       //直播间ID
       room_id,
       //主播ID
-      uid
+      uid:Number(uid)
     }
   })
 }

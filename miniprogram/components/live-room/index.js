@@ -813,6 +813,7 @@ Component({
       this.stopPlayerByObj(this.data.mainPlayer)
       this.stopSubPlayer()
       this.endJoinLive()
+      lib.CallZegoLib('logout')
 
       //发送事件
       this.triggerEvent('logout',{ component:this })
