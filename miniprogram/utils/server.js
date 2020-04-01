@@ -86,7 +86,7 @@ let login =  function (nickName = ""){
     wx.setStorageSync('nickName', nickname);
     wx.setStorageSync('roomImg', room_img);
     wx.setStorageSync('role', strRole);
-    wx.setStorageSync('avatar',avatar)
+    wx.setStorageSync('avatar',avatar || '/components/images/avatar-logo.png')
 
     //给用户信息 赋值登陆信息
     app.globalData.userInfo = { 
@@ -258,6 +258,16 @@ let getRoomList = function (options = {}){
     url:`${BaseUrl}/app/get_room_list`,
     method:'POST',
     data:params
+  }).then(response => {
+    let { ret,room_list } = response
+    if(Array.isArray(room_list)){
+      room_list = room_list.map(room => {
+        //无头像 默认添加一个头像
+        room.avatar = room.avatar || '/components/images/avatar-logo.png'
+        return room
+      })
+    }
+    return { ret,room_list }
   })
 }
 

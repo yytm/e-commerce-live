@@ -11,6 +11,8 @@ Page({
     userInfo: null,
     role: '',
     roomList: [ ],
+    statusBarHeight:'20',
+    navigateHeight:'170rpx',
     bottom: '30',
     state: 'list',
     list: [{
@@ -31,10 +33,14 @@ Page({
   },
   onLoad: function (options) {
     console.log('onLoad', options);
-    let rect = wx.getMenuButtonBoundingClientRect();
+    let systemInfo = wx.getSystemInfoSync()
+    let rect = wx.getMenuButtonBoundingClientRect()
+
+    let { pixelRatio,statusBarHeight } = systemInfo
     const top = rect.top;
     const height = rect.height;
-    this.setData({ top,height });
+
+    this.setData({ top,height,statusBarHeight,navigateHeight:String(statusBarHeight + height + top) + 'px' });
   },
   onShow: function () {
     this.revertHandler && clearTimeout(this.revertHandler)
@@ -116,7 +122,7 @@ Page({
       content:`您有正在直播的房间:${room.room_name}，是否进行恢复直播？`
     }).then(response => {
       let { confirm } = response
-      return confirm? Promise.resolve(room) : switchRoom(room_list)
+      return confirm? Promise.resolve(room) : this.switchRoom(room_list)
     })
   },
   /**
@@ -143,12 +149,12 @@ Page({
    */
   getRoomList(status = undefined, uid = undefined) {
     let self = this;
-    CallWxFunction('showLoading',{ title:'获取房间列表' })
+    CallWxFunction('showLoading',{ title:'获取房间列表',mask:true })
     return requestGetRoomList({ uid,status })
       .then(res => {
         let { room_list = [] } = res
         room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
-        CallWxFunction('hideLoading')
+        setTimeout(() => { CallWxFunction('hideLoading') },500)
         return Promise.resolve(room_list)
         //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
       })
@@ -197,16 +203,6 @@ Page({
     }
     //跳转页面
     CallWxFunction('navigateTo',{ url })
-  },
-  goToAdmin() {
-    wx.navigateTo({
-      url: "../index/index",
-      success: (result) => {
-        console.log('nav suc', result);
-      },
-      fail: () => { },
-      complete: () => { }
-    });
   },
   createRoom() {
     console.log('createRoom');

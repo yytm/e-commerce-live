@@ -1,12 +1,12 @@
 /* components/room-avatar/index.wxss */
 .room-avatar-container{
-  width:180rpx;
   height:56rpx;
   background:rgba(0,0,0,0.2);
   border-radius:28rpx;
   display: flex;
   flex-direction:row;
   align-items:flex-start;
+  padding-right:15rpx;
 }
 
 .room-avatar-container .avatar{

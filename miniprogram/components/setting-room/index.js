@@ -189,7 +189,9 @@ Component({
         })
         console.log(response,'success')
       }).catch(error => {
-        let { ret:{ msg,message } } = error
+        console.log(error)
+        let { ret = {  } } = error
+        let { msg,message } = ret
         let errorMessage = msg || message || '系统错误 请稍后重试'
         console.log(error,'error')
         //消失loading
@@ -204,12 +206,18 @@ Component({
     },
   },
 
+  pageLifetimes:{
+    show(){
+
+    }
+  },
+
   //组件生命周期
   lifetimes:{
     //在组件实例进入页面节点树时执行
     attached(){
       //清空数据
-      this.setData({ ...clearObj })
+      //this.setData({ ...clearObj,room_img:wx.getStorageSync('avatar') })
     },
     //在组件实例被从页面节点树移除时执行
     detached(){}

@@ -10,6 +10,7 @@
   <back 
     id="backBtn"
     bindback="onUnload" 
+    style="top:{{top}}"
   ></back>
 
   <roomAvatar 
@@ -17,6 +18,7 @@
     isAutoAvatar="{{false}}"
     avatar="{{roomInfo.avatar}}"
     nick="{{roomInfo.anchor_name}}"
+    style="top:{{top}}"
   ></roomAvatar>
 
   <view class="icon-box">

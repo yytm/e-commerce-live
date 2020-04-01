@@ -12,6 +12,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    top:'87rpx',
     roomInfo:{},
     videoURL:'',
     isAnchor:false,
@@ -43,6 +44,7 @@ Page({
         let uid = wx.getStorageSync('uid') || ''
         //是否是房间创建人
         let isAnchor = String(anchor_id) === String(uid)
+        
         //保存房间数据
         this.setData({ roomInfo:room,isAnchor })
         //有房间密码的情况
@@ -77,6 +79,13 @@ Page({
           this.onRoomLogout()
         })
       })
+
+    let systemInfo = wx.getSystemInfoSync()
+    let rect = wx.getMenuButtonBoundingClientRect()
+    
+    let { statusBarHeight } = systemInfo
+    let top = rect.top
+    this.setData({ top:`${top + 5}px` });
   },
   /**
    * 商品列表 商品被点击

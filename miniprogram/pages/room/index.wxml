@@ -10,14 +10,16 @@
     bindback="onUnload" 
     isAutoBack="{{!isAnchor}}" 
     bindonBackTap="onBackTap"
+    style="top:{{top}}"
   ></back>
 
   <roomAvatar 
     class="room-avatar"
     isAutoAvatar="{{false}}"
-    avatar="{{roomInfo.avatar || '../../components/images/avatar-logo.png'}}"
+    avatar="{{roomInfo.avatar}}"
     nick="{{roomInfo.anchor_name}}"
     title="{{userCount + ' 人观看'}}"
+    style="top:{{top}}"
   ></roomAvatar>
 
   <view class="icon-box">
@@ -194,6 +196,8 @@
 
   <view wx:if="{{isAnchor}}" class="setting-btn" catchtap="showSettingBox">设置 ></view>
 
+  <view wx:if="{{isAnchor && roomInfo.has_playback}}" class="playback-icon-box"><view></view><text>REC</text></view>
+
   <password-modal 
     class="confirm-modal" 
     isShow="{{isShowRoomPwd}}" 
@@ -205,11 +209,9 @@
   ></password-modal>
 
 
-  <view class="disable-live-box" wx:if="{{roomState.status == 8}}">
-    <image role="img" src="../../components/images/disable-live.png"></image>
-    <text>该直播已被管理员禁播</text>
-    <navigator class="disable-live-nav" url="/pages/roomList/index" hover-class="disable-live-hover" open-type="navigate">
-      离开
-    </navigator>
+  <view class="disable-live-box" wx:if="{{roomState.status == 8 || roomState.status == 4}}">
+    <image role="img" src="{{ rommState.status == 8? '../../components/images/disable-live.png' : '../../components/images/ph.png' }}"></image>
+    <text>{{ roomState.status === 8? '该直播已被管理员禁播': '直播已结束' }}</text>
+    <view class="disable-live-nav" bindtap="onRoomLogout">离开</view>
   </view>
 </view>

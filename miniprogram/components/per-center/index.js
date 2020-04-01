@@ -9,7 +9,20 @@ Component({
   properties: {
     replayList: {
       type: Array,
-      value: []
+      value: [],
+      observer(list){
+        let roomList = list.map(room => {
+          //换算时间文案
+          let playback_duration = isNaN(room.playback_duration)? 0 : Number(room.playback_duration)
+          let day = parseInt(playback_duration / 86400) 
+          let h = parseInt((playback_duration % 86400) / 3600)
+          let m = parseInt((playback_duration % 3600) / 60)
+          let s = parseInt(playback_duration % 60)
+          room.playback_duration  = `${day? day + '天 ' : ''}${h < 10? '0' + h : h}:${m < 10? '0' + m : m}:${s < 10? '0' + s : s}`
+          return room
+        })
+        this.setData({ roomList })
+      }
     },
     role: {
       type: String,
@@ -38,6 +51,7 @@ Component({
     confirmText: '删除回放',
     bottom: '124',
     isShowUpdate: false,
+    roomList:[]
   },
 
   ready() {

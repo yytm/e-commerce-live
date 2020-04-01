@@ -15,9 +15,7 @@ Component({
       type:String,
       value:'',
       observer(newVal){
-        let mainPusherStreamID = this.createStreamID(true)
-        let subPusherStreamID = this.createStreamID()
-        this.setData({ mainPusher:{ ...this.data.mainPusher,stream_id:mainPusherStreamID },subPusher:{ ...this.data.subPusher,stream_id:subPusherStreamID } })
+        
         newVal && this.loginRoom()
       }
     },
@@ -529,8 +527,11 @@ Component({
       let { requestId } = joinLiver
       //回复
       lib.CallZegoLib('respondJoinLive',requestId,result)
+      
       //requestId
-      let recvJoinLiver = result? joinLiver : this.data.recvJoinLiver
+      let recvJoinLiver = result? joinLiver 
+        //假如有正在连麦的 留住连麦的人
+        : this.data.subPlayer.length? this.data.recvJoinLiver : ''
       //记录
       this.setData({ recvJoinLiver })
     },
@@ -827,14 +828,17 @@ Component({
      */
     loginRoom(){
       //加载loading
-      CallWxFunction('showLoading',{ title:'加载中' })
+      CallWxFunction('showLoading',{ title:'连接中' })
       //确保用户登陆
       app.getUserInfo().then(() => {
         //获取当前用户的角色
         return this.getRoomRole()
       }).then(({ isAnchor,isCanPublish }) => {
+        //重新生成StreamID
+        let mainPusherStreamID = this.createStreamID(true)
+        let subPusherStreamID = this.createStreamID()
         //存储用户角色
-        this.setData({ isAnchor,isCanPublish })
+        this.setData({ isAnchor,isCanPublish,mainPusher:{ ...this.data.mainPusher,stream_id:mainPusherStreamID },subPusher:{ ...this.data.subPusher,stream_id:subPusherStreamID } })
         //当前是主播创建 但是当前房间状态不属于未开始或者在直播中
         if(isAnchor && !isCanPublish){
           return Promise.reject({ ret:{ msg:'当前房间不可复播 请稍后重试' } })
@@ -918,7 +922,9 @@ Component({
   //页面生命周期
   pageLifetimes: {
     // 组件所在页面的生命周期函数
-    show() {  },
+    show() {  
+      
+    },
     hide() { 
       //this.logout()
     },
@@ -932,6 +938,7 @@ Component({
     //在组件实例被从页面节点树移除时执行
     detached() { 
       this.logout()
+      this.retryConnection = null
     }
   }
 })

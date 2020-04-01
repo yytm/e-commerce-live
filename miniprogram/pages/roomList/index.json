@@ -5,7 +5,6 @@
   "navigationStyle": "custom",
   "disableScroll": true,
   "usingComponents": {
-    "authroze-modal": "/components/authorize-modal/index",
     "tabbar": "/components/custom-tabbar/index",
     "center": "/components/per-center/index",
     "confirm-modal": "/components/confirm-modal/index",

@@ -14,6 +14,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    top:"87rpx",
     uid:'',
     //主播是否离开
     isLeave:false,
@@ -520,10 +521,28 @@ Page({
    */
   onLoad(options) {
     let { roomID } = options
-    //roomID = 'room651585142040049'
-    //this.setData({ roomid:roomID })
     console.log('page load',roomID)
 
+    this.initRoomList(roomID)
+    this.initDomReander()
+    this.watchNetWorkStatus()
+  },
+
+  /**
+   * 和界面有关的初始化
+   */
+  initDomReander(){
+    let systemInfo = wx.getSystemInfoSync()
+    let rect = wx.getMenuButtonBoundingClientRect()
+  
+    let { statusBarHeight } = systemInfo
+    const top = rect.top
+    this.setData({ top:`${top + 5}px` });
+  },
+  /**
+   * 初始化房间数据
+   */
+  initRoomList(roomID){
     //获取房间信息
     requestGetRoomList({ room_id:roomID })
       .then((response = {}) => {
@@ -575,6 +594,25 @@ Page({
           this.onRoomLogout()
         })
       })
+  },
+  /**
+   * 监听网络状态
+   */
+  watchNetWorkStatus(){
+    //监听网络状态
+    wx.onNetworkStatusChange(response => {
+      let { isConnected } = response
+      if(!isConnected){
+        CallWxFunction('showModal',{
+          title: '提示',
+          confirmText:'确定',
+          showCancel:false,
+          content: '您已断开连接 请重新进入房间'
+        }).then(() => {
+          this.onConfirm()
+        })
+      } 
+    })
   },
 
   /**
@@ -643,6 +681,7 @@ Page({
    */
   onUnload: function () {
     //this.liveRoomComponent.logout()
+    this.liveHandler && clearTimeout(this.liveHandler)
   },
 
   /**

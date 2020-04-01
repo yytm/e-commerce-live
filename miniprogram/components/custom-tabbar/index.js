@@ -43,5 +43,25 @@ Component({
     btnClick() {
       this.triggerEvent('btnClick', {});
     }
+  },
+
+  //页面生命周期
+  pageLifetimes: {
+    // 组件所在页面的生命周期函数
+    show() {  },
+    hide() {  },
+    resize() { },
+  },
+
+  //组件生命周期
+  lifetimes: {
+    //在组件实例进入页面节点树时执行
+    attached() {   
+      
+    },
+    //在组件实例被从页面节点树移除时执行
+    detached() { 
+      this.logout()
+    }
   }
 })

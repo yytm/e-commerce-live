@@ -3,11 +3,8 @@
     "pages/roomList/index",
     "pages/room/index",
     "pages/enterLive/index",
-    "pages/main/index",
     "pages/web/index",
     "pages/register/index",
-    "pages/index/index",
-    "pages/replay/index",
     "pages/authroze/index",
     "pages/video/index"
   ],
