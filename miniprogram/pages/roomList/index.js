@@ -231,9 +231,13 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    let isAnchor = this.data.role === 'admin' || this.data.role === 'anchor'
+    let title = `${this.data.userInfo.nickName || ''}${isAnchor?'邀请你成为主播':'邀请你观看直播'}`
+    let path = isAnchor? '/pages/register/index':'/pages/roomList/index'
+    
     return {
-      title: `${this.data.userInfo.nickName || ''}邀请你成为主播`,
-      path: '/pages/register/index',
+      title,
+      path,
       imageUrl: this.data.userInfo.avatarUrl || '../..resource/invi.png',
     }
   }
