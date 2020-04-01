@@ -203,4 +203,13 @@
     bindcancel="onRoomLogout" 
     bindconfirm="onConfirmPassword"
   ></password-modal>
+
+
+  <view class="disable-live-box" wx:if="{{roomState.status == 8}}">
+    <image role="img" src="../../components/images/disable-live.png"></image>
+    <text>该直播已被管理员禁播</text>
+    <navigator class="disable-live-nav" url="/pages/roomList/index" hover-class="disable-live-hover" open-type="navigate">
+      离开
+    </navigator>
+  </view>
 </view>

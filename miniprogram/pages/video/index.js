@@ -58,6 +58,8 @@ Page({
         let { playback_url } = this.data.roomInfo
         //没有回放地址的情况
         if(!!!playback_url){  return Promise.reject({ ret:{ msg:'回放地址已不存在' } }) }
+        //计数自动增长
+        reuqestPlayback({ room_id:roomID })
         //开始播放
         this.setData({ videoURL:playback_url })
       })
@@ -75,8 +77,6 @@ Page({
           this.onRoomLogout()
         })
       })
-      //计数自动增长
-      reuqestPlayback({ room_id:roomID })
   },
   /**
    * 商品列表 商品被点击

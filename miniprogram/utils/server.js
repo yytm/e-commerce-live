@@ -301,12 +301,20 @@ let hd = function (options = {}){
   return requestRoomID('/app/hb',options)
 }
 /**
- * 播放自增
+ * 回放播放自增
  * @param {*} options 
  */
 let playback = function (options = {}){
   return requestRoomID('/app/run_playback',options)
 }
+/**
+ * 直播观看次数自增长
+ * @param {*} options 
+ */
+let increaseRoomVisitCount = function (options = {}){
+  return requestRoomID('/app/increase_room_visit_count',options)
+}
+
 
 /**
  * 获取自己的房间列表
@@ -441,6 +449,7 @@ export let requestClearRoom = wrap(clearRoom)
 export let requestCheckRoomPassword = wrap(checkRoomPassword)
 export let requestDeletePlayback = wrap(deletePlayback)
 export let reuqestPlayback = wrap(playback)
+export let requestIncreaseRoomVisitCount = wrap(increaseRoomVisitCount)
 
 
 //监听事件

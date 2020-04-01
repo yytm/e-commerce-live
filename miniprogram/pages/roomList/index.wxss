@@ -312,3 +312,20 @@
   right: 0;
   z-index: 1111;
 }
+
+.audience-nav{
+  position:fixed;
+  z-index:1;
+  left:50%;
+  transform:translate(-50%,0);
+  bottom:60rpx;
+  width:200rpx;
+  height:80rpx;
+  border-radius:16rpx;
+  text-align:center;
+  line-height:80rpx;
+  font-size:28rpx;
+  font-weight:500;
+  color:rgba(255,255,255,1);
+  background:green;
+}

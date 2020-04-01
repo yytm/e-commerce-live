@@ -4,7 +4,8 @@ import {
   requestIncreaseRoomLoveCount,
   requestClearRoom,
   requestGetRoomList,
-  requestCheckRoomPassword
+  requestCheckRoomPassword,
+  requestIncreaseRoomVisitCount
 } from '../../utils/server'
 import { CallWxFunction } from '../../components/lib/wx-utils'
 
@@ -555,6 +556,8 @@ Page({
         return Promise.resolve()
       })
       .then(() => {
+        //自动增加直播间观看次数
+        requestIncreaseRoomVisitCount({ roomid:roomID })
         //正式进入房间
         this.setData({ roomid:roomID })
       })

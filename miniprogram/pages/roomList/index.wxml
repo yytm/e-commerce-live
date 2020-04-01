@@ -25,7 +25,7 @@
                         <view wx:else class="room-state" hover-class="none" hover-stop-propagation="false">
                             直播中
                         </view>
-                        <view class="room-num">{{item.user_count}}人观看</view>
+                        <view class="room-num">{{item.status < 4? item.user_count : item.play_count}}人观看</view>
                     </view>
                     <view class="room-info-bot" wx:if="{{item.has_password}}">
                         <image src="../../resource/lock.png" class="replay-lock-img"/>
@@ -55,5 +55,7 @@
     </view>
 </view> -->
 <tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
-<confirm-modal class="confirm-modal" isShow="{{living}}" title="{{title}}" cancelText="{{cancelText}}" confirmText="{{confirmText}}" bottom="{{bottom}}" bindcancel="endLive" bindconfirm="enterLive"></confirm-modal>
-<authroze-modal isShow="{{isShowModal}}" id='dialog' title='微信授权' subTitle='建行到家CCBgo在线申请获取以下权限' content='获取到你公开信息(呢称，头像等)' confirmText='授权登录' bind:GetUserInfo='bindGetUserInfo'></authroze-modal>
+
+<navigator wx:if="{{role!=='admin' && role !== 'anchor'}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">
+    成为主播
+</navigator>

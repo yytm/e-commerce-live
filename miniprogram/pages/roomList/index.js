@@ -1,23 +1,16 @@
 
 
 import { CallWxFunction } from '../../components/lib/wx-utils'
-import { loginApp,requestGetRoomList,requestGetSelfRoomList } from "../../utils/server.js"
+import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
     refreshStatus:false,
-    living: false,
-    isFirst: true,
     userInfo: null,
     role: '',
     roomList: [ ],
-    isShowPassword: false,
-    isShowModal: false,
-    title: '当前直播未结束，是否重新进入？',
-    cancelText: '结束直播',
-    confirmText: '进入直播',
     bottom: '30',
     state: 'list',
     list: [{
@@ -34,7 +27,6 @@ Page({
       "selectedIconPath": "/resource/per_center_selected.png",
       badge: 'New'
     }],
-    selectRoomID: '',
     replayList: []
   },
   onLoad: function (options) {
@@ -202,18 +194,6 @@ Page({
     //跳转页面
     CallWxFunction('navigateTo',{ url })
   },
-  endLive() {
-    console.log('endLive');
-    this.setData({
-      living: false
-    })
-  },
-  enterLive() {
-    const url = '../room/index?roomID=' + this.data.livingRoomID + '&roomName=' + this.data.livingRoomName + '&loginType=anchor';
-    wx.navigateTo({
-      url
-    });
-  },
   goToAdmin() {
     wx.navigateTo({
       url: "../index/index",
@@ -238,28 +218,23 @@ Page({
     const state = this.data.list[index].id;
     this.setData({
       state
-    }, () => {
-      this.fetchRooms();
-    });
+    }, this.fetchRooms.bind(this));
   },
   delReplay(e) {
     const { room_id } = e.detail.content;
-    console.log('delReplay', room_id);
-    wx.request({
-      url: BaseUrl + '/app/delete_playback',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-        "uid": wx.getStorageSync('uid'),
-        "room_id": room_id,
-      },
-      success(res) {
-        console.log('del playback suc', res);
-      },
-      fail(e) {
-        console.error('del playback fail', e);
-      }
-    })
+    requestDeletePlayback({ room_id })
+      .then(res => this.fetchRooms())
+      .catch(error => console.error('del playback fail', e))
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+    return {
+      title: `${this.data.userInfo.nickName || ''}邀请你成为主播`,
+      path: '/pages/register/index',
+      imageUrl: this.data.userInfo.avatarUrl || '../..resource/invi.png',
+    }
   }
 });
