@@ -37,6 +37,7 @@ Page({
     this.setData({ top,height });
   },
   onShow: function () {
+    this.revertHandler && clearTimeout(this.revertHandler)
     //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
     //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
     //再次嗅探用户是否授权或者用户信息
@@ -47,9 +48,12 @@ Page({
         this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
         //查看是否有需要恢复直播的房间
         if(role === 'admin' || role === 'anchor'){
-          this.isRevertRoom()
-            //选中需要跳转恢复直播的房间
-            .then(this.enterRoom.bind(this))
+          //延迟三秒检查主播是否有需要恢复直播的房间
+          this.revertHandler = setTimeout(() => {
+            this.isRevertRoom()
+              //选中需要跳转恢复直播的房间
+              .then(this.enterRoom.bind(this))
+          },3000)
         }
         return Promise.resolve()
       })
