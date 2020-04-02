@@ -70,8 +70,10 @@
       scroll-into-view="{{toView}}"
     > 
       <view class="merchandise-item" wx:for="{{messageList}}" wx:key="id" id="{{'ITEM'+item.id}}">
-        <text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>{{item.message}}
+        <text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>
+        <text class="merchandise-item-message">{{item.message}}</text>
       </view>
+
     </scroll-view>
 
     <view class="shop-container" catchtap="onHotShopTap">
@@ -142,7 +144,7 @@
         focus='{{messageBox.focus}}'
         confirm-type='send'
         placeholder="我要说点什么"
-        placeholder-style='color: rgba(22,23,24,1); font-size: 28rpx;'
+        placeholder-style='color: #dadbdf; font-size: 28rpx;'
         bindinput="messageInput"
         bindconfirm="sendMessage"
       ></input>

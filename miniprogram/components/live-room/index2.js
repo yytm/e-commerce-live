@@ -166,17 +166,14 @@ Component({
       console.log('onPushStateChange',e)
       let lib = this.zegoLib
       if(typeof lib === 'undefined'){ return }
-      let streamID = this.data.isAnchor? this.data.mainPusher.stream_id : this.data.subPusher.stream_id
-      //lib.CallZegoLib('updatePlayerState',e.target.id,e)
-      lib.CallZegoLib('updatePlayerState', streamID, e)
+      lib.CallZegoLib('updatePlayerState',e.target.id,e)
     },
     //小程序网络状态通知事件
     onPushNetStateChange(e){
       console.log('onPushNetStateChange',e)
       let lib = this.zegoLib
       if(typeof lib === 'undefined'){ return }
-      let streamID = this.data.isAnchor ? this.data.mainPusher.stream_id : this.data.subPusher.stream_id
-      lib.CallZegoLib('updatePlayerNetStatus', streamID,e)
+      lib.CallZegoLib('updatePlayerNetStatus',e.target.id,e)
     },
     onPlayStateChange(e){
       let lib = this.zegoLib
@@ -236,7 +233,6 @@ Component({
             //昵称
             nickName:wx.getStorageSync('nickName')
           })
-
           //先绑定事件 
           //等待推送房间成员 在成员里面看看是否有主播
           this.initZegoLibEvent()
@@ -833,7 +829,7 @@ Component({
       //加载loading
       CallWxFunction('showLoading',{ title:'连接中' })
       //确保用户登陆
-      return app.getUserInfo().then(() => {
+      app.getUserInfo().then(() => {
         //获取当前用户的角色
         return this.getRoomRole()
       }).then(({ isAnchor,isCanPublish }) => {
@@ -902,7 +898,6 @@ Component({
         }) 
         //关闭加载框
         CallWxFunction('hideLoading')
-        return Promise.resolve()
       }).catch(error => {
         let { ret:{ msg,message } } = error
         console.log('初始化房间失败:',error)
@@ -915,62 +910,11 @@ Component({
           showCancel:false,
           content: msg || message || '房间初始化失败'
         })
-        return Promise.reject(error)
       })
     },
     //创建一个streamID
     createStreamID(isAnchor){
       return `${this.data.roomid}zego${Date.now()}${isAnchor? 'Main':'Sub'}`
-    },
-    /**
-     * 断网重连
-     * @param {*} isConnected  是否在连接状态
-     */
-    retryConnection(isConnected){
-      if(!isConnected){  return this.breakNetwork() }
-      this.connectionNetwork()
-    },
-
-    /**
-     * 断线通知
-     */
-    breakNetwork(){
-      //正在重连中
-      if(this.loginRoom.retryConnection){ return }
-      let pusherContent = this.data.mainPusher.pusherContext = this.data.mainPusher.pusherContext || wx.createLivePusherContext()
-      //重新开始
-      pusherContent && pusherContent.stop()
-      //断开
-      this.logout()
-      CallWxFunction('showToast', { title: '您已断线', icon: 'none' })
-    },
-    /**
-     * 重连通知
-     */
-    connectionNetwork(){
-      //正在重连中
-      if(this.loginRoom.retryConnection){ return }
-      this.loginRoom.retryConnection = true
-      //关闭之前对登陆
-      this.logout()
-      //清空信息
-      this.setData({
-        isCanPublish: false,
-        //是否连接上sdk服务器
-        isConnection: false,
-        //正在请求连麦的人
-        recvJoinLiver: null,
-        //观众是否正在请求连麦 主播不需要
-        isStartRequestJoinLive: false,
-        //子播列表
-        subPlayer: [],
-      })
-      //尝试重连后 回调
-      let next = () => {
-        this.loginRoom.retryConnection = false
-      }
-      //重连
-      this.loginRoom().then(next).catch(next)
     }
   },
 
@@ -978,11 +922,7 @@ Component({
   pageLifetimes: {
     // 组件所在页面的生命周期函数
     show() {  
-      //监听网络状态
-      wx.onNetworkStatusChange(response => {
-        let { isConnected } = response
-        typeof this.retryConnection === 'function' && this.retryConnection(isConnected) 
-      })
+      
     },
     hide() { 
       //this.logout()
@@ -997,7 +937,6 @@ Component({
     //在组件实例被从页面节点树移除时执行
     detached() { 
       this.logout()
-      this.retryConnection = null
     }
   }
 })

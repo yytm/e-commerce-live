@@ -11,7 +11,7 @@
             <view class="warn-text">用户名只能包含中英文、数字</view>
         </view>
         <view class="avatar-btn" bind:tap="btnClick">
-            <image class="avatar-img" src="{{avatar}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+            <image class="avatar-img" src="{{avatar}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
         </view>
         <view class="modal-content"></view>
             <view class="input-conteiner" style="{{focus?'border:2rpx solid rgba(238,44,67,1);':''}}">

@@ -434,6 +434,12 @@ export let loginApp = throttleByPromise(function (){
   })
 })
 /**
+ * 清理登陆缓存
+ */
+export let clearLoginCache = function (){
+  login.__cache__ = { time:0 }
+}
+/**
  * 确保函数被调用之前 用户已经授权过
  * 主要获取login里面的session_id
  * @param {*} func 

@@ -29,8 +29,6 @@
     bindnetstatus="onPlayNetStateChange"
 ></live-player>
 
-
-
 <view class="subPlayer-box" wx:if="{{subPlayer.length || (!isAnchor && recvJoinLiver)}}">
     <live-pusher 
         class="subPlayer"

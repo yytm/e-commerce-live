@@ -525,7 +525,6 @@ Page({
 
     this.initRoomList(roomID)
     this.initDomReander()
-    this.watchNetWorkStatus()
   },
 
   /**
@@ -594,25 +593,6 @@ Page({
           this.onRoomLogout()
         })
       })
-  },
-  /**
-   * 监听网络状态
-   */
-  watchNetWorkStatus(){
-    //监听网络状态
-    wx.onNetworkStatusChange(response => {
-      let { isConnected } = response
-      if(!isConnected){
-        CallWxFunction('showModal',{
-          title: '提示',
-          confirmText:'确定',
-          showCancel:false,
-          content: '您已断开连接 请重新进入房间'
-        }).then(() => {
-          this.onConfirm()
-        })
-      } 
-    })
   },
 
   /**

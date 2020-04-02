@@ -12,7 +12,7 @@
                 <view class="user-text">
                     <view class="user-nickname">{{stringUtil.substr(nickName,8)}}</view>
                     <view class="{{role==='admin'?'role-admin':'role-anchor'}}" wx:if="{{role!==''}}">
-                        <image class="user-role-img" src="{{role==='admin'?'../images/admin.png':'../images/anchor.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                        <image class="user-role-img" src="{{role==='admin'?'../images/admin.png':'../images/anchor.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                         <view class="user-role-text" selectable="false" space="false" decode="false">
                             {{role==='admin'?'管理员':'主播'}}
                         </view>

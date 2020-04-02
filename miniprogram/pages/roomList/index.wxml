@@ -7,10 +7,10 @@
         <view wx:if="{{roomList.length}}" class="room-list">
             <view class="room-list-item" wx:for="{{roomList}}" wx:if="{{item.status === 20? !!item.playback_url : true}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-item="{{item}}" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
                 <view class="room-cover-container">
-                    <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                    <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                     <view class="room-info">
                         <view wx:if="{{item.has_playback && item.status >= 4}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
-                            <image class="replay-photo" src="../../resource/photo.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+                            <image class="replay-photo" src="../../resource/photo.png" mode="aspectFill" lazy-load="false" binderror="" bindload="">
                             </image>
                             <view class="replay-state-text">回放</view>
                         </view>
@@ -36,7 +36,7 @@
         </view>
     </scroll-view>
 </view>
-<center wx:elif="{{state=='center'}}" role="admin" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
+<center wx:elif="{{state=='center'}}" role="{{role}}" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
 <tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
 
 <navigator wx:if="{{false}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">

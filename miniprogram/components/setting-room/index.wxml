@@ -6,7 +6,7 @@
   <view class="room-content">
     <view class="room-img-container mg-btn-24">
       <view class="room-img-icon" bindtap="chooseImage">
-        <image wx:if="{{room_img}}" class="cover-img" src="{{room_img}}" />
+        <image wx:if="{{room_img}}" class="cover-img" mode="aspectFill" src="{{room_img}}" />
         <image class="room-add-img" role="img" src="../images/roomAdd.png"></image>
       </view>
     </view>

@@ -236,6 +236,8 @@ Component({
               avatarUrl:filePath? filePath : this.data.avatar,
               nickName:name
             }
+            wx.setStorageSync('nickName',app.globalData.userInfo.nickName)
+            wx.setStorageSync('avatar',app.globalData.userInfo.avatarUrl);
             //通知事件
             this.triggerEvent('onPersonUpdate')
           }else{

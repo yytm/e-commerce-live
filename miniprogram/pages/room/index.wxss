@@ -9,12 +9,12 @@ page{
   position: fixed;
   z-index:2;
   width:70rpx;
-  height:32rpx;
+  height:44rpx;
   background:rgba(0,0,0,0.2);
   border-radius:16rpx;
   right:30rpx;
-  top:186rpx;
-  line-height:32rpx;
+  top:250rpx;
+  line-height:44rpx;
   text-align:center;
   font-size:18rpx;
   font-weight:500;
@@ -106,12 +106,7 @@ live,.room-leave{
 .merchandise-item{
   max-width:100%;
   margin-top:6rpx;
-
-
-  box-sizing:border-box;
-  background:rgba(0,0,0,0.3);
-  border-radius:8rpx;
-  padding:10rpx;
+  position:relative;
 }
 .merchandise-item text.merchandise-item-name{
   font-size:24rpx;
@@ -120,6 +115,18 @@ live,.room-leave{
   padding-right: 10rpx;
   white-space: nowrap;
   line-height:32rpx;
+  overflow:hidden;
+  width:105rpx;
+  position: absolute;
+  left:10rpx;
+  top:15rpx;
+}
+.merchandise-item-message{
+  background:rgba(0,0,0,0.3);
+  border-radius:15rpx;
+  padding:15rpx;
+  padding-left:105rpx;
+  display:inline-block;
 }
 
 .merchandise-item{
