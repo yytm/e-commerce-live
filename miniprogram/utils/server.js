@@ -80,13 +80,15 @@ let login =  function (nickName = ""){
         break
     }
 
+    avatar = avatar || '/resource/per_center.png'
+
     //缓存数据
     wx.setStorageSync('sessionId', session_id);
     wx.setStorageSync('uid', uid);
     wx.setStorageSync('nickName', nickname);
     wx.setStorageSync('roomImg', room_img);
     wx.setStorageSync('role', strRole);
-    wx.setStorageSync('avatar',avatar || '/components/images/avatar-logo.png')
+    wx.setStorageSync('avatar',avatar)
 
     //给用户信息 赋值登陆信息
     app.globalData.userInfo = { 

@@ -110,15 +110,15 @@ App({
     isGetSetting:false,
     //用户信息
     userInfo: {},
-    //BaseUrl: 'https://shop-backend.yunyikao.com',
-    BaseUrl:'https://shop-aliyuntest.yunyikao.com',
-    wxAppID: 'wx371ac5dc128c4c5e',
+    BaseUrl: 'https://shop-backend.yunyikao.com',
+    //BaseUrl:'https://shop-aliyuntest.yunyikao.com',
+    wxAppID: 'wxda1343baad77dc86',
     liveAppID: 1078978582,
     server:'wss://webliveroom1078978582-api.e-business.net.cn/ws',
     logUrl:'https://weblogger1078978582-api.e-business.net.cn/httplog'
 
     // liveAppID: 1739272706,
     // server:'wss://wsliveroom1739272706-api.zego.im:8282/ws',
-    // logUrl:'https://wsslogger-demo.zego.im/httplog'
+    //logUrl:'https://wsslogger-demo.zego.im/httplog'
   },
 }) 

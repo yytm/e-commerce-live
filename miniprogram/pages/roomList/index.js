@@ -43,15 +43,12 @@ Page({
     this.setData({ top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' });
   },
   onShow: function () {
+    if(this.data.state !== 'list'){ return }
     this.revertHandler && clearTimeout(this.revertHandler)
     //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
     //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
     //再次嗅探用户是否授权或者用户信息
-    app.getUserInfo()
-      //业务逻辑登陆
-      .then(userInfo => loginApp())
-      .then(role => {
-        this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
+    this.onPersonUpdate().then(role => {
         //查看是否有需要恢复直播的房间
         if(role === 'admin' || role === 'anchor'){
           //延迟三秒检查主播是否有需要恢复直播的房间
@@ -90,7 +87,13 @@ Page({
    * 当个人中心被修改
    */
   onPersonUpdate(){
-    this.onShow()
+    return app.getUserInfo()
+      //业务逻辑登陆
+      .then(userInfo => loginApp())
+      .then(role => {
+        this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
+        return Promise.resolve()
+      });
   },
   /**
    * 检查是否有在播房间
@@ -159,6 +162,7 @@ Page({
         //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
       })
       .catch((error = { }) => {
+        
         console.error(error)
         let { ret = {} } = error
         let { msg,message } = ret
