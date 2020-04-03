@@ -15,6 +15,8 @@ Page({
    */
   data: {
     top:"87rpx",
+    isSettingHeard:false,
+
     uid:'',
     //主播是否离开
     isLeave:false,
@@ -490,7 +492,7 @@ Page({
    */
   increaseRoomLoveCount(){
     requestIncreaseRoomLoveCount({ room_id:this.data.roomid }).then(reponse => {
-      this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 } })
+      this.setData({ roomState:{ ...this.data.roomState,love_count:this.data.roomState.love_count + 1 },isSettingHeard:true })
     })
   },
   /**

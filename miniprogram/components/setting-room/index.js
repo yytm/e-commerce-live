@@ -14,7 +14,9 @@ const clearObj = {
   //直播封面 本地地址
   room_img: '',
   //是否显示隐私直播冒泡
-  is_show_tips:false
+  is_show_tips:false,
+
+  top:"87rpx",
 }
 
 Component({
@@ -103,7 +105,7 @@ Component({
     goodsTap(e){
       let { goodsObj, itemView, listView,boxView } = e.detail
       //前往商品
-      let { url_type = 1,goods_url = "" } = goodsObj
+      let { url_type = 1,goods_url = "",app_id } = goodsObj
       //url
       if(Number(url_type) === 1){
         return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
@@ -204,6 +206,17 @@ Component({
         })
       })
     },
+    /**
+     * 和界面有关的初始化
+     */
+    initDomReander(){
+      let systemInfo = wx.getSystemInfoSync()
+      let rect = wx.getMenuButtonBoundingClientRect()
+    
+      let { statusBarHeight } = systemInfo
+      const top = rect.top
+      this.setData({ top:`${top + 5}px` });
+    },
   },
 
   pageLifetimes:{
@@ -218,6 +231,7 @@ Component({
     attached(){
       //清空数据
       //this.setData({ ...clearObj,room_img:wx.getStorageSync('avatar') })
+      this.initDomReander()
     },
     //在组件实例被从页面节点树移除时执行
     detached(){}

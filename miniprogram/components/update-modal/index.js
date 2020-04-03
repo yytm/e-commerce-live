@@ -41,6 +41,7 @@ Component({
     name: '',
     isShowTip: false,
     filePath: '',
+    errorText:'用户名只能包含中英文、数字'
   },
 
   /**
@@ -74,11 +75,12 @@ Component({
     },
     confirm() {
       console.log('confirm');
-      var reg = /^[A-Za-z0-9\(\)\u4e00-\u9fa5]{4,30}$/;
+      var reg = /^[A-Za-z0-9\(\)\u4e00-\u9fa5]{2,30}$/;
       if (!reg.test(this.data.nickName)) {
         console.log("验证不通过");
         this.setData({
           isShowTip: true,
+          errorText:'请输入规范的主播名称（2-10个文字）'
         })
       } else {
         console.log("验证通过");

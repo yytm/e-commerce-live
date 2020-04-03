@@ -8,6 +8,9 @@
     "settingBox":"/components/setting-box/index",
     "password-modal": "/components/password-modal/index"
   },
-  "disableScroll": true,
-  "navigationStyle": "custom"
+  "navigationBarBackgroundColor": "#F2034C",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "navigationStyle":"custom",
+  "disableScroll": true
 }

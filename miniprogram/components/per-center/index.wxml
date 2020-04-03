@@ -32,13 +32,13 @@
             <view wx:for="{{roomList}}" wx:key="index" class="item replay-item">
                 <view bindtap="itemTap" bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}" data-item="{{item}}" style="{{item.txtStyle}}" class="inner txt">
                     <view class="replay-cover-container">
-                        <image class="replay-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                        <image class="replay-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                         <view class="replay-info">
                             <view class="replay-state" hover-class="none" hover-stop-propagation="false">
-                                <image class="replay-photo" src="../images/photo.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                                <image class="replay-photo" src="../images/photo.png" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                                 <text class="replay-state-text">{{item.room_state}}</text>
                             </view>
-                            <view class="replay-lock">
+                            <view class="replay-lock" wx:if="{{false}}">
                                 <image src="../images/lock.png" class="replay-lock-img" />
                             </view>
                         </view>

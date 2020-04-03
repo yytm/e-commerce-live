@@ -34,6 +34,7 @@
             <image class="no-lives-img" src="../../resource/no-lives.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
             <text>暂无直播</text>
         </view>
+        <view class="footer-fil"></view>
     </scroll-view>
 </view>
 <center wx:elif="{{state=='center'}}" role="{{role}}" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>

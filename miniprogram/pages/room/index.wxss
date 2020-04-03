@@ -13,7 +13,7 @@ page{
   background:rgba(0,0,0,0.2);
   border-radius:16rpx;
   right:30rpx;
-  top:250rpx;
+  top:150rpx;
   line-height:44rpx;
   text-align:center;
   font-size:18rpx;
@@ -399,7 +399,7 @@ image.shop-close{
   position:fixed;
   z-index:2;
   left:30rpx;
-  top:186rpx;
+  top:150rpx;
   box-sizing:border-box;
   padding:8rpx;
   color:rgba(255,255,255,1);

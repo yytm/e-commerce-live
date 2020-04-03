@@ -1,7 +1,7 @@
 <!--components/setting-room/index.wxml-->
 <view class="setting-room" bindtap="holdTap">
-  <back></back>
-  <roomAvatar class="room-avatar"></roomAvatar>
+  <back style="top:{{top}}"></back>
+  <roomAvatar class="room-avatar" style="top:{{top}}"></roomAvatar>
 
   <view class="room-content">
     <view class="room-img-container mg-btn-24">

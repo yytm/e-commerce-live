@@ -263,7 +263,7 @@ let getRoomList = function (options = {}){
     if(Array.isArray(room_list)){
       room_list = room_list.map(room => {
         //无头像 默认添加一个头像
-        room.avatar = room.avatar || '/components/images/avatar-logo.png'
+        room.avatar = room.avatar || '/resource/per_center.png'
         return room
       })
     }
