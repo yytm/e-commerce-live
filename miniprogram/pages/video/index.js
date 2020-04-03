@@ -93,7 +93,7 @@ Page({
   goodsTap(e){
     let { goodsObj, itemView, listView,boxView } = e.detail
     //前往商品
-    let { url_type = 1,goods_url = "" } = goodsObj
+    let { url_type = 1,goods_url = "",app_id } = goodsObj
     //url
     if(Number(url_type) === 1){
       return CallWxFunction('navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })

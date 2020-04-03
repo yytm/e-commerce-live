@@ -82,7 +82,7 @@
           <text>{{hotGoods.price_text}}</text>
         </view>
 
-        <view class="shop-close-box" catchtap="onHotShopClose">
+        <view wx:if="{{isAnchor}}" class="shop-close-box" catchtap="onHotShopClose">
           <image 
             role="img" 
             src="../../components/images/goods-close.png"

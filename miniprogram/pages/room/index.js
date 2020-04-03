@@ -142,24 +142,22 @@ Page({
   */
   onRecvReliableMessage(e){
     let { type,seq,message } = e.detail
+    type = String(type)
     //推送的商品
-    if(typeof type === 'string' && type === 'shop'){
+    if(type === 'shop'){
       try{
-        let { 
-          goods_desc = '',
-          price_text = '',
-          goods_img = '',
-          goods_url = '',
-          goods_id = '',
-          goods_no = ''
-        } = JSON.parse(message)
+        let shop = JSON.parse(message)
         this.setData({ 
           hotGoods:{
             is_show_shop:true,
-            goods_desc,price_text,goods_img,goods_url,goods_id,goods_no
+            ...shop
           } 
         })
       }catch(e){}
+    }
+    //主播关闭了推送商品
+    if(type === 'closeShop'){
+      this.onHotShopClose()
     }
   },
   /**
@@ -188,7 +186,7 @@ Page({
       let { action,idName,nickName,role } = user
       //离开房间  
       if(Number(action) === 2){
-        this.addMessageList({ nickName,message:"退出了房间" })
+        //this.addMessageList({ nickName,message:"退出了房间" })
         userMap.delete(idName)
       }
       //加入房间
@@ -268,6 +266,7 @@ Page({
    */
   onHotShopClose(){
     this.setData({ hotGoods:{ ...this.data.hotGoods,is_show_shop:false } })
+    this.data.isAnchor && this.sendCloseShop()
   },
   /**
    * 向主播发起连麦请求
@@ -411,6 +410,13 @@ Page({
     this.onGoodsListHidden()
     //推送商品
     this.liveRoomComponent.sendRoomMessage('shop',JSON.stringify(shop))
+  },
+  /**
+   * 主播关闭推送商品
+   */
+  sendCloseShop(){
+    //推送商品
+    this.liveRoomComponent.sendRoomMessage('closeShop',JSON.stringify(this.data.hotGoods))
   },
   /**
    * 发送房间消息
