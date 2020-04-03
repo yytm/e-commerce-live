@@ -3,7 +3,7 @@
         <image class="list-head-bg" src="../../resource/list-head-bg.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
         <view style="top:{{top}}px;height:{{height}}px;" class="list-title">电商直播</view>
     </view>
-    <scroll-view class="rooms" scroll-y refresher-enabled="{{true}}" bindrefresherrefresh="refresh" refresher-triggered="{{refreshStatus}}" enable-flex="{{true}}">
+    <scroll-view class="rooms" scroll-y refresher-enabled="{{true}}" bindrefresherrefresh="refresh" refresher-triggered="{{refreshStatus}}" enable-flex="{{true}}" refresher-threshold="20">
         <view wx:if="{{roomList.length}}" class="room-list">
             <view class="room-list-item" wx:for="{{roomList}}" wx:if="{{item.status === 20? !!item.playback_url : true}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-item="{{item}}" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
                 <view class="room-cover-container">
@@ -18,7 +18,7 @@
                             <image role="img" src="../../components/images/live.png"></image>
                             <text>直播中</text>
                         </view>
-                        <view class="room-num">{{item.status < 4? item.user_count : item.play_count}}人观看</view>
+                        <view class="room-num">{{item.status < 4? item.user_count + '人观看' : item.play_count + '人回放'}}</view>
                     </view>
                     <view class="room-info-bot" wx:if="{{item.has_password}}">
                         <image src="../../resource/lock.png" class="replay-lock-img"/>

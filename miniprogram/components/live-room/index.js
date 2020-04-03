@@ -15,7 +15,6 @@ Component({
       type:String,
       value:'',
       observer(newVal){
-        
         newVal && this.loginRoom()
       }
     },

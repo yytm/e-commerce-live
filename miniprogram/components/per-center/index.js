@@ -116,11 +116,11 @@ Component({
         }
         //获取手指触摸的是哪一项
         var index = e.currentTarget.dataset.index;
-        var replayList = this.data.replayList;
+        var replayList = this.data.roomList;
         replayList[index].txtStyle = txtStyle;
         //更新列表的状态
         this.setData({
-          replayList: replayList
+          roomList: replayList
         });
       }
     },
@@ -135,11 +135,11 @@ Component({
         var txtStyle = disX > delBtnWidth / 2 ? "left:-" + delBtnWidth + "px" : "left:0px";
         //获取手指触摸的是哪一项
         var index = e.currentTarget.dataset.index;
-        var replayList = this.data.replayList;
+        var replayList = this.data.roomList;
         replayList[index].txtStyle = txtStyle;
         //更新列表的状态
         this.setData({
-          replayList: replayList
+          roomList: replayList
         });
       }
     },

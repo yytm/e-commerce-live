@@ -1,8 +1,8 @@
 <!--miniprogram/pages/room/index2.wxml-->
 <view bindtap="hiddenMessageBox">
-  <view class="room-leave" wx:if="{{isLeave}}">
+  <view class="room-leave" wx:if="{{isLeave || !roomid}}">
     <image role="img" src="../../components/images/leave.png"></image>
-    <text>主播暂时离开 请稍后...</text>
+    <text wx:if="{{isLeave}}">主播暂时离开 请稍后...</text>
   </view>
 
   <back 
@@ -70,8 +70,7 @@
       scroll-into-view="{{toView}}"
     > 
       <view class="merchandise-item" wx:for="{{messageList}}" wx:key="id" id="{{'ITEM'+item.id}}">
-        <text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>
-        <text class="merchandise-item-message">{{item.message}}</text>
+        <text class="merchandise-item-message"><text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>{{item.message}}</text>
       </view>
 
     </scroll-view>
@@ -154,21 +153,23 @@
 
 
   <alert
-    wx:if="{{isShowConfirm}}"
+    isShow="{{isShowConfirm}}"
     confirmText="结束直播"
     cancelText="取消"
     content="是否结束直播"
     showCancel="{{true}}"
+    bindclose="onCancel"
     bindcancel="onCancel"
     bindconfirm="onRoomLogout"
   ></alert>
 
   <alert
-    wx:if="{{isShowEndJoinLiveConfirm}}"
+    isShow="{{isShowEndJoinLiveConfirm}}"
     confirmText="结束连麦"
     cancelText="取消"
     content="是否结束连麦"
     showCancel="{{true}}"
+    bindclose="onJoinLiveCancel"
     bindcancel="onJoinLiveCancel"
     bindconfirm="onJoinLiveConfirm"
   ></alert>

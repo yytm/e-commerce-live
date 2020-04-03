@@ -50,9 +50,7 @@
 }
 
 .goods-body{
-  width:600rpx;
-  margin-left:44rpx;
-  margin-right:44rpx;
+  width:100%;
   display: flex;
   flex-direction:column;
 }
@@ -61,6 +59,8 @@
   height:730rpx;
   overflow-x: hidden;
   overflow-y: auto;
+  padding-left: 44rpx;
+  padding-right: 44rpx;
 }
 
 .goods-body .nothing{

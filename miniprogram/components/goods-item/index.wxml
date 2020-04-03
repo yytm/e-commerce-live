@@ -5,6 +5,8 @@
       role="img" 
       src="{{goods_img || '../images/shop-default.png'}}"
       class="goods-img"
+      mode="aspectFill" 
+      lazy-load="true"
     ></image>
     <view class="goods-details">
       <text class="goods-desc">{{goods_desc}}</text>

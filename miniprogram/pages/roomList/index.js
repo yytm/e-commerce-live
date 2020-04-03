@@ -39,8 +39,8 @@ Page({
     let { pixelRatio,statusBarHeight } = systemInfo
     const top = rect.top;
     const height = rect.height;
-
-    this.setData({ top,height,statusBarHeight,navigateHeight:String(statusBarHeight + height + top) + 'px' });
+    let navigateHeight = statusBarHeight + height + top
+    this.setData({ top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' });
   },
   onShow: function () {
     this.revertHandler && clearTimeout(this.revertHandler)

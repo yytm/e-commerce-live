@@ -324,6 +324,19 @@ Page({
     }).then(nextTick).catch(nextTick)
   },
   /**
+   * 跳转到商品
+   * @param {*} goodsObj 
+   */
+  navigateShop(goodsObj = {}){
+    //观众前往购买商品
+    let { url_type = 1,goods_url = "",app_id } = goodsObj
+    //url
+    if(Number(url_type) === 1){
+      return CallWxFunction('navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+    }
+    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+  },
+  /**
    * 商品自定义按钮被点击
    */
   buttomTap(e){
@@ -332,13 +345,7 @@ Page({
     if(this.data.isAnchor){
       return this.sendShop(goodsObj)
     }
-    //观众前往购买商品
-    let { url_type = 1,goods_url = "",app_id } = goodsObj
-    //url
-    if(Number(url_type) === 1){
-      return CallWxFunction(this.dta.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
-    }
-    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+    this.navigateShop(goodsObj)
   },
   /**
    * 当热门商品被点击
@@ -346,25 +353,15 @@ Page({
   onHotShopTap(){
     //跳转逻辑
     //前往商品
-    let { url_type = 1,goods_url = "" } = this.data.hotGoods
-    //url
-    if(Number(url_type) === 1){
-      return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
-    }
-    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+    this.navigateShop(this.data.hotGoods)
   },
   /**
    * 商品列表 商品被点击
    */
   goodsTap(e){
     let { goodsObj, itemView, listView,boxView } = e.detail
-    //前往商品
-    let { url_type = 1,goods_url = "" } = goodsObj
-    //url
-    if(Number(url_type) === 1){
-      return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
-    }
-    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+
+    this.navigateShop(goodsObj)
   },
   /**
    * 显示商品列表

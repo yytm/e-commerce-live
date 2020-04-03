@@ -17,7 +17,7 @@
   height:144rpx;
   margin-right:20rpx;
   border-radius: 10rpx;
-  background-color: green;
+  background-color: #e3e3e3;
 }
 
 .goods-details{

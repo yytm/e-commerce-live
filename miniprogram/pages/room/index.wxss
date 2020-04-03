@@ -115,17 +115,11 @@ live,.room-leave{
   padding-right: 10rpx;
   white-space: nowrap;
   line-height:32rpx;
-  overflow:hidden;
-  width:105rpx;
-  position: absolute;
-  left:10rpx;
-  top:15rpx;
 }
 .merchandise-item-message{
   background:rgba(0,0,0,0.3);
   border-radius:15rpx;
   padding:15rpx;
-  padding-left:105rpx;
   display:inline-block;
 }
 
