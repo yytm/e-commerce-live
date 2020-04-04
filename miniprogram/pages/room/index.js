@@ -206,9 +206,10 @@ Page({
     this.setData({ userCount })
   },
   /**
-   * 
-   * @param {*} isAnchor 是否是主播
-   * @param {*} liveRoomComponent 
+   * live-room准备开始推拉流
+   * @param {*} isAnchor 
+   * @param {*} anchor_id_name 
+   * @param {*} anchor_nick_name 
    */
   onStart(e){
     let { isAnchor,anchor_id_name,anchor_nick_name } = e.detail
@@ -216,6 +217,17 @@ Page({
     //this.setData({ isAnchor,anchor_id_name,anchor_nick_name })
     //保持心跳
     this.live()
+  },
+  /**
+   * live-room获取到房间信息
+   * @param {*} isAnchor 
+   * @param {*} anchor_id_name 
+   * @param {*} anchor_nick_name 
+   * @param {*} room 
+   */
+  onGetRoomInfo(e){
+    let { isAnchor,anchor_id_name,anchor_nick_name,room } = e.detail
+    console.log(e.detail)
   },
   /**
    * 退出直播间
@@ -548,7 +560,7 @@ Page({
    */
   initRoomList(roomID){
     //获取房间信息
-    requestGetRoomList({ room_id:roomID })
+    return requestGetRoomList({ room_id:roomID })
       .then((response = {}) => {
         let { room_list = [] } = response
         //说明房间存在

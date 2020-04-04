@@ -36,7 +36,7 @@
       src="../../components/images/room-share.png"
     ><button open-type="share" class="setting-share-img-btn"></button></image>
     <image 
-      wx:if="{{roomInfo.anchor_id && !isAnchor}}"
+      wx:if="{{roomInfo.anchor_id && !isAnchor && roomInfo.room_type != 1}}"
       class="setting-joinlive-img"
       role="img"
       src="../../components/images/room-joinLive.png"

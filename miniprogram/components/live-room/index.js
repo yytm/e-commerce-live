@@ -215,7 +215,7 @@ Component({
         })
         //查看是否有在播房间的
         //status = 2 / status = 1未开始 直播中状态
-        return Promise.resolve({ isAnchor:!!room,isCanPublish:room.status <= 2 })
+        return Promise.resolve({ isAnchor:!!room,isCanPublish:room.status <= 2,room })
       }).catch(() => ({ isAnchor:false,isCanPublish:false }))
     },
     /**
@@ -835,18 +835,50 @@ Component({
       return app.getUserInfo().then(() => {
         //获取当前用户的角色
         return this.getRoomRole()
-      }).then(({ isAnchor,isCanPublish }) => {
+      }).then(({ isAnchor,isCanPublish,room }) => {
         //重新生成StreamID
-        let mainPusherStreamID = this.createStreamID(true)
-        let subPusherStreamID = this.createStreamID()
+        let mainPusherStreamID = this.createStreamID()
+        let subPusherStreamID = this.createStreamID('Sub')
+        //拿到当前房间的类别
+        //如果当前房间是ops 而且isAnchor是true 还是需要返回isAnchor为false
+        //因为isAnchor为true的时候 会主播复播 但是ops的主播不再这里播放的
+        let { room_type,stream_id,stream_url,anchor_id,anchor_name } = room
+        //目前room_type只有两个类型 0 普通房间 1 ops房间
+        let isOPS = room_type == 1
         //存储用户角色
-        this.setData({ isAnchor,isCanPublish,mainPusher:{ ...this.data.mainPusher,stream_id:mainPusherStreamID },subPusher:{ ...this.data.subPusher,stream_id:subPusherStreamID } })
+        //是ops房间isAnchor一定为false 原因上面已经说过
+        this.setData({ isAnchor:!isOPS?isAnchor : false,isCanPublish,mainPusher:{ ...this.data.mainPusher,stream_id:mainPusherStreamID },subPusher:{ ...this.data.subPusher,stream_id:subPusherStreamID } })
         //当前是主播创建 但是当前房间状态不属于未开始或者在直播中
         if(isAnchor && !isCanPublish){
           return Promise.reject({ ret:{ msg:'当前房间不可复播 请稍后重试' } })
         }
+        /* --------- OPS的需求添加  直接拉流播放 主播推流信息 ---------- */
+        //这段代码 和 下面的then代码可以考虑优化
+        if(isOPS){
+          this.setData({ 
+            //更新主播相关信息
+            mainPlayer:{ ...this.data.mainPlayer,anchor_id_name:anchor_id,stream_id,url:stream_url } 
+          },() => {
+            //确保主播信息更新完毕后 开始拉流
+            this.setPlayStreamUpdate(stream_id,stream_url)
+          })
+        }
+        //发送事件 获取到房间信息
+        this.triggerEvent('onGetRoomInfo',{ 
+          isAnchor,
+          anchor_id_name:anchor_id, 
+          anchor_nick_name:anchor_name,
+          room
+        })
+        /* --------- OPS的需求添加  直接拉流播放 主播推流信息 ---------- */
         //初始化房间
         return this.initRoom(this.data.roomid)
+          /* ------ 这一段代码是OPS需求加的 -------- */
+          .then(streamList => {
+            //下面的逻辑不变
+            return Promise.resolve(isOPS? [{ anchor_id_name:room.anchor_id,stream_id,url:stream_url }] : streamList)
+          })
+          /* ------ 这一段代码是OPS需求加的 -------- */
       }).then(streamList => {
         console.log(streamList,'登陆获取到到streamList')
         //辅助作用
@@ -854,10 +886,10 @@ Component({
         //主播的信息
         let mainPlayer = this.data.mainPlayer
         //找到主播的player
-        let index = startStreamList.findIndex(streamOjb => streamOjb.anchor_id_name === mainPlayer.anchor_id_name)
+        //这里的anchor_id_name是被sdk的onGetAnchorInfo更新过 所以这里的mainPlayer.anchor_id_name已经有值
+        let index = startStreamList.findIndex(streamOjb => streamOjb.anchor_id_name == mainPlayer.anchor_id_name)
         //主播是否离开
         let isLeave = this.data.isAnchor? false : index <= -1
-        
 
         if(index > -1){
           mainPlayer = { ...this.data.mainPlayer,...startStreamList[index] }
@@ -918,8 +950,8 @@ Component({
       })
     },
     //创建一个streamID
-    createStreamID(isAnchor){
-      return `${this.data.roomid}zego${Date.now()}${isAnchor? 'Main':'Sub'}`
+    createStreamID(subString = 'Main'){
+      return `${this.data.roomid}zego${Date.now()}${subString}`
     },
     /**
      * 断网重连
