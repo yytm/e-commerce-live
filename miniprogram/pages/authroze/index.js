@@ -65,6 +65,9 @@ Page({
 
   },
 
+  cancel(){
+    wx.reLaunch({ url:'/pages/roomList/index' })
+  },
   bindGetUserInfo(e){
     if(!e.detail.userInfo){
       wx.showModal({

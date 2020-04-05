@@ -236,14 +236,18 @@ let getRoomList = function (options = {}){
 
   //请求参数
   let params = {
-    //session信息
-    session_id: wx.getStorageSync('sessionId'),
     //腾讯提供的appid 
     live_appid: liveAppID
   }
 
+  //session信息
+  let session_id = wx.getStorageSync('sessionId')
+  if(!!session_id){
+    params['session_id'] = session_id
+  }
+
   //根据主播id过滤
-  if(!isNaN(uid)){
+  if(!isNaN(uid) && uid){
     params['uid'] = uid
   }
   //根据状态过滤
@@ -459,7 +463,7 @@ export let requestSetRoom = wrap(setRoom)
 export let requestListGoods = wrap(listGoods)
 export let requestGetRoomToken = wrap(getRoomToken)
 //防止500毫秒内 多次调用
-export let requestGetRoomList = throttleByPromise(wrap(getRoomList))
+export let requestGetRoomList = throttleByPromise(getRoomList)
 export let requestGetSelfRoomList = throttleByPromise(wrap(getSelfRommList))
 export let requestHd = wrap(hd)
 export let requestIncreaseRoomLoveCount = wrap(increaseRoomLoveCount)

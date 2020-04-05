@@ -1,6 +1,6 @@
 
 
-import { CallWxFunction } from '../../components/lib/wx-utils'
+import { CallWxFunction,throttleByPromise } from '../../components/lib/wx-utils'
 import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
@@ -8,6 +8,7 @@ const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 Page({
   data: {
     refreshStatus:false,
+    isShowAfter:false,
     userInfo: null,
     role: '',
     roomList: [ ],
@@ -41,6 +42,8 @@ Page({
     const height = rect.height;
     let navigateHeight = statusBarHeight + height + top
     this.setData({ top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' });
+
+    this.gotoAuthrozePage = throttleByPromise(this.gotoAuthrozePage)
   },
   onShow: function () {
     if(this.data.state !== 'list'){ return }
@@ -62,26 +65,17 @@ Page({
       })
       //获取列表信息
       .then(() => this.fetchRooms())
-      .catch((error = {}) => {
-        let { ret = {} } = error  
-        let { msg,message } = ret
-        let errorText = msg || message || '获取用户信息失败'
-        CallWxFunction('showToast',{
-          title: errorText,
-          icon:'none',
-          duration:2500
-        })
-      })
-  },
-  
-  onUnload: function () {
-    this.stopRefresh();
+      //用户信息没获取到 也获取直播列表
+      .catch((error = {}) => this.fetchRooms())
   },
   /**
-   * 用户点击右上角分享
+   * 跳转授权页面
    */
-  onShareAppMessage: function (res) {
-
+  gotoAuthrozePage(){
+    return app.gotoAuthrozePage()
+  },
+  onUnload: function () {
+    this.stopRefresh();
   },
   /**
    * 当个人中心被修改
@@ -142,7 +136,11 @@ Page({
     return this.getRoomList(queryState,uid)
       .then(room_list => {
         //更新列表
-        this.setData({ [isCenter? 'replayList':'roomList']:room_list,refreshStatus:false })
+        this.setData({ [isCenter? 'replayList':'roomList']:room_list,refreshStatus:false,isShowAfter:true })
+      })
+      .catch(error => {
+        this.setData({ isShowAfter:true })
+        return Promise.reject(error)
       })
   },
   /**
@@ -162,7 +160,6 @@ Page({
         //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
       })
       .catch((error = { }) => {
-        
         console.error(error)
         let { ret = {} } = error
         let { msg,message } = ret
@@ -236,13 +233,13 @@ Page({
    */
   onShareAppMessage: function () {
     let isAnchor = this.data.role === 'admin' || this.data.role === 'anchor'
-    let title = `${this.data.userInfo.nickName || ''}${isAnchor?'邀请你成为主播':'邀请你观看直播'}`
+    let title = `${this.data.userInfo && this.data.userInfo.nickName || ''}${isAnchor?'邀请你成为主播':'邀请你观看直播'}`
     let path = isAnchor? '/pages/register/index':'/pages/roomList/index'
     
     return {
       title,
       path,
-      imageUrl: this.data.userInfo.avatarUrl || '../..resource/invi.png',
+      imageUrl: this.data.userInfo && this.data.userInfo.avatarUrl || '../..resource/invi.png',
     }
   }
 });

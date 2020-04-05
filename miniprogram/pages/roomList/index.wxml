@@ -43,3 +43,6 @@
 <navigator wx:if="{{false}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">
     成为主播
 </navigator>
+
+<view wx:if="{{!userInfo && isShowAfter}}" class="login-footer" bindtap="gotoAuthrozePage">登陆</view>
+
