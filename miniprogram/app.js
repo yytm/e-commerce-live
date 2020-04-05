@@ -64,6 +64,10 @@ App({
       console.log('setKeepScreenOn error', error)
     })
 
+
+    //首页 不需要自动授权
+    if(getCurrentPageWithArgs().includes('pages/roomList')){ return }
+
     //获取用户信息
     this.getUserInfo().catch(error => {
       //提示用户授权
@@ -91,7 +95,7 @@ App({
     let reloadURL = this.globalData.reloadURL = getCurrentPageWithArgs()
     //代表当前就是登陆页面
     if(reloadURL.includes('pages/authroze/index')){ return }
-    CallWxFunction('redirectTo',{ url:'/pages/authroze/index' })
+    return CallWxFunction('redirectTo',{ url:'/pages/authroze/index' })
   },
   /**
    * 登陆页面跳转回当前页面
@@ -110,8 +114,8 @@ App({
     isGetSetting:false,
     //用户信息
     userInfo: {},
-    BaseUrl: 'https://shop-backend.yunyikao.com',
-    //BaseUrl:'https://shop-aliyuntest.yunyikao.com',
+    //BaseUrl: 'https://shop-backend.yunyikao.com',
+    BaseUrl:'https://shop-aliyuntest.yunyikao.com',
     wxAppID: 'wxda1343baad77dc86',
     liveAppID: 1078978582,
     server:'wss://webliveroom1078978582-api.e-business.net.cn/ws',
