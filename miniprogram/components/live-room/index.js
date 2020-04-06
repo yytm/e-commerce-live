@@ -206,7 +206,7 @@ Component({
       //如果当前角色是游客 直接返回
       if(role === 'audience'){ return Promise.resolve(false) }
       //获取当前appid下的直播列表
-      return requestGetRoomList({ room_id:this.data.roomid,uid }).then(response => {
+      return requestGetRoomList({ room_id:this.data.roomid }).then(response => {
         let { room_list = [] } = response
         //查看当前的roomid 是否存在于正在直播的roomList中
         let room = room_list.find(rm => {
@@ -215,8 +215,8 @@ Component({
         })
         //查看是否有在播房间的
         //status = 2 / status = 1未开始 直播中状态
-        return Promise.resolve({ isAnchor:!!room,isCanPublish:room.status <= 2,room })
-      }).catch(() => ({ isAnchor:false,isCanPublish:false }))
+        return Promise.resolve({ isAnchor:!!room,isCanPublish:room && room.status <= 2?true : false,room:room || room_list[0] })
+      }).catch(error => ({ isAnchor:false,isCanPublish:false }))
     },
     /**
      * 初始化房间
@@ -935,7 +935,9 @@ Component({
         CallWxFunction('hideLoading')
         return Promise.resolve()
       }).catch(error => {
-        let { ret:{ msg,message } } = error
+        console.log(error)
+        let { ret = {} } = error || {}
+        let { msg,message } = ret
         console.log('初始化房间失败:',error)
         //关闭加载框
         CallWxFunction('hideLoading')
