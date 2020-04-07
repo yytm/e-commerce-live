@@ -61,9 +61,9 @@
 			"current": -1,
 			"list": [
 				{
-					"id": -1,
+					"id": 0,
 					"name": "pages/roomList/index",
-					"pathName": "pages/index/index",
+					"pathName": "pages/roomList/index",
 					"query": "",
 					"scene": null
 				},
@@ -78,7 +78,35 @@
 					"id": 2,
 					"name": "pages/room/index",
 					"pathName": "pages/room/index",
-					"query": "loginType=audience&roomID=e-82-1584622092526&nickName=chosan&anchorID=anchor82",
+					"query": "roomID=room841585557383162",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/replay/index",
+					"pathName": "pages/replay/index",
+					"query": "loginType=anchor",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/enterLive/index",
+					"pathName": "pages/enterLive/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/authroze/index",
+					"pathName": "pages/authroze/index",
+					"query": "uid=3344",
+					"scene": null
+				},
+				{
+					"id": 6,
+					"name": "pages/video/index",
+					"pathName": "pages/video/index",
+					"query": "roomID=room841585557383162",
 					"scene": null
 				}
 			]

@@ -1,13 +1,12 @@
 {
   "pages": [
     "pages/roomList/index",
-    "pages/main/index",
-    "pages/web/index",
     "pages/room/index",
-    "pages/register/index",
     "pages/enterLive/index",
-    "pages/index/index"
-
+    "pages/web/index",
+    "pages/register/index",
+    "pages/authroze/index",
+    "pages/video/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

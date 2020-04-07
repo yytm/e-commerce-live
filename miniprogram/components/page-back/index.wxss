@@ -1,0 +1,13 @@
+/* components/page-back/index.wxss */
+.back{
+  width:56rpx;
+  height:56rpx;
+  background:rgba(0,0,0,0.2);
+  border-radius:50%;
+}
+.back image{
+  width:36rpx;
+  height:36rpx;
+  margin-left:10rpx;
+  margin-top:10rpx;
+}

@@ -1,0 +1,15 @@
+<!--components/confirm-modal/index.wxml-->
+<view wx:if="{{isShow}}" class="modal-container">
+    <view class="modal-mask"></view>
+    <view class="modal-box" style="bottom:{{bottom}}rpx;">
+        <view class="modal-tip">{{title}}</view>
+        <image src="../images/close-btn.png" class="close-btn" bind:tap="cancel" />
+        <view class="input-conteiner">
+            <input class="input-content" type="number" value="{{password}}" placeholder="6 位直播密码" placeholder-style='color: #DADBDF; font-size: 28rpx;' bindinput="bindMessageInput" focus="auto" cursor-spacing="15" adjust-position='{{false}}' confirm-hold='{{keyboardHold}}' hold-keyboard='{{keyboardHold}}' confirm-type='send' />
+        </view>
+        <view class="modal-btns">
+            <view class="modal-btn cancel-btn" bindtap="cancel">{{cancelText}}</view>
+            <view class="modal-btn confirm-btn" bindtap="confirm">{{confirmText}}</view>
+        </view>
+    </view>
+</view>

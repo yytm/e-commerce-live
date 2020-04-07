@@ -1,7 +1,7 @@
 // miniprogram/pages/register/index.js
 const app = getApp();
 const { BaseUrl, liveAppID, wxAppID } = app.globalData;
-let { loginApp } = require("../../utils/server.js");
+let { loginApp,clearLoginCache} = require("../../utils/server.js");
 
 Page({
 
@@ -233,6 +233,7 @@ Page({
             icon: 'none',
             duration: 500
           });
+          clearLoginCache()
           setTimeout(() => {
             wx.redirectTo({
               url: '/pages/roomList/index'

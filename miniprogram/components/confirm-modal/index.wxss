@@ -1,0 +1,62 @@
+/* components/confirm-modal/index.wxss */
+.modal-mask {
+    position: fixed;
+    z-index: 1112;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.05);
+}
+.modal-box {
+  position: fixed;
+  z-index: 1113;
+  margin: 24rpx;
+  width: 702rpx;
+  height: 219rpx;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 16rpx;
+  padding-top: 48rpx;
+  text-align: center;
+
+}
+.modal-tip {
+  font-size: 28rpx;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: rgba(33, 33, 33, 1);
+  line-height: 1;
+}
+.close-btn {
+  width: 20rpx;
+  height: 20rpx;
+  position: absolute;
+  top: 26rpx;
+  right: 26rpx;
+}
+.modal-btns {
+  display: flex;
+  margin-top: 30rpx;
+  justify-content: center;
+}
+.modal-btn {
+  width: 317rpx;
+  height: 88rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-family: PingFang SC;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cancel-btn {
+  background:rgba(255,255,255,1);
+  margin-right: 20rpx;
+  color: rgba(242, 3, 76, 1);
+  border:1px solid rgba(238,44,67,1);
+}
+.confirm-btn {
+  background: rgba(242, 3, 76, 1);
+  color: rgba(255, 255, 255, 1);
+}

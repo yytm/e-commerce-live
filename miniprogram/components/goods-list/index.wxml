@@ -1,0 +1,9 @@
+<!--components/goods-list/index.wxml-->
+<goodsBox 
+  goods_list="{{goods_list}}"
+  is_close="{{!is_show_goods_list}}"
+  bindclose="close"
+  bindrefresh="getListGoods"
+  bindgoodsTap="goodsTap"
+  bindbuttomTap="buttomTap"
+></goodsBox>

@@ -1,62 +1,48 @@
-<view class="room-list-container">
-    <!-- <view class="tool-bars">
-        <view class="invi-btn">
-            <button wx:if="{{role==='admin'}}" open-type="share">邀请主播</button>
-        </view>
-        <navigator wx:if="{{role==='admin' || role === 'anchor'}}" class="nav" url="../enterLive/index?loginType=anchor" hover-class="navigator-hover" open-type="navigate">
-            立即开播
-        </navigator>
-    </view> -->
-    <view class="rooms" wx:if="{{roomList.length}}">
-        <view class="room-list">
-            <view class="room-list-item" wx:for="{{roomList}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id_name}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" bindtap="onClickItem">
+<view wx:if="{{state=='list'}}" class="room-list-container">
+    <view class="list-head" style="height:{{navigateHeight}}">
+        <image class="list-head-bg" src="../../resource/list-head-bg.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+        <view style="top:{{top}}px;height:{{height}}px;" class="list-title">电商直播</view>
+    </view>
+    <scroll-view class="rooms" scroll-y refresher-enabled="{{true}}" bindrefresherrefresh="refresh" refresher-triggered="{{refreshStatus}}" enable-flex="{{true}}" refresher-threshold="20">
+        <view wx:if="{{roomList.length}}" class="room-list">
+            <view class="room-list-item" wx:for="{{roomList}}" wx:if="{{item.status === 20? !!item.playback_url : true}}" wx:key="room_id" hover-class="none" hover-stop-propagation="false" data-item="{{item}}" data-name="{{item.room_name}}" data-id="{{item.room_id}}" data-anchor-id="{{item.anchor_id}}" data-anchor-name="{{item.anchor_nick_name}}" data-avatar="{{item.avatar}}" data-room-img="{{item.room_img}}" data-room-password="{{item.has_password}}" bindtap="onClickItem">
                 <view class="room-cover-container">
-                    <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
-                    </image>
+                    <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                     <view class="room-info">
-                        <view class="room-state" hover-class="none" hover-stop-propagation="false">
-                            {{item.roomState}}
+                        <view wx:if="{{item.has_playback && item.status >= 4}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
+                            <image class="replay-photo" src="../../resource/photo.png" mode="aspectFill" lazy-load="false" binderror="" bindload="">
+                            </image>
+                            <view class="replay-state-text">回放</view>
                         </view>
-                        <view class="room-num">{{item.user_count}}人观看</view>
+                        <view wx:else class="room-state" hover-class="none" hover-stop-propagation="false">
+                            <image role="img" src="../../components/images/live.png"></image>
+                            <text>直播中</text>
+                        </view>
+                        <view class="room-num">{{item.status < 4? item.user_count + '人观看' : item.play_count + '人回放'}}</view>
+                    </view>
+                    <view class="room-info-bot" wx:if="{{item.has_password}}">
+                        <image src="../../resource/lock.png" class="replay-lock-img"/>
                     </view>
                 </view>
                 <view class="room-info-container">
                     <view class="room-name">{{item.room_name}}</view>
-                    <view class="anchor-name">{{item.anchor_name}}</view>
+                    <view class="anchor-name"><image role="img" src="{{item.avatar}}"></image>{{item.anchor_name}}</view>
                 </view>
             </view>
         </view>
-    </view>
-    <view wx:else class="no-lives">
-        <image class="no-lives-img" src="../../resource/no-lives.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
-        </image>
-        <text>暂无直播</text>
-    </view>
+        <view wx:else class="no-lives">
+            <image class="no-lives-img" src="../../resource/no-lives.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+            <text>暂无直播</text>
+        </view>
+        <view class="footer-fil"></view>
+    </scroll-view>
 </view>
-<view class="button-container">
-    <view wx:if="{{role==='admin' && !living}}" class="bot-button" bind:tap="goToAdmin">
-        <!-- <image src="../../resource/create.png" class="create-img"></image> -->
-        <text class="create-txt">邀请主播</text>
-    </view>
-    <view wx:if="{{(role==='admin' || role === 'anchor') && !living}}" class="bot-button" bind:tap="createRoom">
-        <!-- <image src="../../resource/create.png" class="create-img"></image> -->
-        <text class="create-txt">创建直播间</text>
-    </view>
-</view>
+<center wx:elif="{{state=='center'}}" role="{{role}}" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
+<tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
 
-<!-- <view wx:if="{{living}}" class="room-exist-container">
-    <text class="room-exist-tip">当前直播未结束，是否重新进入？</text>
-    <view class="room-exist-btns">
-        <view class="room-btn end-btn" bindtap="endLive">结束直播</view>
-        <view class="room-btn relogin-btn" bindtap="enterLive">进入直播</view>
-    </view>
-</view> -->
-<authroze-modal 
-    isShow="{{isShowModal}}"
-    id='dialog'
-    title='微信授权'
-    subTitle='小程序申请获取以下权限'
-    content='获取到你公开信息(呢称，头像等)'
-    confirmText='授权登录'
-    bind:GetUserInfo='bindGetUserInfo'>
-</authroze-modal>
+<navigator wx:if="{{false}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">
+    成为主播
+</navigator>
+
+<view wx:if="{{!userInfo && isShowAfter}}" class="login-footer" bindtap="gotoAuthrozePage">登陆</view>
+

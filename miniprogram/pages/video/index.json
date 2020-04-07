@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "roomAvatar": "/components/room-avatar/index",
+    "back": "/components/page-back/index",
+    "alert": "/components/alert-modal/index",
+    "goodsList": "/components/anchor-goods-list/index",
+    "password-modal": "/components/password-modal/index"
+  },
+  "disableScroll": true,
+  "navigationStyle": "custom"
+}

@@ -1,124 +1,177 @@
 
 
+import { CallWxFunction,throttleByPromise } from '../../components/lib/wx-utils'
+import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback } from "../../utils/server.js"
 const app = getApp();
-let { loginApp } = require("../../utils/server.js");
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
-    living: false,
-    isFirst: true,
+    refreshStatus:false,
+    isShowAfter:false,
     userInfo: null,
     role: '',
-    roomList: [],
-    isShowModal: false
+    roomList: [ ],
+    statusBarHeight:'20',
+    navigateHeight:'170rpx',
+    bottom: '30',
+    state: 'list',
+    list: [{
+      "text": "直播列表",
+      "id": "list",
+      "iconPath": "/resource/room_list.png",
+      "selectedIconPath": "/resource/room_list_selected.png",
+      dot: true
+    },
+    {
+      "text": "个人中心",
+      "id": "center",
+      "iconPath": "/resource/per_center.png",
+      "selectedIconPath": "/resource/per_center_selected.png",
+      badge: 'New'
+    }],
+    replayList: []
   },
   onLoad: function (options) {
-    
-    // const { role } = options;
-    // this.setData({
-    //   role
-    // })
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo
-      });
-      this.getRole();
-    } else {
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo;
-          this.setData({
-            hasUserInfo: true,
-            userInfo: res.userInfo
-          });
-          this.getRole();
-        },
-        fail: e => {
-          console.error(e);
-          this.setData({
-            isShowModal: true
-          });
-        }
-      })
-      
-    }
+    console.log('onLoad', options);
+    let systemInfo = wx.getSystemInfoSync()
+    let rect = wx.getMenuButtonBoundingClientRect()
+
+    let { pixelRatio,statusBarHeight } = systemInfo
+    const top = rect.top;
+    const height = rect.height;
+    let navigateHeight = statusBarHeight + height + top
+    this.setData({ top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' });
+
+    this.gotoAuthrozePage = throttleByPromise(this.gotoAuthrozePage)
   },
   onShow: function () {
-    console.log('sessionId', wx.getStorageSync('sessionId'));
-    if (wx.getStorageSync('sessionId')) {
-      this.getRoomList();
-    }
+    if(this.data.state !== 'list'){ return }
+    this.revertHandler && clearTimeout(this.revertHandler)
+    //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
+    //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
+    //再次嗅探用户是否授权或者用户信息
+    this.onPersonUpdate().then(role => {
+        //查看是否有需要恢复直播的房间
+        if(role === 'admin' || role === 'anchor'){
+          //延迟三秒检查主播是否有需要恢复直播的房间
+          this.revertHandler = setTimeout(() => {
+            this.isRevertRoom()
+              //选中需要跳转恢复直播的房间
+              .then(this.enterRoom.bind(this))
+          },3000)
+        }
+        return Promise.resolve()
+      })
+      //获取列表信息
+      .then(() => this.fetchRooms())
+      //用户信息没获取到 也获取直播列表
+      .catch((error = {}) => this.fetchRooms())
+  },
+  /**
+   * 跳转授权页面
+   */
+  gotoAuthrozePage(){
+    return app.gotoAuthrozePage()
   },
   onUnload: function () {
     this.stopRefresh();
   },
   /**
-   * 用户点击右上角分享
+   * 当个人中心被修改
    */
-  onShareAppMessage: function (res) {
-    
+  onPersonUpdate(){
+    return app.getUserInfo()
+      //业务逻辑登陆
+      .then(userInfo => loginApp())
+      .then(role => {
+        this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
+        return Promise.resolve()
+      });
   },
-
-  getRoomList() {
-    let self = this;
-    console.log(">>>[liveroom-roomList] begin to getRoomList");
-    wx.showLoading({
-      title: '获取房间列表'
-    })
-    wx.request({
-      url: BaseUrl + '/app/get_room_list',
-      method: 'POST',
-      data: {
-        "session_id": wx.getStorageSync('sessionId'),
-        "live_appid": liveAppID,
-      },
-      success(res) {
-        self.stopRefresh();
-        if (res.data.ret && res.data.ret.code === 0) {
-          console.error('roomList ', res.data.room_list);
-          if ( res.data.room_list && res.data.room_list.length) {
-            const roomList = res.data.room_list
-            .filter(item => item.room_id.startsWith('e-'))
-            .map(item => {
-                item.room_show_name = item.room_id.slice(2);
-                console.log('show_name', item.room_show_name);
-                item.roomState = '直播中';
-                return item;
-              });;
-            if (self.data.isFirst) {
-              roomList.forEach(item => {
-                if (item.anchor_id_name === 'anchor' + wx.getStorageSync('uid')) {
-                  self.setData({
-                    // living: true,
-                    isFirst: false,
-                    livingRoomID: item.room_id,
-                    livingRoomName: item.room_name
-                  })
-                }
-              })
-            }
-            self.setData({
-              roomList
-            });
-          } else {
-            self.setData({
-              roomList: []
-            })
-          }
-        }
-      },
-      fail(e) {
-
-      } 
+  /**
+   * 检查是否有在播房间
+   */
+  isRevertRoom(){
+    //获取当前用户在播房间
+    return requestGetSelfRoomList({ status:2 }).then(response => {
+      let { room_list = [] } = response
+      //当前直播的房间列表
+      if(room_list.length > 0){
+        return this.switchRoom(room_list)
+      }
+      //没有选中房间 或者没有房间
+      return Promise.reject()
     })
   },
   /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-  onPullDownRefresh() {
-    console.log('>>>[liveroom-roomList] onPullDownRefresh');
-    this.getRoomList();
+   * 根据已存在的直播房间列表 让用户选择恢复哪个房间的直播
+   * @param {*} room_list 
+   */
+  switchRoom(room_list = []){
+    //获得一个
+    let room = room_list.shift()
+    //没有可以选择的直播房间了
+    if(!room){ return Promise.reject() }
+    //让用户选择恢复哪个直播房间
+    return CallWxFunction('showModal',{
+      title:'信息',
+      content:`您有正在直播的房间:${room.room_name}，是否进行恢复直播？`
+    }).then(response => {
+      let { confirm } = response
+      return confirm? Promise.resolve(room) : this.switchRoom(room_list)
+    })
+  },
+  /**
+   * 请求数据
+   */
+  fetchRooms(state = this.data.state) {
+    //是否个人中心
+    let isCenter = state === 'center'
+    //个人的uid  如果请求的是列表 那么uid为null
+    let uid = isCenter? wx.getStorageSync('uid') : null
+    //个人中心 state = 0x10 + 0x2, 列表 state = 0x10
+    let queryState = isCenter? 16 : 18
+    //请求数据
+    return this.getRoomList(queryState,uid)
+      .then(room_list => {
+        //更新列表
+        this.setData({ [isCenter? 'replayList':'roomList']:room_list,refreshStatus:false,isShowAfter:true })
+      })
+      .catch(error => {
+        this.setData({ isShowAfter:true })
+        return Promise.reject(error)
+      })
+  },
+  /**
+   * 
+   * @param {*} uid 
+   * @param {*} status 1未开始; 2 直播中; 4 已结束; 8 禁播; 16 可回放, 多个累加
+   */
+  getRoomList(status = undefined, uid = undefined) {
+    let self = this;
+    CallWxFunction('showLoading',{ title:'获取房间列表',mask:true })
+    return requestGetRoomList({ uid,status })
+      .then(res => {
+        let { room_list = [] } = res
+        room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
+        setTimeout(() => { CallWxFunction('hideLoading') },500)
+        return Promise.resolve(room_list)
+        //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
+      })
+      .catch((error = { }) => {
+        console.error(error)
+        let { ret = {} } = error
+        let { msg,message } = ret
+        let errorText = msg || message || '获取房间列表失败'
+        CallWxFunction('hideLoading')
+        CallWxFunction('showToast',{ title:errorText,icon:'none' })
+        return Promise.resolve([])
+      })
+  },
+  refresh() {
+    console.log('>>>[liveroom-roomList] refresh');
+    this.fetchRooms();
   },
   stopRefresh() {
     wx.hideLoading();
@@ -126,62 +179,31 @@ Page({
   },
   // 点击进入房间
   onClickItem(e) {
-    console.log(e);
-    const { currentTarget: { dataset: { id, name, roomImg, anchorId, anchorName, avatar } } } = e;
-    console.log('>>>[liveroom-roomList] onClickItem, item is: ', id);
+    const { currentTarget:{ dataset:{ item } } } = e
 
     // 防止两次点击操作间隔太快
-    let nowTime = new Date();
-    if (nowTime - this.data.tapTime < 1000) {
-      return;
-    }
+    let nowTime = new Date()
+    let tapTime = this.tapTime = this.tapTime || nowTime
+    if(nowTime - tapTime <= 500){ return }
+    this.tapTime = nowTime
 
-    const userID = 'anchor' + wx.getStorageSync('uid');
-    if (anchorId === userID) {
-      this.setData({
-        tapTime: nowTime,
-      }, () => {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&loginType=anchor' + '&nickName=' + anchorName + '&avatar=' + avatar
-        // + '&roomImg=' + roomImg;
-        wx.navigateTo({
-          url: url,
-        });
-      })
-    } else {
-      this.setData({
-        tapTime: nowTime,
-        loginType: 'audience'
-      }, function () {
-        const url = '../room/index?roomID=' + id + '&roomName=' + name + '&anchorID=' + anchorId + '&nickName=' + anchorName + '&avatar=' + avatar + '&roomImg=' + roomImg + '&loginType=audience';
-  
-        wx.navigateTo({
-          url: url
-        })
-      })
+    this.enterRoom(item)
+  },
+  /**
+   * 进入房间
+   * @param {*} room 
+   */
+  enterRoom(room) {
+    const { room_id, room_name, nickname, avatar, anchor_id_name, room_img,has_playback,playback_url,status } = room;
+    let url = ''
+    //可以回放 并且有回放地址
+    if(has_playback && status === 20){
+      url = `/pages/video/index?roomID=${room_id}`
+    }else{
+      url = `/pages/room/index?roomID=${room_id}`
     }
-    
-  },
-  endLive() {
-    console.log('endLive');
-    this.setData({
-      living: false
-    })
-  },
-  enterLive() {
-    const url = '../room/index?roomID=' + this.data.livingRoomID + '&roomName=' + this.data.livingRoomName + '&loginType=anchor';
-    wx.navigateTo({
-      url
-    });
-  },
-  goToAdmin() {
-    wx.navigateTo({
-      url: "../index/index",
-      success: (result)=>{
-        console.log('nav suc', result);
-      },
-      fail: ()=>{},
-      complete: ()=>{}
-    });
+    //跳转页面
+    CallWxFunction('navigateTo',{ url })
   },
   createRoom() {
     console.log('createRoom');
@@ -189,24 +211,35 @@ Page({
       url: '../enterLive/index?role=anchor'
     })
   },
-  bindGetUserInfo(e) {
-    console.log('bindGetUserInfo', e);
-    app.globalData.userInfo = e.detail.userInfo;
+  
+  
+  tabChange(e) {
+    const { index, item } = e.detail;
+    console.log('tab change', e)
+    const state = this.data.list[index].id;
     this.setData({
-      userInfo: e.detail.userInfo,
-      isShowModal: false
-    });
-    this.getRole(() => {
-      this.getRoomList();
-    });
+      state
+    }, this.fetchRooms.bind(this));
   },
-  getRole(callback) {
-    let self = this;
-    // 登录
-    loginApp(self.data.userInfo.nickName).then(role => {
-      console.log('role', role);
-      self.setData({ role });
-      callback &&  callback();
-    });
+  delReplay(e) {
+    const { room_id } = e.detail.content;
+    requestDeletePlayback({ room_id })
+      .then(res => this.fetchRooms())
+      .catch(error => console.error('del playback fail', e))
   },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+    let isAnchor = this.data.role === 'admin' || this.data.role === 'anchor'
+    let title = `${this.data.userInfo && this.data.userInfo.nickName || ''}${isAnchor?'邀请你成为主播':'邀请你观看直播'}`
+    let path = isAnchor? '/pages/register/index':'/pages/roomList/index'
+    
+    return {
+      title,
+      path,
+      imageUrl: this.data.userInfo && this.data.userInfo.avatarUrl || '../..resource/invi.png',
+    }
+  }
 });

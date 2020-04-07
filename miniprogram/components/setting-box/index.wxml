@@ -1,0 +1,92 @@
+<!--components/setting-box/index.wxml-->
+<view class="setting-content" wx:if="{{is_show_setting_box}}">
+  <view class="setting-bg" catchtap="close"></view>
+
+  <view class="setting-box-container" wx:if="{{!is_show_beauty_box}}">
+    <view class="setting-container" >
+      <view class="setting-header"><text>设置</text></view>
+
+      <view class="setting-image-container" catchtap="switchCamera">
+        <view class="setting-image-item">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="../images/setting-switch-camera.png"
+          ></image>
+          <text>切换摄像头</text>
+        </view>
+
+        <view class="setting-image-item" catchtap="switchMic">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="{{enable_mic? '../images/setting-enable-mic.png':'../images/setting-unable-mic.png'}}"
+          ></image>
+          <text>麦克风<text class="icon">{{enable_mic?'开':'关'}}</text></text>
+        </view>
+
+        <view class="setting-image-item" catchtap="showBeautyBox">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="../images/setting-beauty.png"
+          ></image>
+          <text>美颜效果</text>
+        </view>
+
+        <view class="setting-image-item" catchtap="closeRoom">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="../images/setting-close.png"
+          ></image>
+          <text>结束直播</text>
+        </view>
+      </view>
+
+      <view class="setting-footer" wx:if="{{!!room_password}}">
+        <image 
+          role="img" 
+          src="../images/setting-pwd.png" 
+          class="setting-pwd-img"
+        ></image>
+        <text class="setting-footer-title">直播密码</text>
+        <view class="setting-space"></view>
+        <text class="setting-pwd-text">{{room_password}}</text>
+        <text class="setting-pwd-button" catchtap="setCopy">复制</text>
+      </view>
+
+    </view>
+  </view>
+
+  <view class="setting-box-container beauty" wx:if="{{is_show_beauty_box}}">
+    <view class="setting-header">
+      <image 
+        role="img" 
+        src="../images/setting-red-back.png"
+        catchtap="back"
+      ></image>
+      <text catchtap="back">设置</text>
+    </view>
+    <text class="scd-title">美颜效果</text>
+    <view class="setting-image-container column">
+      <setScope
+        title="美颜"
+        max_scope="9"
+        min_scope="1"
+        scope="{{beauty}}"
+        bindscopeChange="onBeautyChange"
+      ></setScope>
+
+      <setScope
+        title="美白"
+        max_scope="9"
+        min_scope="1"
+        scope="{{whiteness}}"
+        bindscopeChange="onWhitenessChange"
+      ></setScope>
+    </view>
+  </view>
+</view>
+
+

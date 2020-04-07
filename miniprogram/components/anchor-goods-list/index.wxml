@@ -1,0 +1,9 @@
+<!--components/anchor-goods-list/index.wxml-->
+<goodsList
+  id="goodsList"
+  is_show_goods_list="{{is_show_goods_list}}"
+  uid="{{anchor_id_name}}"
+  bindclose="onGoodsListHidden"
+  bindbuttomTap="buttomTap"
+  bindgoodsTap="goodsTap"
+></goodsList>

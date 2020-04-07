@@ -1,0 +1,12 @@
+<!--components/room-avatar/index.wxml-->
+<view class="room-avatar-container" wx:if="{{avatar}}">
+  <image 
+    role="img" 
+    class="avatar" 
+    src="{{avatar}}"
+  ></image>
+  <view class="{{title? 'fic' : ''}}">
+    <text>{{nick}}</text>
+    <text wx:if="{{title}}">{{title}}</text>
+  </view>
+</view>

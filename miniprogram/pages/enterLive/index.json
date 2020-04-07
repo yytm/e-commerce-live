@@ -1,10 +1,12 @@
 {
   "usingComponents": {
-    "set-room":"/components/set-room/index",
+    "set-room":"/components/setting-room/index",
     "authroze-modal": "/components/authorize-modal/index"
   },
   "navigationBarBackgroundColor": "#F2034C",
   "navigationBarTitleText": "开始直播",
   "navigationBarTextStyle": "white",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": false,
+  "navigationStyle":"custom",
+  "disableScroll": true
 }

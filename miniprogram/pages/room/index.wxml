@@ -1,83 +1,220 @@
-<!--miniprogram/pages/live/index.wxml-->
-<custom-nav navBarHeight="{{navBarHeight}}" statusBarHeight="{{statusBarHeight}}" bindBack="backClick">
-    <view class="room-title">{{roomName}}</view>
-</custom-nav>
+<!--miniprogram/pages/room/index2.wxml-->
+<view bindtap="hiddenMessageBox">
+  <view class="room-leave" wx:if="{{isLeave || !roomid}}">
+    <image role="img" src="../../components/images/leave.png"></image>
+    <text wx:if="{{isLeave}}">主播暂时离开 请稍后...</text>
+  </view>
 
-<view class="live-container">
-    <live 
-        id="live-room" 
-        navBarHeight="{{navBarHeight}}" 
-        liveAppID="{{liveAppID}}" 
-        userID="{{userID}}" 
-        isLiving="{{isLiving}}" 
-        token="{{token}}" 
-        loginType="{{loginType}}"
-        wsServerURL="{{wsServerURL}}"
-        logServerURL="{{logServerURL}}" 
-        roomID="{{roomID}}" 
-        roomName="{{roomName}}"
-        anchorNickName="{{nickName}}"
-        anchorAvatar="{{avatar}}"
-        preferPublishSourceType="{{preferPublishSourceType}}"
-        preferPlaySourceType="{{preferPlaySourceType}}"
-        showEndModal="{{showEndModal}}"
-        bindRoomEvent="onRoomEvent">
-    </live>
-    <view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
-        <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
-        <view class="bottom-dialog-body bottom-pos" animation="{{animationData}}">
-            <view class="merchandise-container">
-                <view class="merchandise-head">
-                    <view class="m-t">
-                        <image class="m-list-png" src="../../resource/m-list.png"></image>
-                        <view class="m-title">商品列表</view>
-                    </view>
-                    <image class="m-close-png" src="../../resource/m-close.png" bindtap="hideModal"></image>
-                </view>
-                <scroll-view class="merchandise-list" scroll-y='true' bindscrolltolower='lower'>
-                    <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item" id="{{item.id}}" bindtap="clickMech">
-                        <image class="" src="{{item.img}}"></image>
-                        <view class="merchandise-detail">
-                            <text class="merchandise-text">
-                                {{item.name}}
-                            </text>
-                            <view class="merchandise-action">
-                                <text class="m-price">{{item.price}}</text>
-                                <view wx:if="{{loginType === 'anchor'}}" data-indx="{{item.id}}" class="shop-cart" catchtap="pushMer">
-                                    推送商品
-                                </view>
-                                <!-- <view wx:if="{{loginType === 'audience'}}" class="shop-cart">
-                                    加入购物车
-                                </view> -->
-                            </view>
-                        </view>
-                    </view>
-                </scroll-view>
-            </view>
+  <back 
+    id="backBtn"
+    bindback="onUnload" 
+    isAutoBack="{{!isAnchor}}" 
+    bindonBackTap="onBackTap"
+    style="top:{{top}}"
+  ></back>
+
+  <roomAvatar 
+    class="room-avatar"
+    isAutoAvatar="{{false}}"
+    avatar="{{roomInfo.avatar}}"
+    nick="{{roomInfo.anchor_name}}"
+    title="{{userCount + ' 人观看'}}"
+    style="top:{{top}}"
+  ></roomAvatar>
+
+  <view class="icon-box">
+    <image 
+      class="setting-heard-img"
+      role="img"
+      src="{{isSettingHeard? '../../components/images/love-rd.png' : '../../components/images/room-heart.png'}}"
+      catchtap="increaseRoomLoveCount"
+    ></image>
+    <text class="setting-heard-title">{{roomState.love_count}}</text>
+    <image 
+      class="setting-share-img"
+      role="img"
+      src="../../components/images/room-share.png"
+    ><button open-type="share" class="setting-share-img-btn"></button></image>
+    <image 
+      wx:if="{{roomInfo.anchor_id && !isAnchor}}"
+      class="setting-joinlive-img"
+      role="img"
+      src="../../components/images/room-joinLive.png"
+      catchtap="requestJoinLive"
+    ></image>
+    <image 
+      class="setting-message-img"
+      role="img"
+      src="../../components/images/room-message.png"
+      catchtap="showMessageBox"
+    ></image>
+    <image 
+      class="setting-shop-img"
+      role="img"
+      src="../../components/images/shop.png"
+      catchtap="showGoodsList"
+    ></image>
+  </view>
+  
+
+  <view class="wl-room" wx:if="{{wlRoom.isShow}}">
+    <image role="img" src="../../components/images/room-wl.png"></image>
+    <text>欢迎 {{wlRoom.nickName}} 加入</text>
+  </view>
+
+  <view class="merchandise-box {{ !hotGoods.is_show_shop?'hidden-shop' : '' }}">
+    <scroll-view 
+      class="merchandise-list" 
+      scroll-y='true' 
+      bindscrolltolower='lower'
+      scroll-into-view="{{toView}}"
+    > 
+      <view class="merchandise-item" wx:for="{{messageList}}" wx:key="id" id="{{'ITEM'+item.id}}">
+        <text class="merchandise-item-message"><text class="merchandise-item-name" wx:if="{{item.nickName}}">{{item.nickName}}</text>{{item.message}}</text>
+      </view>
+
+    </scroll-view>
+
+    <view class="shop-container" catchtap="onHotShopTap">
+        <image role="img" src='{{hotGoods.goods_img}}'></image>
+        <view class="shop-detail-container">
+          <text>{{hotGoods.goods_desc}}</text>
+          <text>{{hotGoods.price_text}}</text>
         </view>
-    </view>
-    <view class="push-mer" wx:if="{{pushInx >= 0}}" style="bottom:{{merBot}}rpx;" bindtap="clickPush">
-        <image class="push-mer-img" src="{{pushMer.img}}"></image>
-        <view class="push-mer-detail">
-            <text class="push-mer-text">{{pushMer.name}}</text>
-            <text class="push-mer-price">{{pushMer.price}}</text>
+
+        <view wx:if="{{isAnchor}}" class="shop-close-box" catchtap="onHotShopClose">
+          <image 
+            role="img" 
+            src="../../components/images/goods-close.png"
+            class="shop-close"
+          ></image>
         </view>
+
+        <view class="shop-border"> </view>
     </view>
-    <!-- <set-room bindstartLogin="startLogin"></set-room> -->
+  </view>
+
+  <live
+    id="live"
+    roomid="{{roomid}}"
+    beauty="{{settingBox.beauty}}"
+    switch_camera="{{settingBox.switch_camera}}"
+    whiteness="{{settingBox.whiteness}}"
+    disable_mic="{{!settingBox.enable_mic}}"
+    preferPublishSourceType="{{1}}"
+    preferPlaySourceType="{{1}}"
+    recvJoinLive="recvJoinLive"
+    bindonGetTotalUserList="onGetTotalUserList"
+    bindonPublishStateUpdate="onPublishStateUpdate"
+    bindonPlayStateUpdate="onPlayStateUpdate"
+    bindonUserStateUpdate="onUserStateUpdate"
+    bindonUpdateOnlineCount="onUpdateOnlineCount"
+    bindonStart="onStart"
+    bindonSendMessage="onSendMessage"
+    bindonLeave="onLeave"
+    bindonRecvReliableMessage="onRecvReliableMessage"
+    bindonRecvBigRoomMessage="onRecvBigRoomMessage"
+    bindonRecvJoinLiveRequest="onRecvJoinLiveRequest"
+    bindonTapEndJoinLive="onTapEndJoinLive"
+    bindonKickOut="onKickOut"
+  ></live>
+
+  <goodsList
+    is_show_goods_list="{{goodsBox.is_show_goods_list}}"
+    isAnchor="{{isAnchor}}"
+    anchor_id_name="{{roomInfo.anchor_id}}"
+    bindclose="onGoodsListHidden"
+    bindbuttomTap="buttomTap"
+    bindgoodsTap="goodsTap"
+  ></goodsList>
+
+  <view 
+    class="messageBox" 
+    wx:if="{{messageBox.isShowMessageBox}}" 
+    catchtap="holdMessageBoxLoop"
+  >
+    <view class="message-border">
+      <input 
+        id="messageIPT"
+        cursor-spacing="15" 
+        adjust-position='{{true}}' 
+        confirm-hold='{{messageBox.keyboardHold}}' 
+        hold-keyboard='{{messageBox.keyboardHold}}' 
+        focus='{{messageBox.focus}}'
+        confirm-type='send'
+        placeholder="我要说点什么"
+        placeholder-style='color: #dadbdf; font-size: 28rpx;'
+        bindinput="messageInput"
+        bindconfirm="sendMessage"
+      ></input>
+      <view class="message-send" catchtap="sendMessage">发送</view>
+    </view>
+  </view>
+
+
+  <alert
+    isShow="{{isShowConfirm}}"
+    confirmText="结束直播"
+    cancelText="取消"
+    content="是否结束直播"
+    showCancel="{{true}}"
+    bindclose="onCancel"
+    bindcancel="onCancel"
+    bindconfirm="onRoomLogout"
+  ></alert>
+
+  <alert
+    isShow="{{isShowEndJoinLiveConfirm}}"
+    confirmText="结束连麦"
+    cancelText="取消"
+    content="是否结束连麦"
+    showCancel="{{true}}"
+    bindclose="onJoinLiveCancel"
+    bindcancel="onJoinLiveCancel"
+    bindconfirm="onJoinLiveConfirm"
+  ></alert>
+
+  <view class="joinLive" wx:if="{{JoinLive.isShowBox}}">
+    <view class="joinlive-head">
+      <text>{{JoinLive.recvJoinLiver.from_username}} 请求连麦 是否同意？</text>
+    </view>
+    <view class="joinlive-footer">
+      <text bindtap="onRejJoinLive">拒绝</text>
+      <text bindtap="onRevJoinLive">同意</text>
+    </view>
+  </view>
+
+  <settingBox
+    is_show_setting_box="{{settingBox.is_show_setting_box}}"
+    enable_mic="{{settingBox.enable_mic}}"
+    beauty="{{settingBox.beauty}}"
+    whiteness="{{settingBox.whiteness}}"
+    room_password="{{roomInfo.room_password}}"
+    bindcloseRoom="onBackTap"
+    bindswitchCameraChange="onSwitchCameraChange"
+    bindswitchMic="onSwitchMic"
+    bindbeautyChange="onBeautyChange"
+    bindwhitenessChange="onWhitenessChange"
+  ></settingBox>
+
+  <view wx:if="{{isAnchor}}" class="setting-btn" catchtap="showSettingBox">设置 ></view>
+
+  <view wx:if="{{isAnchor && roomInfo.has_playback}}" class="playback-icon-box"><view></view><text>REC</text></view>
+
+  <password-modal 
+    class="confirm-modal" 
+    isShow="{{isShowRoomPwd}}" 
+    title="直播密码" 
+    cancelText="取消" 
+    confirmText="进入直播" 
+    bindcancel="onRoomLogout" 
+    bindconfirm="onConfirmPassword"
+  ></password-modal>
+
+
+  <view class="disable-live-box" wx:if="{{roomState.status == 8 || roomState.status == 4}}">
+    <image role="img" src="{{ rommState.status == 8? '../../components/images/disable-live.png' : '../../components/images/ph.png' }}"></image>
+    <text>{{ roomState.status === 8? '该直播已被管理员禁播': '直播已结束' }}</text>
+    <view class="disable-live-nav" bindtap="onRoomLogout">离开</view>
+  </view>
 </view>
-<authroze-modal 
-    isShow="{{isShowModal}}"
-    id='dialog'
-    title='微信授权'
-    subTitle='小程序申请获取以下权限'
-    content='获取到你公开信息(呢称，头像等)'
-    confirmText='授权登录'
-    bind:GetUserInfo='bindGetUserInfo'>
-</authroze-modal>
-<!-- <view wx:else class="login-container">
-    <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
-        登录
-    </button>
-    <view wx:else class="">请升级微信版本</view>
-</view> -->
-

@@ -1,0 +1,18 @@
+<!--components/setting-scope/index.wxml-->
+<view class="setting-scope">
+    <text>{{title}}</text>
+    <slider 
+      class="scope-box"
+      block-size="16" 
+      backgroundColor="rgba(255, 255, 255, 0.4)" 
+      activeColor="#fff" 
+      min="{{min_scope}}" 
+      max="{{max_scope}}" 
+      step="1" 
+      value="{{scope}}" 
+      bindchange="handleChange" 
+      activeColor="#EE2C43"
+      backgroundColor="#E9EFF5"
+    />
+    <text>{{scope}}</text>
+</view>

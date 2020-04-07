@@ -1,0 +1,71 @@
+<!--components/setting-room/index.wxml-->
+<view class="setting-room" bindtap="holdTap">
+  <back style="top:{{top}}"></back>
+  <roomAvatar class="room-avatar" style="top:{{top}}"></roomAvatar>
+
+  <view class="room-content">
+    <view class="room-img-container mg-btn-24">
+      <view class="room-img-icon" bindtap="chooseImage">
+        <image wx:if="{{room_img}}" class="cover-img" mode="aspectFill" src="{{room_img}}" />
+        <image class="room-add-img" role="img" src="../images/roomAdd.png"></image>
+      </view>
+    </view>
+
+    <roomInput 
+      placeholder="{{'直播标题'}}"
+      class="mg-btn-24"
+      bindinput="roomNameHold"
+      maxlength="10"
+    ></roomInput>
+    <roomInput 
+      placeholder="{{'6 位直播密码（选填）'}}"
+      class="mg-btn-24"
+      bindinput="roomPasswdHold"
+      maxlength="6"
+      inputType="{{'number'}}"
+    ></roomInput>
+    
+    <view 
+      class="room-botton-container"
+      bindtap="setRoom"
+    >立即开播</view>
+
+    <view class="room-checkbox-container">
+      <checkbox 
+        isCheck="{{need_playback}}" 
+        innerText="直播录制"
+        isShowICon="{{false}}"
+        bindcheck="roomPlayback"
+        class="left"
+      ></checkbox>
+
+      <checkbox 
+        isCheck="{{is_private}}" 
+        innerText="私密直播"
+        bindcheck="roomPrivate"
+        bindshowTips="checkboxTips"
+        isShowICon="{{true}}"
+        class="right"
+        isShowTips="{{is_show_tips}}"
+        tipsText="设置私密直播后，直播将不会出现在直 播列表中。"
+      ></checkbox>
+
+    </view>
+  </view>
+
+
+  <image 
+    class="setting-shop-img"
+    role="img"
+    src="../images/shop.png"
+    bindtap="showGoodsList"
+  ></image>
+
+  <goodsList 
+    is_show_goods_button="{{false}}"
+    isAnchor="{{true}}"
+    is_show_goods_list="{{is_show_goods_list}}"
+    bindclose="hiddenGoodsList"
+    bindgoodsTap="goodsTap"
+  ></goodsList>
+</view>

@@ -1,0 +1,99 @@
+/* components/confirm-modal/index.wxss */
+.modal-container {
+
+}
+.modal-mask {
+    position: fixed;
+    z-index: 1112;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.05);
+}
+.modal-box {
+  position: fixed;
+  top: 260rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1113;
+  width:570rpx;
+  height:384rpx;
+  background: rgba(255, 255, 255, 1);
+  box-shadow:0rpx 12rpx 44rpx 0rpx rgba(0, 0, 0, 0.2);
+  border-radius: 16rpx;
+  padding: 48rpx 45rpx 0;
+  text-align: center;
+
+}
+.modal-tip {
+  font-size:30rpx;
+  font-family:PingFang SC;
+  font-weight:500;
+  color:rgba(22,23,24,1);
+  line-height:40rpx;
+  text-align: left;
+}
+.input-conteiner {
+  margin-top: 32rpx;
+  width:482rpx;
+  height:88rpx;
+  background:rgba(255,255,255,1);
+  border:2rpx solid rgba(239,242,246,1);
+  border-radius:16rpx;
+  /* margin: 0 24rpx; */
+  padding: 0 20rpx;
+}
+.input-content {
+  height:88rpx;
+  text-align: left;
+}
+.close-btn {
+  width: 20rpx;
+  height: 20rpx;
+  position: absolute;
+  top: 26rpx;
+  right: 26rpx;
+}
+.modal-btns {
+  display: flex;
+  margin-top: 32rpx;
+  justify-content: center;
+}
+.modal-btn {
+  width: 317rpx;
+  height: 88rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-family: PingFang SC;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cancel-btn {
+  /* background:rgba(255,255,255,1);
+  margin-right: 20rpx;
+  color: rgba(242, 3, 76, 1);
+  border:1px solid rgba(238,44,67,1); */
+  width:231rpx;
+  height:88rpx;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(238,44,67,1);
+  border-radius:16rpx;
+  font-size:28rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  color:rgba(238,44,67,1);
+  margin-right: 20rpx;
+}
+.confirm-btn {
+  width:231rpx;
+  height:88rpx;
+  background:rgba(238,44,67,1);
+  border-radius:16rpx;
+  font-size:28rpx;
+  font-family:PingFang SC;
+  font-weight:400;
+  color:rgba(255,255,255,1);
+}

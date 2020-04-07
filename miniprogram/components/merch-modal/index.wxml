@@ -1,0 +1,34 @@
+<!--components/merch-modal/index.wxml-->
+<view class="modals modals-bottom-dialog" hidden="{{hideModal}}">
+        <!-- <view class="modals-cancel" bindtap="hideModal"></view> -->
+        <view class="bottom-dialog-body bottom-pos" animation="{{animationData}}">
+            <view class="merchandise-container">
+                <view class="merchandise-head">
+                    <view class="m-t">
+                        <image class="m-list-png" src="../../resource/m-list.png"></image>
+                        <view class="m-title">商品列表</view>
+                    </view>
+                    <image class="m-close-png" src="../../resource/m-close.png" bindtap="hideModal"></image>
+                </view>
+                <scroll-view class="merchandise-list" scroll-y='true' bindscrolltolower='lower'>
+                    <view wx:for="{{merchandises}}" wx:key="id" class="merchandise-item" id="{{item.id}}" bindtap="clickMech">
+                        <image class="" src="{{item.img}}"></image>
+                        <view class="merchandise-detail">
+                            <text class="merchandise-text">
+                                {{item.name}}
+                            </text>
+                            <view class="merchandise-action">
+                                <text class="m-price">{{item.price}}</text>
+                                <view wx:if="{{loginType === 'anchor'}}" data-indx="{{item.id}}" class="shop-cart" catchtap="pushMer">
+                                    推送商品
+                                </view>
+                                <!-- <view wx:if="{{loginType === 'audience'}}" class="shop-cart">
+                                    加入购物车
+                                </view> -->
+                            </view>
+                        </view>
+                    </view>
+                </scroll-view>
+            </view>
+        </view>
+    </view>

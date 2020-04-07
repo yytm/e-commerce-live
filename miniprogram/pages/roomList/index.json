@@ -2,8 +2,12 @@
   "navigationBarBackgroundColor": "#F2034C",
   "navigationBarTitleText": "电商直播间",
   "navigationBarTextStyle": "white",
-  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "disableScroll": true,
   "usingComponents": {
-    "authroze-modal": "/components/authorize-modal/index"
+    "tabbar": "/components/custom-tabbar/index",
+    "center": "/components/per-center/index",
+    "confirm-modal": "/components/confirm-modal/index",
+    "password-modal": "/components/password-modal/index"
   }
 }
