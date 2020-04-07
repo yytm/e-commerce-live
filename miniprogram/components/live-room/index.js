@@ -200,11 +200,9 @@ Component({
      */
     getRoomRole(){
       //当前用户登陆的角色 admin anchor audience
-      let role = wx.getStorageSync('role')
+      //let role = wx.getStorageSync('role')
       //当前主播的id
       let uid = wx.getStorageSync('uid')
-      //如果当前角色是游客 直接返回
-      if(role === 'audience'){ return Promise.resolve(false) }
       //获取当前appid下的直播列表
       return requestGetRoomList({ room_id:this.data.roomid }).then(response => {
         let { room_list = [] } = response
@@ -876,7 +874,8 @@ Component({
           /* ------ 这一段代码是OPS需求加的 -------- */
           .then(streamList => {
             //下面的逻辑不变
-            return Promise.resolve(isOPS? [{ anchor_id_name:room.anchor_id,stream_id,url:stream_url }] : streamList)
+            //return Promise.resolve(isOPS? [{ anchor_id_name:room.anchor_id,stream_id,url:stream_url }] : streamList)
+            return Promise.resolve(isOPS? [] : streamList)
           })
           /* ------ 这一段代码是OPS需求加的 -------- */
       }).then(streamList => {

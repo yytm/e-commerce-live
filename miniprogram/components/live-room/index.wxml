@@ -20,13 +20,14 @@
     id="mainPlayer" 
     src="{{mainPlayer.url}}" 
     autoplay
-    mode="RTC"
     object-fit="fillCrop"
     min-cache="0.1"
     max-cache="0.3"
     class="play-content" 
     bindstatechange="onPlayStateChange" 
     bindnetstatus="onPlayNetStateChange"
+    auto-pause-if-navigate="false"
+    picture-in-picture-mode='["push", "pop"]'
 ></live-player>
 
 <view class="subPlayer-box" wx:if="{{subPlayer.length || (!isAnchor && recvJoinLiver)}}">

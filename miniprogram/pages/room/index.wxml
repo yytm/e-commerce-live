@@ -1,6 +1,6 @@
 <!--miniprogram/pages/room/index2.wxml-->
 <view bindtap="hiddenMessageBox">
-  <view class="room-leave" wx:if="{{isLeave || !roomid}}">
+  <view class="room-leave" wx:if="{{(isLeave && roomInfo.room_type != 1) || !roomid}}">
     <image role="img" src="../../components/images/leave.png"></image>
     <text wx:if="{{isLeave}}">主播暂时离开 请稍后...</text>
   </view>
