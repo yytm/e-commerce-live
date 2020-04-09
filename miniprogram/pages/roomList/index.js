@@ -86,7 +86,7 @@ Page({
       .then(userInfo => loginApp())
       .then(role => {
         this.setData({ userInfo:app.globalData.userInfo,role,hasUserInfo:true,isShowModal:false })
-        return Promise.resolve()
+        return Promise.resolve(role)
       });
   },
   /**
