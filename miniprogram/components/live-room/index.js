@@ -96,6 +96,9 @@ Component({
     recvJoinLiver:null,
     //观众是否正在请求连麦 主播不需要
     isStartRequestJoinLive:false,
+
+    //是否允许连麦
+    //isEnableJoinLive:true,
     
     //子主播配置
     subPusher:{
@@ -180,12 +183,12 @@ Component({
     onPlayStateChange(e){
       let lib = this.zegoLib
       if(typeof lib === 'undefined'){ return }
-      lib.CallZegoLib('updatePlayerState',e.target.id, e)
+      lib.CallZegoLib('updatePlayerState',this.data.subPlayer.length && this.data.subPlayer[0].stream_id || e.target.id, e)
     },
     onPlayNetStateChange(e){
       let lib = this.zegoLib
       if(typeof lib === 'undefined'){ return }
-      lib.CallZegoLib('updatePlayerNetStatus',e.target.id, e)
+      lib.CallZegoLib('updatePlayerNetStatus',this.data.subPlayer.length && this.data.subPlayer[0].stream_id || e.target.id, e)
     },
     //错误状态
     onPushError(e){
@@ -452,18 +455,22 @@ Component({
       //非主播 默认关闭主播连麦
       let from_userid = this.data.isAnchor? joinLiver.from_userid : this.data.mainPlayer.anchor_id_name
 
-      this.setData({ recvJoinLiver:(this.data.recvJoinLiver = '') })
-      //关麦
-      lib.CallZegoLib('endJoinLive',from_userid)
-      
-      //因为目前只支持一对一连麦 所以这里关闭所有subPlayer
-      this.stopSubPlayer()
-
       //非主播逻辑
       if(!this.data.isAnchor){
+        //关麦
+        lib.CallZegoLib('endJoinLive',from_userid)
         //关闭自身推流
         this.stopPusherByObj(this.data.subPusher)
+      }else{
+        //把子主播全部关掉
+        let from_users = [from_userid].concat(this.data.subPlayer.map(player => player.anchor_id_name))
+        //通知关闭
+        from_users.forEach(from_userid => lib.CallZegoLib('endJoinLive',from_userid))
       }
+
+      //因为目前只支持一对一连麦 所以这里关闭所有subPlayer
+      this.stopSubPlayer()
+      this.setData({ recvJoinLiver:(this.data.recvJoinLiver = '') })
     },
     /**
      * 请求连麦
@@ -497,6 +504,7 @@ Component({
         //或者主播正在连麦
         //subPusher > 0 说明有连麦
         if(result === false || this.data.subPusher.length > 0){
+          this.setData({ recvJoinLiver:(this.data.recvJoinLiver = '') })
           return CallWxFunction('showToast',{
             title: '已拒绝连麦',
             icon: 'none',
@@ -525,13 +533,15 @@ Component({
       //非主播不能操作
       if(typeof lib === 'undefined' || !this.data.isAnchor){ return }
       let { requestId } = joinLiver
+
       //回复
       lib.CallZegoLib('respondJoinLive',requestId,result)
       
       //requestId
       let recvJoinLiver = result? joinLiver 
         //假如有正在连麦的 留住连麦的人
-        : this.data.subPlayer.length? this.data.recvJoinLiver : ''
+        : this.data.subPlayer.length? this.data.recvJoinLiver 
+        : joinLiver.from_userid == this.data.recvJoinLiver.from_userid? '' : this.data.recvJoinLiver
       //记录
       this.setData({ recvJoinLiver })
     },
@@ -800,7 +810,7 @@ Component({
     stopSubPlayer(){
       while(this.data.subPlayer.length){
         let player = this.data.subPlayer.pop()
-        player && this.stopPlayerByObj()
+        player && this.stopPlayerByObj(player)
       }
       this.setData({ subPlayer:[] })
     },

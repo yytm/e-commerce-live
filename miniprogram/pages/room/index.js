@@ -539,7 +539,6 @@ Page({
   onLoad(options) {
     let { roomID } = options
     console.log('page load',roomID)
-
     this.initRoomList(roomID)
     this.initDomReander()
   },
