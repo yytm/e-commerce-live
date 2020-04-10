@@ -29,7 +29,7 @@
     bindnetstatus="onPlayNetStateChange"
 ></live-player>
 
-<view class="subPlayer-box" wx:if="{{subPlayer.length || (!isAnchor && recvJoinLiver)}}">
+<view class="subPlayer-box" wx:if="{{subPlayer[0] || (!isAnchor && recvJoinLiver)}}">
     <live-pusher 
         class="subPlayer"
         mode="RTC"
@@ -43,12 +43,27 @@
         bindstatechange="onPushStateChange" 
         bindnetstatus="onPushNetStateChange" 
     ></live-pusher>
-    <live-player 
+    <!--<live-player 
         class="subPlayer"
         wx:for="{{subPlayer}}" 
         wx:key="stream_id"
         src="{{item.url}}" 
         id="{{item.stream_id}}" 
+        autoplay
+        object-fit="fillCrop"
+        min-cache="0.1"
+        max-cache="0.3"
+        beauty="{{beauty}}" 
+        whiteness="{{whiteness}}"
+        bindstatechange="onPlayStateChange" 
+        bindnetstatus="onPlayNetStateChange"
+    ></live-player> -->
+
+    <live-player 
+        class="subPlayer"
+        wx:if="{{subPlayer[0]}}"
+        src="{{subPlayer[0].url}}" 
+        id="{{subPlayer[0].stream_id}}" 
         autoplay
         object-fit="fillCrop"
         min-cache="0.1"
@@ -66,4 +81,5 @@
             class="subPlayer-box-close"
         ></image>
     </view>
+
 </view>
