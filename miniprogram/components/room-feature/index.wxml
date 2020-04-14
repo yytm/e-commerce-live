@@ -45,7 +45,7 @@
       bindtap="onEditRoom"
     >编辑预告</view>
     <view 
-      class="button" 
+      class="button delete-button" 
       wx:if="{{isAnchor}}" 
       bindtap="onTapDelete"
     >删除预告</view>

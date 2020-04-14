@@ -12,13 +12,16 @@ Component({
       value: [],
       observer(list){
         let roomList = list.map(room => {
+          let { playback_duration,start_live_time,status } = room
+          let startTime = new Date(isNaN(start_live_time)? Date.now() : start_live_time)
           //换算时间文案
-          let playback_duration = isNaN(room.playback_duration)? 0 : Number(room.playback_duration)
-          let day = parseInt(playback_duration / 86400) 
-          let h = parseInt((playback_duration % 86400) / 3600)
-          let m = parseInt((playback_duration % 3600) / 60)
-          let s = parseInt(playback_duration % 60)
+          let time = isNaN(playback_duration)? 0 : Number(playback_duration)
+          let day = parseInt(time / 86400) 
+          let h = parseInt((time % 86400) / 3600)
+          let m = parseInt((time % 3600) / 60)
+          let s = parseInt(time % 60)
           room.playback_duration  = `${day? day + '天 ' : ''}${h < 10? '0' + h : h}:${m < 10? '0' + m : m}:${s < 10? '0' + s : s}`
+          room.start_live_time = `${startTime.getMonth() + 1}月${startTime.getDate()}日 ${startTime.getHours()}:${startTime.getMinutes()}`
           return room
         })
         this.setData({ roomList })

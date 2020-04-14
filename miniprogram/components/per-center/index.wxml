@@ -56,7 +56,7 @@
                             </view>
                             <view class="extra-item">
                                 <image src="../images/time.png" class="extra-item-img" />
-                                <text class="extra-item-txt">{{item.playback_duration}}</text>
+                                <text class="extra-item-txt">{{item.status == 32? item.start_live_time : item.playback_duration}}</text>
                             </view>
                         </view>
                     </view>

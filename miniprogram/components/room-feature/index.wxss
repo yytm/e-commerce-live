@@ -115,6 +115,10 @@ back{
   color:rgba(22,23,24,1);
   margin-top:20rpx;
 }
+.delete-button{
+  background:none;
+  color:#fff;
+}
 
 .button.red{
   margin-top:60rpx;
