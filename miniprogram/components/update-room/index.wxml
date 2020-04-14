@@ -1,0 +1,97 @@
+<!--components/setting-room/index.wxml-->
+<view class="setting-room" bindtap="holdTap">
+  <back id="backBtn" style="top:{{top}}"></back>
+
+  <view class="room-content">
+    <view class="room-img-container mg-btn-24">
+      <view class="room-img-icon" bindtap="chooseImage">
+        <image wx:if="{{room_img}}" class="cover-img" mode="aspectFill" src="{{room_img}}" />
+        <image class="room-add-img" role="img" src="../images/roomAdd.png"></image>
+      </view>
+    </view>
+
+    <view class="input-title">直播标题</view>
+    <roomInput 
+      placeholder="{{'直播标题'}}"
+      class="mg-btn-24"
+      bindinput="roomNameHold"
+      maxlength="10"
+      placeholderStyle="color:rgba(178,180,185,0.8); font-size: 28rpx;"
+      extStyle="color:#161718;font-size:28rpx;"
+      inputText="{{room_name}}"
+    ></roomInput>
+    <view class="input-title">直播密码</view>
+    <roomInput 
+      placeholder="{{'6 位直播密码（选填）'}}"
+      class="mg-btn-24"
+      bindinput="roomPasswdHold"
+      maxlength="6"
+      inputType="{{'number'}}"
+      inputText="{{room_password}}"
+      placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+      extStyle="color:#161718;font-size:28rpx;"
+    ></roomInput>
+    <view class="input-title">开播时间</view>
+    <roomInput 
+      placeholder="{{'请选择开播时间'}}"
+      class="mg-btn-24"
+      bindinput="roomPasswdHold"
+      inputType="{{'number'}}"
+      inputText="{{liveTimeTest}}"
+      placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+      extStyle="color:#161718;font-size:28rpx;"
+      disabled="true"
+      bindtap="showPicker"
+    ></roomInput>
+    
+
+    <view class="room-checkbox-container">
+      <checkbox 
+        isCheck="{{need_playback}}" 
+        innerText="直播录制"
+        isShowICon="{{false}}"
+        bindcheck="roomPlayback"
+        class="left"
+        checkboxStyle="border:1rpx solid rgba(193,194,194,1);border-radius:8rpx;"
+        checkboxTextStyle="color:rgba(119,122,129,1);"
+        isCheck="{{need_playback}}"
+      ></checkbox>
+
+      <checkbox 
+        isCheck="{{is_private}}" 
+        innerText="私密直播"
+        bindcheck="roomPrivate"
+        bindshowTips="checkboxTips"
+        isShowICon="{{true}}"
+        class="right"
+        isShowMessageIcon="{{false}}"
+        isShowTips="{{is_show_tips}}"
+        tipsText="设置私密直播后，直播将不会出现在直 播列表中。"
+        checkboxStyle="border:1rpx solid rgba(193,194,194,1);border-radius:8rpx;"
+        checkboxTextStyle="color:rgba(119,122,129,1);"
+        isCheck="{{is_private}}"
+      >
+        <text class="message-icon">?</text>
+      </checkbox>
+    </view>
+
+    <view 
+      class="room-botton-container"
+      bindtap="setRoom"
+    >保存</view>
+
+    <view 
+      class="room-botton-container room-feature-live"
+      bindtap="onBack"
+    >取消</view>
+  </view>
+
+  <picker 
+    wx:if="{{is_show_picker}}"
+    is_close="{{!is_show_picker}}"
+    bindconfirm="setFeatureLive"
+    confirmText="选中时间"
+    defaultValue="{{pickerTime}}"
+  ></picker>
+  
+</view>

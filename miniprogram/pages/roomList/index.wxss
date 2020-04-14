@@ -144,7 +144,6 @@
   height: 28rpx;
 }
 .room-state {
-  width:96rpx;
   height:32rpx;
   border-radius: 4rpx;
   font-size:18rpx;
@@ -152,7 +151,16 @@
   line-height: 32rpx;
   background:rgba(255,53,48,1);
   box-sizing:border-box;
-  pading:8rpx;
+  padding-left:8rpx;
+  padding-right:8rpx;
+  border-radius:10rpx;
+}
+.feature-live{
+  background:rgba(126,209,33,1) !important;
+}
+.feature-live image{
+  width:20rpx;
+  height:20rpx;
 }
 .room-state image{
   width:20rpx;

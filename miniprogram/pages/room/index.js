@@ -234,7 +234,11 @@ Page({
    * @param {*} component 直播组件
    */
   onRoomLogout(e){
-    this.data.isAnchor && requestClearRoom({ room_id:this.data.roomid })
+    //房前房间是主播 并且当前房间状态不是obs状态
+    //obs的房间在后台管理系统关闭
+    if(this.data.isAnchor && this.data.roomInfo.room_type !== 1){
+      requestClearRoom({ room_id:this.data.roomid })
+    }
     //退出房间
     this.onConfirm()
   },
@@ -537,7 +541,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    let { roomID } = options
+    let scene = decodeURIComponent(options.scene)
+    let { roomID } = options.scene? scene : options
     console.log('page load',roomID)
     this.initRoomList(roomID)
     this.initDomReander()
@@ -571,13 +576,13 @@ Page({
       })
       .then(room => {
         //has_password 直播间是否需要输入密码
-        let { has_password,love_count,status,anchor_id } = room
+        let { has_password,love_count,status,anchor_id,room_type = 0 } = room
         //房间信息
         let roomState = { ...this.data.roomState,love_count,status }
         //用户当前的id
         let uid = wx.getStorageSync('uid') || ''
         //是否是主播
-        let isAnchor = String(anchor_id) === String(uid)
+        let isAnchor = String(anchor_id) === String(uid) && room_type === 0
         //保存信息
         this.setData({ roomState,roomInfo:room,isAnchor })
         //有房间密码的情况
@@ -622,7 +627,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    
   },
 
   /**

@@ -30,6 +30,11 @@
       bindtap="setRoom"
     >立即开播</view>
 
+    <view 
+      class="room-botton-container room-feature-live"
+      bindtap="showPicker"
+    >发布预告</view>
+
     <view class="room-checkbox-container">
       <checkbox 
         isCheck="{{need_playback}}" 
@@ -68,4 +73,10 @@
     bindclose="hiddenGoodsList"
     bindgoodsTap="goodsTap"
   ></goodsList>
+
+  <picker 
+    is_close="{{!is_show_picker}}"
+    bindconfirm="setFeatureLive"
+  ></picker>
+  
 </view>

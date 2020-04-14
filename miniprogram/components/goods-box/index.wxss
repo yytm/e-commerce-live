@@ -63,7 +63,7 @@
   padding-right: 44rpx;
 }
 
-.goods-body .nothing{
+.nothing{
   height:730rpx;
   display: flex;
   flex-direction:column;

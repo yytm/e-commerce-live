@@ -1,18 +1,11 @@
 <!--components/goods-box/index.wxml-->
-<view class="goods-container" wx:if="{{!is_close}}" >
-  <view class="goods-background" catchtap="close"></view>
-  <view class="goods-box">
-    <view class="goods-header" >
-      <text class="goods-title">商品列表</text>
-      <image 
-        role="img" 
-        class="goods-close" 
-        src="../images/goods-close.png"
-        catchtap="close"
-      ></image>
-    </view>
-    <view class="goods-body" >
-      <view class="goods-list" wx:if="{{goods_list.length > 0}}">
+<half-screen-dialog
+  bindclose="close"
+  title="商品列表"
+  is_close="{{is_close}}"
+>
+  <view slot="body">
+    <view class="goods-list" wx:if="{{goods_list.length > 0}}">
         <goodsItem
           wx:for="{{goods_list}}"
           wx:key="goods_id"
@@ -41,6 +34,5 @@
           catchtap="refreshTap"
         ><text>刷新</text></view>
       </view>
-    </view>
   </view>
-</view>
+</half-screen-dialog>

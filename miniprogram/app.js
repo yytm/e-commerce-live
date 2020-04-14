@@ -70,6 +70,7 @@ App({
 
     //获取用户信息
     this.getUserInfo().catch(error => {
+      CallWxFunction('hideLoading')
       //提示用户授权
       return CallWxFunction('showModal',{
         title: '提示',
@@ -115,10 +116,10 @@ App({
     //用户信息
     userInfo: {},
     //BaseUrl: 'https://shop-backend.yunyikao.com',
-    BaseUrl:'https://shop-aliyuntest.yunyikao.com',
+    //BaseUrl:'https://shop-aliyuntest.yunyikao.com',
+    BaseUrl:'http://192.168.100.62:20201',
     wxAppID:"wxda1343baad77dc86",
     //wxAppID: 'wx371ac5dc128c4c5e',
-    //liveAppID:1739272706,
     liveAppID: 1078978582,
     server:'wss://webliveroom1078978582-api.e-business.net.cn/ws',
     logUrl:'https://weblogger1078978582-api.e-business.net.cn/httplog'

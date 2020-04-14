@@ -5,14 +5,17 @@
       role="img" 
       src="{{isCheck? '../images/checkbox-true.png':'../images/checkbox-false.png'}}"
       bindtap="checkEvent"
+      style="{{checkboxStyle}}"
     ></image>
-    <text>{{ innerText }}</text>
+    <text style="{{checkboxTextStyle}}">{{ innerText }}</text>
+    <slot catchtap="showTips"></slot>
     <image 
       wx:if="{{isShowICon}}" 
       role="img" 
       class="checkbox-icon" 
       src="{{iconPath}}"
       catchtap="showTips"
+      wx:if="{{isShowMessageIcon}}"
     ></image>
     <view class="tips" wx:if="{{isShowTips}}">
       <image 

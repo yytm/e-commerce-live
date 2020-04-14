@@ -1,6 +1,6 @@
 // components/setting-room/index.js
 import { CallWxFunction } from '../lib/wx-utils'
-import { requestSetRoom } from '../../utils/server'
+import { requestUpdateRoom } from '../../utils/server'
 
 const clearObj = {
   //直播间标题
@@ -13,10 +13,21 @@ const clearObj = {
   is_private: false,
   //直播封面 本地地址
   room_img: '',
+  temp_patch:'',
+  //预告开始时间
+  start_live_time:0,
   //是否显示隐私直播冒泡
   is_show_tips:false,
   //是否显示时间选择器
   is_show_picker:false,
+  //房间信息
+  roomInfo:{},
+  //默认选中的时间
+  pickerTime:[],
+  
+
+  //显示的文案
+  liveTimeTest:'',
 
   top:"87rpx",
 }
@@ -26,10 +37,7 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    is_show_goods_list:{
-      type:Boolean,
-      value:false
-    }
+    
   },
 
   /**
@@ -39,10 +47,43 @@ Component({
     ...clearObj 
   },
 
+  observers:{
+    start_live_time(newVal){
+      let now = new Date(newVal)
+      this.setData({ liveTimeTest:`${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes()}` })
+    }
+  },
+
   /**
    * 组件的方法列表
    */
   methods: {
+    /**
+     * 初始化房间
+     * @param {*} room  房间信息
+     * @param {*} isAnchor 是否主播
+     */
+    initRoomInfo(room,isAnchor = false){
+      let { room_name = '',room_password = '',has_playback = false,is_private = false,room_img = '',start_live_time = new Date() } = room || clearObj
+      //start_live_time = 1586995200000
+      this.setData({ 
+        room_name,room_password,need_playback:has_playback,is_private,room_img,
+        roomInfo:room,
+        isAnchor,
+        start_live_time,
+        pickerTime:this.sliceTimeSpan(start_live_time)
+      })
+    },
+    /**
+     * 拆解时间
+     */
+    sliceTimeSpan(timeSpan){
+      let now = new Date(timeSpan)
+      let date = new Date(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} 0:0:0`)
+      let hours = now.getHours()
+      let minutes = now.getMinutes()
+      return [date.getTime(),hours,minutes]
+    },
     //展示时间选择器
     showPicker(){
       this.setData({ is_show_picker:true })
@@ -99,33 +140,10 @@ Component({
         // tempFilePath可以作为img标签的src属性显示图片
         const { tempFilePaths } = response
         this.setData({
+          temp_patch:tempFilePaths[0],
           room_img: tempFilePaths[0]
         })
       })
-    },
-
-    /**
-     * 商品列表 商品被点击
-     */
-    goodsTap(e){
-      let { goodsObj, itemView, listView,boxView } = e.detail
-      //前往商品
-      let { url_type = 1,goods_url = "",app_id } = goodsObj
-      //url
-      if(Number(url_type) === 1){
-        return CallWxFunction(this.data.isAnchor? 'redirectTo' : 'navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
-      }
-      CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
-    },
-
-    //关闭了商品列表
-    hiddenGoodsList(e){
-      this.setData({ is_show_goods_list:false })
-    },
-
-    //展示商品列表
-    showGoodsList(){
-      this.setData({ is_show_goods_list:true })
     },
 
     //校验房间名称
@@ -154,22 +172,24 @@ Component({
       }
       return response
     },
+    //校验预告时间
+    verifyStartTime(start_live_time = this.data.start_live_time){
+      let result = !isNaN(start_live_time) && start_live_time > Date.now()
+      return { result,msg:result? '' : '开播时间需大于当前时间' }
+    },
     //发布预告
     setFeatureLive(e){
       const { value:val,component } = e.detail
       let [{ value: day }, { value: hours }, { value: minutes }] = val
       let newDate = day + hours * 60 * 60 * 1000 + minutes * 60 * 1000
-      this.setData({ is_show_picker:false })
-      this.setRoom(true, newDate)
+      this.setData({ is_show_picker:false,start_live_time:newDate }) 
     },
     /**
      * 开始设置房间
-     * @param {*} isFeatureLive  是否是发布预告
-     * @param {*} featureDate  预告时间
      */
-    setRoom(isFeatureLive,featureDate){
+    setRoom(){
       //需要验证的
-      let verify = [this.verifyRoomImg,this.verifyRoomName,this.verifyRoomPw]
+      let verify = [this.verifyRoomImg,this.verifyRoomName,this.verifyRoomPw,this.verifyStartTime]
       //找到没有验证通过的提示信息
       let verifyResult = verify.map(fn => fn.call(this)).find(ret => !ret.result)
 
@@ -193,28 +213,38 @@ Component({
         //房间密码
         room_password = "",
         //封面地址
-        room_img = ""
+        //room_img = "",
+        temp_patch:room_img,
+        //预告开始时间
+        start_live_time 
       } = this.data
 
       //加载loading
       CallWxFunction('showLoading',{ title:'加载中' })
       //请求后台接口 创建房间
-      requestSetRoom({
-        room_name,need_playback,is_private,room_password,room_img,
+      requestUpdateRoom({
+        room_name,need_playback,is_private,room_password,room_img,room_id:this.data.roomInfo.room_id,
         //预告需求新增  2小程序 1obs 3预告
-        room_type:typeof isFeatureLive !== 'boolean'? 2 : 3,
-        start_live_time:featureDate || undefined
+        //room_type:3,
+        start_live_time
       }).then(response => {
-        let { room_id } = response
-        CallWxFunction('redirectTo',{
-          url:typeof isFeatureLive === 'boolean' && isFeatureLive? `/pages/featureLive/index?roomID=${room_id}` : `/pages/room/index?roomID=${room_id}`
+         //消失loading
+         CallWxFunction('hideLoading')
+        //展示错误信息
+        CallWxFunction('showToast',{
+          title:"修改成功",
+          icon:'none',
+          duration:2500
         })
-        console.log(response,'success')
+        this.redirectHandler = setTimeout(() => {
+          //CallWxFunction('redirectTo', { url: `/pages/featureLive/index?roomID=${this.data.roomInfo.room_id}` })
+          CallWxFunction('navigateBack',{ delta:1 })
+        }, 1000);
       }).catch(error => {
         console.log(error)
-        let { ret = {  } } = error
+        let { ret = {  },errMsg = "" } = error
         let { msg,message } = ret
-        let errorMessage = msg || message || '系统错误 请稍后重试'
+        let errorMessage = msg || message || errMsg || '系统错误 请稍后重试'
         console.log(error,'error')
         //消失loading
         CallWxFunction('hideLoading')
@@ -237,7 +267,13 @@ Component({
       const top = rect.top
       this.setData({ top:`${top + 5}px` });
     },
-    
+    /**
+     * 退出房间
+     */
+    onBack() {
+      let backBtn = this.backBtn = this.backBtn || this.selectComponent('#backBtn')
+      typeof backBtn.back === 'function' && backBtn.back()
+    },
   },
 
   //组件生命周期

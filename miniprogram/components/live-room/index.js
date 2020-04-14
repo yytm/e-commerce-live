@@ -851,7 +851,7 @@ Component({
         //如果当前房间是ops 而且isAnchor是true 还是需要返回isAnchor为false
         //因为isAnchor为true的时候 会主播复播 但是ops的主播不再这里播放的
         let { room_type,stream_id,stream_url,anchor_id,anchor_name } = room
-        //目前room_type只有两个类型 0 普通房间 1 ops房间
+        //目前room_type只有两个类型 2 普通房间 1 ops房间 3 预告
         let isOPS = room_type == 1
         //存储用户角色
         //是ops房间isAnchor一定为false 原因上面已经说过

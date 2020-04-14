@@ -1,6 +1,6 @@
 
 
-import { CallWxFunction,throttleByPromise } from '../../components/lib/wx-utils'
+import { CallWxFunction,throttleByPromise,getCurrentPageWithArgs } from '../../components/lib/wx-utils'
 import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
@@ -96,6 +96,8 @@ Page({
     //获取当前用户在播房间
     return requestGetSelfRoomList({ status:2 }).then(response => {
       let { room_list = [] } = response
+      //查找非obs的房间
+      room_list = room_list.filter(room => room.room_type !== 1)
       //当前直播的房间列表
       if(room_list.length > 0){
         return this.switchRoom(room_list)
@@ -111,8 +113,11 @@ Page({
   switchRoom(room_list = []){
     //获得一个
     let room = room_list.shift()
+    //当前页面url
+    let currentPageName = getCurrentPageWithArgs()
     //没有可以选择的直播房间了
-    if(!room){ return Promise.reject() }
+    //或者当前页面已经在room了 就不在提示了
+    if(!room || !String(currentPageName).includes('roomList/index')){ return Promise.reject() }
     //让用户选择恢复哪个直播房间
     return CallWxFunction('showModal',{
       title:'信息',
@@ -151,7 +156,7 @@ Page({
   getRoomList(status = undefined, uid = undefined) {
     let self = this;
     CallWxFunction('showLoading',{ title:'获取房间列表',mask:true })
-    return requestGetRoomList({ uid,status })
+    return requestGetRoomList({ uid })
       .then(res => {
         let { room_list = [] } = res
         room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
@@ -199,7 +204,9 @@ Page({
     //可以回放 并且有回放地址
     if(has_playback && status === 20){
       url = `/pages/video/index?roomID=${room_id}`
-    }else{
+    }else if(status == 32){
+      url = `/pages/featureLive/index?roomID=${room_id}`
+    }if(status <= 2){
       url = `/pages/room/index?roomID=${room_id}`
     }
     //跳转页面

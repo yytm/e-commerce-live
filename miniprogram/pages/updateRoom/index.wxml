@@ -1,0 +1,6 @@
+<!--miniprogram/pages/updateRoom/index.wxml-->
+<view class="room-preview">
+    <update-room 
+        id="feature"
+    ></update-room>
+</view>

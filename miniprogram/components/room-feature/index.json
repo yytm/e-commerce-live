@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "roomAvatar": "/components/room-avatar/index",
+    "goodsList": "/components/anchor-goods-list/index",
+    "alert": "/components/alert-modal/index",
+    "back": "/components/page-back/index"
+  }
+}

@@ -1,6 +1,5 @@
 /* components/room-checkbox/index.wxss */
 .room-checkbox-box{
-  width:210rpx;
   display: flex;
   flex-direction:row;
   align-items:flex-start;

@@ -9,14 +9,18 @@
                 <view class="room-cover-container">
                     <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
                     <view class="room-info">
-                        <view wx:if="{{item.has_playback && item.status >= 4}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
+                        <view wx:if="{{item.has_playback && (item.status == 4 || item.status == 20)}}" class="replay-state" hover-class="none" hover-stop-propagation="false">
                             <image class="replay-photo" src="../../resource/photo.png" mode="aspectFill" lazy-load="false" binderror="" bindload="">
                             </image>
                             <view class="replay-state-text">回放</view>
                         </view>
-                        <view wx:else class="room-state" hover-class="none" hover-stop-propagation="false">
+                        <view wx:elif="{{item.status <= 2}}" class="room-state" hover-class="none" hover-stop-propagation="false">
                             <image role="img" src="../../components/images/live.png"></image>
                             <text>直播中</text>
+                        </view>
+                        <view wx:elif="{{item.status == 32}}" class="room-state feature-live" hover-class="none" hover-stop-propagation="false">
+                            <image role="img" src="../../components/images/feature-live.png"></image>
+                            <text>直播预告</text>
                         </view>
                         <view class="room-num">{{item.status < 4? item.user_count + '人观看' : item.play_count + '人回放'}}</view>
                     </view>

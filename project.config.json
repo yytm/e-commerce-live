@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -107,6 +107,20 @@
 					"name": "pages/video/index",
 					"pathName": "pages/video/index",
 					"query": "roomID=room841585557383162",
+					"scene": null
+				},
+				{
+					"id": 7,
+					"name": "pages/featureLive/index",
+					"pathName": "pages/featureLive/index",
+					"query": "roomID=room931585910157364",
+					"scene": null
+				},
+				{
+					"id": 8,
+					"name": "pages/updateRoom/index",
+					"pathName": "pages/updateRoom/index",
+					"query": "roomID=room1586317694062",
 					"scene": null
 				}
 			]

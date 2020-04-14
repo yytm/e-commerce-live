@@ -6,7 +6,9 @@
     "pages/web/index",
     "pages/register/index",
     "pages/authroze/index",
-    "pages/video/index"
+    "pages/video/index",
+    "pages/featureLive/index",
+    "pages/updateRoom/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

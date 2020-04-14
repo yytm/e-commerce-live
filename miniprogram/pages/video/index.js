@@ -26,7 +26,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    let { roomID } = options
+    let scene = decodeURIComponent(options.scene)
+    let { roomID } = options.scene? scene : options
     requestGetRoomList({ room_id:roomID })
       .then((response = {}) => {
         let { room_list = [] } = response

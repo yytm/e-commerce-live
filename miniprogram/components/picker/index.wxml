@@ -1,0 +1,29 @@
+<!--components/picker/index.wxml-->
+<half-screen-dialog
+  id="dialog"
+  title="{{title}}"
+  is_close="{{is_close}}"
+  bindclose="close"
+>
+  <picker-view 
+    indicator-style="height:70rpx;" 
+    bindchange="changeValue"
+    bindpickstart="pickstart"
+    bindpickend="pickend"
+    value="{{defaultSelectValue}}"
+  >
+    <picker-view-column>
+      <view wx:for="{{picker_colum_1}}" wx:key="item">{{item.text}}</view>
+    </picker-view-column>
+    <picker-view-column>
+      <view wx:for="{{picker_colum_2}}" wx:key="item">{{item.text}}</view>
+    </picker-view-column>
+    <picker-view-column>
+      <view wx:for="{{picker_colum_3}}" wx:key="item">{{item.text}}</view>
+    </picker-view-column>
+  </picker-view>
+  <view class="picker-view-botton-box">
+    <view class="picker-view-botton" catchtap="close">{{cencalText}}</view>
+    <view class="picker-view-botton" catchtap="sure">{{confirmText}}</view>
+  </view>
+</half-screen-dialog>

@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "update-room": "/components/update-room/index",
+    "authroze-modal": "/components/authorize-modal/index"
+  },
+  "navigationBarBackgroundColor": "#F2034C",
+  "navigationBarTitleText": "直播预告",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "disableScroll": true
+}

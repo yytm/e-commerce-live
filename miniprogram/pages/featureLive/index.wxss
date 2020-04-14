@@ -1,0 +1,43 @@
+/* miniprogram/pages/featureLive/index.wxss */
+.room-leave,room-feature{
+  position: fixed;
+  left:0;
+  top:0;
+  width:100vw;
+  height:100vh;
+}
+.room-leave{
+  z-index:1;
+}
+.room-leave image{
+  width:100vw;
+  height:100vh;
+}
+room-feature{
+  z-index: 2;
+}
+
+.icon-box{
+  position:fixed;
+  z-index:2;
+  bottom:51rpx;
+  right:24rpx;
+  width:88rpx;
+}
+
+.setting-shop-img,
+.setting-share-img,
+.setting-message-img,
+.setting-share-img-btn{
+  width:88rpx;
+  height:88rpx;
+}
+.setting-share-img{
+  position:relative;
+}
+.setting-share-img-btn{
+  position:absolute;
+  left:0;
+  top:0;
+  background:none;
+}

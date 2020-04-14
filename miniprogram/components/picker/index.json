@@ -1,7 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "goodsItem": "/components/goods-item/index",
     "half-screen-dialog": "/components/half-screen-dialog/index"
   }
 }

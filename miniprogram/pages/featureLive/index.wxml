@@ -1,0 +1,34 @@
+<!--miniprogram/pages/featureLive/index.wxml-->
+<view class="room-preview">
+    <view class="room-leave">
+      <image role="img" src="../../components/images/leave.png"></image>
+    </view>
+    <room-feature
+        id="feature"
+    ></room-feature>
+
+    <view class="icon-box">
+      <image 
+        class="setting-share-img"
+        role="img"
+        src="../../components/images/room-share.png"
+      ><button open-type="share" class="setting-share-img-btn"></button></image>
+      <image 
+        class="setting-shop-img"
+        role="img"
+        src="../../components/images/shop.png"
+        catchtap="showGoodsList"
+        wx:if="{{isAnchor}}"
+      ></image>
+    </view>
+
+    <goodsList
+      is_show_goods_list="{{goodsBox.is_show_goods_list}}"
+      is_show_goods_button="{{false}}"
+      isAnchor="{{false}}"
+      anchor_id_name="{{roomInfo.anchor_id}}"
+      bindclose="onGoodsListHidden"
+      bindbuttomTap="buttomTap"
+      bindgoodsTap="goodsTap"
+    ></goodsList>
+</view>

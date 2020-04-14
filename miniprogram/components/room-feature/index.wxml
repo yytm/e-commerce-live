@@ -1,0 +1,64 @@
+<!--components/room-feature/index.wxml-->
+<view class="setting-room">
+  <back style="top:{{top}}"></back>
+  <roomAvatar 
+    class="room-avatar" 
+    style="top:{{top}}"
+    isAutoAvatar="{{false}}"
+    avatar="{{roomInfo.avatar}}"
+    nick="{{roomInfo.anchor_name}}"
+  ></roomAvatar>
+  <view class="room-content">
+    <view class="room-img-container mg-btn-24">
+      <view class="room-img-icon">
+        <image wx:if="{{roomInfo.room_img}}" class="cover-img" mode="aspectFill" src="{{roomInfo.room_img}}" />
+      </view>
+    </view>
+    <view class="title">{{roomInfo.room_name}}</view>
+    <view class="time-title">{{!isCanLive? '距离开播还有' : '已到达直播时间'}}</view>
+    <view class="time-box" wx:if="{{!isCanLive}}">
+      <text class="timespan" data-w="天" wx:if="{{timeSpan.day >= 0}}">{{timeSpan.day}}</text>
+      <text class="timespan" data-w="时">{{timeSpan.hours}}</text>
+      <text class="timespan" data-w="分">{{timeSpan.minutes}}</text>
+      <text class="timespan" data-w="秒">{{timeSpan.seconds}}</text>
+    </view>
+    <view class="timespan text-center" wx:if="{{isCanLive}}">{{isAnchor? '请开始直播' : '直播马上开始'}}</view>
+    <view class="time-title sed-title" wx:if="{{!isAnchor}}">{{timeSpan.startTimeString}} 开播</view>
+
+    <view class="pwd-box" wx:if="{{isAnchor && roomInfo.has_password}}">
+      <view data-pwd-text="直播密码：">{{roomInfo.room_password}}</view>
+      <image 
+        role="img" 
+        src="../images/notice_copy_icon.png" 
+        class="pwd-img"
+      ></image>
+    </view>
+
+    <view 
+      class="button red" 
+      wx:if="{{isAnchor}}" 
+      bindtap="onEnterRoom"
+    >立即开播</view>
+    <view 
+      class="button" 
+      wx:if="{{isAnchor}}"
+      bindtap="onEditRoom"
+    >编辑预告</view>
+    <view 
+      class="button" 
+      wx:if="{{isAnchor}}" 
+      bindtap="onTapDelete"
+    >删除预告</view>
+  </view>
+
+  <alert
+    isShow="{{isShowConfirm}}"
+    confirmText="删除预告"
+    cancelText="取消"
+    content="是否删除预告"
+    showCancel="{{true}}"
+    bindclose="onCancel"
+    bindcancel="onCancel"
+    bindconfirm="deleteFeatureLive"
+  ></alert>
+</view>

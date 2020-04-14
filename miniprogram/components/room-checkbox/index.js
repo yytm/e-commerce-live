@@ -32,6 +32,19 @@ Component({
     tipsText:{
       type:String,
       value:""
+    },
+
+    isShowMessageIcon:{
+      type:Boolean,
+      value:true
+    },
+    checkboxTextStyle:{
+      type:String,
+      value:''
+    },
+    checkboxStyle:{
+      type:String,
+      value:''
     }
   },
 

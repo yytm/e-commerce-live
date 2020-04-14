@@ -3,9 +3,11 @@
       <input 
         placeholder="{{placeholder}}" 
         placeholder-style='{{placeholderStyle}}'
-        value="{{inputTest}}"
+        value="{{inputText}}"
         bindinput="holdInput"
         maxlength="{{maxlength}}"
         type="{{inputType}}"
+        style="{{extStyle}}"
+        disabled="{{disabled}}"
       ></input>
 </view>

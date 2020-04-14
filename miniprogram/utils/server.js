@@ -104,6 +104,8 @@ let login =  function (nickName = ""){
   })
 }
 
+
+
 /**
  * 请求业务创建房间
  * @param {*} options = {  
@@ -116,11 +118,19 @@ let login =  function (nickName = ""){
  * @returns {*} 返回promise result = { ret:{ code,msg },room_img }
  */
 let setRoom = function (options = {}){
-  const {  room_name,need_playback,is_private,room_password = "",room_img } = options
+  const uid = wx.getStorageSync('uid') || ''
+  const {  
+    room_name,
+    need_playback,
+    is_private,
+    room_password = "",
+    room_img,room_type,
+    start_live_time,
+    room_id = `room${uid}${Date.now()}`,
+    //请求链接
+    requestURL = `${BaseUrl}/app/set_room`
+  } = options
   
-  //请求链接
-  let requestURL = `${BaseUrl}/app/set_room`
-  let uid = wx.getStorageSync('uid') || ''
 
   let req = {  
     //session信息
@@ -132,7 +142,7 @@ let setRoom = function (options = {}){
     //房间名称
     room_name,
     //房间ID
-    room_id:`room${uid}${Date.now()}`,
+    room_id,
     //房间密码
     //room_password: this.data.room_password,
     //是否录制
@@ -145,13 +155,26 @@ let setRoom = function (options = {}){
   if (String(room_password).trim() !== ''){
     req['room_password'] = room_password
   }
+  //直播预告结束时间 （开播时间）
+  if(start_live_time){
+    req['start_live_time'] = start_live_time
+  }
+
+  //房间类型 2 直播房间  3 直播预告 1 obs
+  if(room_type){
+    req['room_type'] = room_type
+  }
 
   //请求参数
   let request = {
     //字段参数
     fields: [{ name: 'req', value: JSON.stringify(req) }],
     //文件参数
-    files: [{ filePath: room_img, filename: `room${Date.now()}.png`, name:'img' }]
+    files: []
+  }
+
+  if(room_img){
+    request['files'] = [{ filePath: room_img, filename: `room${Date.now()}.png`, name:'img' }]
   }
 
   //数据请求
@@ -161,6 +184,21 @@ let setRoom = function (options = {}){
       response.room_id = req.room_id
       return Promise.resolve(response)
     })
+}
+
+/**
+ * 请求业务修改房间
+ * @param {*} options = {  
+ *  room_name, //房间名称
+ *  need_playback, //是否录制
+ *  is_private, //是否私密直播
+ *  room_password, //房间密码
+ *  room_img //直播封面
+ * }
+ * @returns {*} 返回promise result = { ret:{ code,msg },room_img }
+ */
+let updateRoom = function (options = {}){
+  return setRoom({ ...options,requestURL:`${BaseUrl}/app/update_room` })
 }
 
 
@@ -408,6 +446,14 @@ let deletePlayback = function (options = {}){
 }
 
 /**
+ * 删除预告
+ * @param {*} options = { room_id } 
+ */
+let deleteFeatureLive = function (options = {}){
+  return requestRoomID('/app/delete_feature_live',options)
+}
+
+/**
  * 格式化业务返回的数据
  * @param {*} response  wx.request 返回的数据
  */
@@ -472,6 +518,8 @@ export let requestCheckRoomPassword = wrap(checkRoomPassword)
 export let requestDeletePlayback = wrap(deletePlayback)
 export let reuqestPlayback = wrap(playback)
 export let requestIncreaseRoomVisitCount = wrap(increaseRoomVisitCount)
+export let requestDeleteFeatureLive = wrap(deleteFeatureLive)
+export let requestUpdateRoom = wrap(updateRoom)
 
 
 //监听事件

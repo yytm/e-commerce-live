@@ -12,7 +12,7 @@ Component({
       type:String,
       value:''
     },
-    inputTest:{
+    inputText:{
       type:String,
       value:''
     },
@@ -23,6 +23,14 @@ Component({
     inputType:{
       type:String,
       value:'text'
+    },
+    extStyle:{
+      type:String,
+      value:''
+    },
+    disabled:{
+      type:Boolean,
+      value:false
     }
   },
 
@@ -40,7 +48,7 @@ Component({
     holdInput(e){
       const val = e.detail.value
       this.setData({
-        inputTest:val
+        inputText:val
       })
       //通知事件
       this.triggerEvent("input",val)
