@@ -410,6 +410,7 @@ Component({
           duration: 2000
         })
       }
+
       let cloud = wx.cloud
       let err = 'cloud error'
       
@@ -489,7 +490,8 @@ Component({
         })
       }
       //防止多次请求
-      if(this.data.isStartRequestJoinLive){ return }
+      //或者正在连麦中
+      if(this.data.isStartRequestJoinLive || this.data.recvJoinLiver){ return }
       this.setData({ isStartRequestJoinLive:true })
       //请求连麦
       lib.client.requestJoinLive(destIdName,response => {

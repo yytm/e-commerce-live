@@ -122,6 +122,20 @@
 					"pathName": "pages/updateRoom/index",
 					"query": "roomID=room1586317694062",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/register/index",
+					"pathName": "pages/register/index",
+					"query": "roomID=room1586317694062",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/goodsList/index",
+					"pathName": "pages/goodsList/index",
+					"query": "roomID=room1586317694062",
+					"scene": null
 				}
 			]
 		}

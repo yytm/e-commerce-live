@@ -38,7 +38,7 @@
       class="button red" 
       wx:if="{{isAnchor}}" 
       bindtap="onEnterRoom"
-    >立即开播</view>
+    >{{roomInfo.room_type != 1? '立即开播' : '请在管理平台进行OBS直播'}}</view>
     <view 
       class="button" 
       wx:if="{{isAnchor}}"

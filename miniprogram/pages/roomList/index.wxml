@@ -41,7 +41,7 @@
         <view class="footer-fil"></view>
     </scroll-view>
 </view>
-<center wx:elif="{{state=='center'}}" role="{{role}}" replayList="{{replayList}}" avatar="{{userInfo.avatarUrl}}" nickName="{{userInfo.nickName}}" bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
+<center wx:elif="{{state=='center'}}" role="{{role}}" roomList="{{replayList}}"  bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
 <tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
 
 <navigator wx:if="{{false}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">

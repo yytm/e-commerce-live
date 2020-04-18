@@ -1,12 +1,13 @@
 
 
 import { CallWxFunction,throttleByPromise,getCurrentPageWithArgs } from '../../components/lib/wx-utils'
-import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback } from "../../utils/server.js"
+import { loginApp,requestGetRoomList,requestGetSelfRoomList,requestDeletePlayback,requestGetInvitCode } from "../../utils/server.js"
 const app = getApp();
 const { BaseUrl, wxAppID, liveAppID } = app.globalData;
 
 Page({
   data: {
+    invite_code:'',
     refreshStatus:false,
     isShowAfter:false,
     userInfo: null,
@@ -46,7 +47,7 @@ Page({
     this.gotoAuthrozePage = throttleByPromise(this.gotoAuthrozePage)
   },
   onShow: function () {
-    if(this.data.state !== 'list'){ return }
+    //if(this.data.state !== 'list'){ return }
     this.revertHandler && clearTimeout(this.revertHandler)
     //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
     //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
@@ -61,6 +62,13 @@ Page({
               .then(this.enterRoom.bind(this))
           },3000)
         }
+        //return Promise.resolve()
+        //获取邀请码
+        return requestGetInvitCode({ need_qrcode:false })
+      })
+      .then(response => {
+        let { ret,invit_code } = response
+        this.setData({ invit_code })
         return Promise.resolve()
       })
       //获取列表信息
@@ -136,7 +144,7 @@ Page({
     //个人的uid  如果请求的是列表 那么uid为null
     let uid = isCenter? wx.getStorageSync('uid') : null
     //个人中心 state = 0x10 + 0x2, 列表 state = 0x10
-    let queryState = isCenter? 16 : 18
+    let queryState = isCenter? null : 18
     //请求数据
     return this.getRoomList(queryState,uid)
       .then(room_list => {
@@ -159,10 +167,9 @@ Page({
     return requestGetRoomList({ uid })
       .then(res => {
         let { room_list = [] } = res
-        room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
+        //room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
         setTimeout(() => { CallWxFunction('hideLoading') },500)
         return Promise.resolve(room_list)
-        //this.setData({ roomList:room_list.filter(room => room.status === 20? !!room.playback_url : true) })
       })
       .catch((error = { }) => {
         console.error(error)
@@ -224,9 +231,7 @@ Page({
     const { index, item } = e.detail;
     console.log('tab change', e)
     const state = this.data.list[index].id;
-    this.setData({
-      state
-    }, this.fetchRooms.bind(this));
+    this.setData({ state }, this.fetchRooms.bind(this));
   },
   delReplay(e) {
     const { room_id } = e.detail.content;
@@ -239,9 +244,12 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    //requestGetInvitCode
+    let invite_code = this.data.invit_code
     let isAnchor = this.data.role === 'admin' || this.data.role === 'anchor'
-    let title = `${this.data.userInfo && this.data.userInfo.nickName || ''}${isAnchor?'邀请你成为主播':'邀请你观看直播'}`
-    let path = isAnchor? '/pages/register/index':'/pages/roomList/index'
+    let isRegister = isAnchor && this.data.state == 'center'
+    let title = `${this.data.userInfo && this.data.userInfo.nickName || ''}${isRegister && invite_code?'邀请你成为主播':'邀请你观看直播'}`
+    let path = isRegister && invite_code? `/pages/register/index?code=${invite_code}` : '/pages/roomList/index'
     
     return {
       title,

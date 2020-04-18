@@ -1,0 +1,115 @@
+<!--components/person-center/index.wxml-->
+<view class="body">
+  <view class="person-background">
+    <view class="inner-background"></view>
+  </view>
+  <button open-type="share" class="invite-btn" style="top:{{top}};">
+      <image src="../images/create-img.png" class="create-img"></image>
+      <text class="create-txt">邀请主播</text>
+  </button>
+  <view class="content">
+    <view class="header">
+      <image src="{{userInfo.avatarUrl || '/resource/per_center.png'}}" class="avatar"></image>
+      <view class="setting">
+        <image src="../images/person-share.png" role="img" ></image>
+        <image src="../images/person-update.png" role="img"></image>
+      </view>
+      <view class="box">
+        <view class="title">
+          {{userInfo.nickName}}
+          <text class="job_title" wx:if="{{userInfo.job_title}}">{{userInfo.job_title}}</text>
+        </view>
+        <view class="comp" wx:if="{{company}}">{{company}}</view>
+        <view
+          class="comp"
+          wx:if="{{ !userInfo.wechat_id && !userInfo.cellphone && !userInfo.job_title }}"
+        >您还未填写任何联系方式，您可以在设置中填写个人的联系方式！</view>
+        <view 
+          wx:if="{{userInfo.wechat_id}}" 
+          data-text="{{userInfo.wechat_id}}"
+        ><image class="icon" src="../images/person-wechat.png" ></image></view>
+        <view 
+          wx:if="{{userInfo.cellphone}}" 
+          data-text="{{userInfo.cellphone}}"
+        ><image class="icon" src="../images/person-phone.png" ></image></view>
+        <view 
+          wx:if="{{userInfo.job_title}}" 
+          data-text="{{userInfo.job_title}}"
+        ><image class="icon" src="../images/person-email.png" ></image></view>
+      </view>
+    </view>
+
+    <view class="scroll-box">
+      <view class="list-box" wx:if="{{liveList.length}}">
+        <view class="title">直播动态<text></text><text data-icon=""></text></view>
+        <swiper autoplay="true" interval="5000" duration="500">
+          <swiper-item wx:for="{{liveList}}"  wx:key="room_id">
+            <view class="shop-container" data-item="{{item}}" bindtap="onLiveTap">
+                <image role="img" src="{{item.room_img||'../../resource/invi.png'}}"></image>
+                <view class="shop-detail-container">
+                  <text>{{item.room_name}}</text>
+                  <text>{{item.user_count}}</text>
+                </view>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+
+      <view class="list-box" wx:if="{{goods_list.length}}">
+        <view class="title">商品推荐<text></text><text bindtap="onMoreGoods" data-icon=">">更多商品</text></view>
+        <view 
+          class="shop-container" 
+          wx:for="{{goods_list}}" 
+          wx:key="user_goods_id"
+          data-item="{{item}}" 
+          bindtap="onShopTap"
+        >
+            <image role="img" src="{{item.goods_img}}"></image>
+            <view class="shop-detail-container">
+              <text>{{item.goods_desc}}</text>
+              <text>¥ {{item.price_text}}</text>
+            </view>
+        </view>
+      </view>
+
+      <view class="list-box" wx:if="{{playBackList.length}}">
+        <view class="title">回放列表<text></text></view>
+        <view class="room-list">
+
+            <view 
+              wx:for="{{playBackList}}" 
+              wx:key="room_id" 
+              class="room-list-item" 
+              hover-class="none" 
+              hover-stop-propagation="false" 
+              data-roomid="{{item.room_id}}"
+              data-item="{{item}}" 
+              bindtap="onPlayBackTap"
+            >
+                <view class="room-cover-container">
+                    <image class="room-cover" src="{{item.room_img||'../../resource/invi.png'}}" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
+                    <view class="room-info">
+                        <view  class="replay-state" hover-class="none" hover-stop-propagation="false">
+                            <image class="replay-photo" src="../../resource/photo.png" mode="aspectFill" lazy-load="false" binderror="" bindload=""></image>
+                            <view class="replay-state-text">回放</view>
+                        </view>
+          
+                        <view class="room-num">{{item.play_count}}人回放</view>
+                    </view>
+                    <view class="room-info-bot" wx:if="item.has_password">
+                        <image src="../../resource/lock.png" class="replay-lock-img"/>
+                    </view>
+                </view>
+                <view class="room-info-container">
+                      <view class="room-name">{{item.room_name}}</view>
+                    <view class="anchor-name"><image role="img" src="{{item.avatar}}"></image>{{item.anchor_name}}</view>
+                </view>
+            </view>
+
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>
+

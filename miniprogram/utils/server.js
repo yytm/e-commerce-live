@@ -93,6 +93,7 @@ let login =  function (nickName = ""){
     //给用户信息 赋值登陆信息
     app.globalData.userInfo = { 
       ...app.globalData.userInfo,
+      ...response,
       nickName:nickname,
       avatarUrl:avatar,
       role:strRole,
@@ -454,6 +455,50 @@ let deleteFeatureLive = function (options = {}){
 }
 
 /**
+ * 生成邀请码 返回邀请码以及二维码
+ * @param {*} need_qrcode boolean 是否需要返回二维码
+ * @param {*} page  小程序页面路径 生成二维码用
+ * @param {*} param  小程序接收的参数 生成二维码用
+ */
+let getInvitCode = function (options = {}){
+  let { need_qrcode = false,page = '',param = '' } = options
+  //session信息
+  let session_id = wx.getStorageSync('sessionId')
+  //参数
+  let req = { need_qrcode,session_id }
+  //如果是生成二维码 就把page、param参数加上
+  if(need_qrcode){
+    req = { ...req,page,param }
+  }
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/get_invitcode`,
+    method:'POST',
+    data:req
+  })
+}
+
+/**
+ * 校验邀请码
+ * @param {*} invit_code 邀请码
+ */
+let chkInvitCode = function (options = {}){
+  let { invit_code } = options
+  //session信息
+  let session_id = wx.getStorageSync('sessionId')
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/chk_invitcode`,
+    method:'POST',
+    data:{ session_id,invit_code }
+  })
+}
+
+/**
  * 格式化业务返回的数据
  * @param {*} response  wx.request 返回的数据
  */
@@ -520,6 +565,8 @@ export let reuqestPlayback = wrap(playback)
 export let requestIncreaseRoomVisitCount = wrap(increaseRoomVisitCount)
 export let requestDeleteFeatureLive = wrap(deleteFeatureLive)
 export let requestUpdateRoom = wrap(updateRoom)
+export let requestGetInvitCode = wrap(getInvitCode)
+export let requestChkInvitCode = wrap(chkInvitCode)
 
 
 //监听事件

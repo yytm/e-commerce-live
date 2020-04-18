@@ -1,0 +1,36 @@
+<!--miniprogram/pages/goodsList/index.wxml-->
+<back 
+    id="backBtn"
+    bindback="onUnload" 
+    isAutoBack="{{!isAnchor}}" 
+    bindonBackTap="onBackTap"
+    style="top:{{top}}"
+></back>
+
+<view class="list-head" style="height:{{navigateHeight}}">
+    <image class="list-head-bg" src="../../resource/list-head-bg.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+    <view style="top:{{tTop}}px;height:{{tHeight}}px;" class="list-title">商品列表</view>
+</view>
+<scroll-view 
+    class="rooms" 
+    scroll-y 
+    refresher-enabled="{{true}}" 
+    bindrefresherrefresh="refresh" 
+    refresher-triggered="{{refreshStatus}}" 
+    enable-flex="{{true}}" 
+    refresher-threshold="20"
+>
+    <view 
+        class="shop-container" 
+        wx:for="{{goods_list}}" 
+        wx:key="user_goods_id"
+        data-item="{{item}}" 
+        bindtap="onShopTap"
+    >
+        <image role="img" src="{{item.goods_img}}"></image>
+        <view class="shop-detail-container">
+        <text>{{item.goods_desc}}</text>
+        <text>¥ {{item.price_text}}</text>
+        </view>
+    </view>
+</scroll-view>

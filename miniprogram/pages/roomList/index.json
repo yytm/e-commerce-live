@@ -6,7 +6,7 @@
   "disableScroll": true,
   "usingComponents": {
     "tabbar": "/components/custom-tabbar/index",
-    "center": "/components/per-center/index",
+    "center": "/components/person-center/index",
     "confirm-modal": "/components/confirm-modal/index",
     "password-modal": "/components/password-modal/index"
   }

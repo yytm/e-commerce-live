@@ -177,6 +177,8 @@ Component({
      * 主播进入直播间
      */
     onEnterRoom(){
+      //obs预告 不可以在这里变成直播
+      if(this.data.roomInfo.room_type == 1){ return }
       CallWxFunction('showLoading', { mask:true })
       //修改预告状态 变更成直播状态
       return requestUpdateRoom({ room_id:this.data.roomInfo.room_id,room_type:2 })

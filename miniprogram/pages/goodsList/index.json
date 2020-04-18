@@ -1,10 +1,10 @@
 {
   "navigationBarBackgroundColor": "#F2034C",
-  "navigationBarTitleText": "主播注册",
+  "navigationBarTitleText": "商品列表",
   "navigationBarTextStyle": "white",
   "navigationStyle": "custom",
   "disableScroll": true,
   "usingComponents": {
-
+    "back": "/components/page-back/index"
   }
 }
