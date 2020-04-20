@@ -39,9 +39,9 @@
       <checkbox 
         isCheck="{{need_playback}}" 
         innerText="直播录制"
-        isShowICon="{{false}}"
         bindcheck="roomPlayback"
         class="left"
+        isShowICon="{{false}}"
       ></checkbox>
 
       <checkbox 

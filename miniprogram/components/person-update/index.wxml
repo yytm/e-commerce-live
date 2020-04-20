@@ -1,0 +1,81 @@
+<!--components/person-update/index.wxml-->
+<view class="setting-room">
+  <back id="backBtn" style="top:{{top}}"></back>
+
+  <view class="room-content">
+    <view class="room-img-container mg-btn-24">
+      <view class="room-img-icon" bindtap="chooseImage">
+        <image wx:if="{{tempfile || avatarUrl}}" class="cover-img" mode="aspectFill" src="{{tempfile || avatarUrl}}" />
+        <image class="room-add-img" role="img" src="../images/roomAdd.png"></image>
+      </view>
+    </view>
+
+    <view class="person-info">
+        <view class="input-title" data-red-text="*">主播名称</view>
+        <roomInput 
+            placeholder="{{'请输入主播名称'}}"
+            class="mg-btn-24"
+            bindinput="nameHold"
+            maxlength="10"
+            placeholderStyle="color:rgba(178,180,185,0.8); font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+            inputText="{{nickName}}"
+        ></roomInput>
+        <view class="input-title" data-red-text="*">性别</view>
+        <roomInput 
+            placeholder="{{'请选择性别'}}"
+            class="mg-btn-24"
+            bindinput="roomPasswdHold"
+            maxlength="6"
+            inputType="{{'number'}}"
+            inputText="{{room_password}}"
+            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+        ></roomInput>
+        <view class="input-title">头衔</view>
+        <roomInput 
+            placeholder="{{'请输入职位头衔'}}"
+            class="mg-btn-24"
+            bindinput="titleHold"
+            inputText="{{job_title}}"
+            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+        ></roomInput>
+        <view class="input-title">微信号</view>
+        <roomInput 
+            placeholder="{{'请输入微信号'}}"
+            class="mg-btn-24"
+            bindinput="wechatHold"
+            inputText="{{wechat_id}}"
+            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+        ></roomInput>
+        <view class="input-title">手机号</view>
+        <roomInput 
+            placeholder="{{'请输入手机号'}}"
+            class="mg-btn-24"
+            bindinput="cellphoneHold"
+            inputType="{{'number'}}"
+            inputText="{{cellphone}}"
+            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+        ></roomInput>
+        <view class="input-title">邮箱</view>
+        <roomInput 
+            placeholder="{{'请输入邮箱'}}"
+            class="mg-btn-24"
+            bindinput="emailHold"
+            inputText="{{email}}"
+            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
+            extStyle="color:#161718;font-size:28rpx;"
+        ></roomInput>
+    </view>
+  </view>
+
+  <view 
+      class="room-botton-container"
+      bindtap="update"
+  >保存</view>
+
+</view>
+

@@ -1,0 +1,6 @@
+<!--miniprogram/pages/personUpdate/index.wxml-->
+<view class="room-preview">
+    <person-update
+        id="update"
+    ></person-update>
+</view>

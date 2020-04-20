@@ -9,7 +9,8 @@
     "pages/video/index",
     "pages/featureLive/index",
     "pages/updateRoom/index",
-    "pages/goodsList/index"
+    "pages/goodsList/index",
+    "pages/personUpdate/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

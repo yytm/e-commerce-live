@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "person-update": "/components/person-update/index"
+  },
+  "navigationBarBackgroundColor": "#F2034C",
+  "navigationBarTitleText": "信息编辑",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "disableScroll": true
+}

@@ -122,6 +122,13 @@ Component({
       const top = rect.top
       this.setData({ top:`${top + 5}px` });
     },
+    /**
+     * 跳转到个人信息编辑页面
+     */
+    onNavigateToUpdate(){
+      //跳转页面
+      CallWxFunction('navigateTo', { url: `/pages/personUpdate/index` })
+    }
   },
 
   //页面生命周期

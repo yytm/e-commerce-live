@@ -437,6 +437,72 @@ let checkRoomPassword = function (options = {}){
 }
 
 /**
+ * 更新主播信息
+ * @param {*} nickName  昵称
+ * @param {*} gender  性别
+ * @param {*} cellphone  手机号码
+ * @param {*} avatar  头像
+ * @param {*} job_title  头衔
+ * @param {*} wechat_id 微信号
+ * @param {*} email  邮箱
+ * @param {*} company  公司名
+ */
+let updateAnchor = function (options = {}){
+  let { nickName,gender,cellphone,avatar,job_title,wechat_id,email } = options
+  //请求地址
+  let requestURL = `${BaseUrl}/app/update_anchor`
+  //请求参数
+  let req = {  
+    //session信息
+    session_id: wx.getStorageSync('sessionId'),
+    //腾讯提供的appid 
+    live_appid: liveAppID,
+    //昵称
+    name:nickName,
+    //性别
+    gender
+  }
+
+  //手机号码 非必传
+  if(cellphone){
+    req['cellphone'] = cellphone
+  }
+  //头衔 非必传
+  if(job_title){
+    req['job_title'] = job_title
+  }
+  //微信号 非必传
+  if(wechat_id){
+    req['wechat_id'] = wechat_id
+  }
+  //邮箱 非必传
+  if(email){
+    req['email'] = email
+  }
+
+
+  //请求参数
+  let request = {
+    //字段参数
+    fields: [{ name: 'req', value: JSON.stringify(req) }],
+    //文件参数
+    files: []
+  }
+
+  if(avatar){
+    request['files'] = [{ filePath: avatar, filename: `avatar${Date.now()}.png`, name:'img' }]
+  }
+
+  //数据请求
+  return new multipart(request)
+    .submit(requestURL).then(response => formatResponse(response))
+    .then(response => {
+      response.room_id = req.room_id
+      return Promise.resolve(response)
+    })
+}
+
+/**
  * 删除回放
  * @param {*} options = {
  *  room_id
@@ -567,6 +633,7 @@ export let requestDeleteFeatureLive = wrap(deleteFeatureLive)
 export let requestUpdateRoom = wrap(updateRoom)
 export let requestGetInvitCode = wrap(getInvitCode)
 export let requestChkInvitCode = wrap(chkInvitCode)
+export let requestUpdateAnchor = wrap(updateAnchor)
 
 
 //监听事件

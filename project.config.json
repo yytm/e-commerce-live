@@ -136,6 +136,18 @@
 					"pathName": "pages/goodsList/index",
 					"query": "roomID=room1586317694062",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/personUpdate/index",
+					"pathName": "pages/personUpdate/index",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/web/index",
+					"pathName": "pages/web/index",
+					"scene": null
 				}
 			]
 		}

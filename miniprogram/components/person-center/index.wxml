@@ -12,7 +12,7 @@
       <image src="{{userInfo.avatarUrl || '/resource/per_center.png'}}" class="avatar"></image>
       <view class="setting">
         <image src="../images/person-share.png" role="img" ></image>
-        <image src="../images/person-update.png" role="img"></image>
+        <image src="../images/person-update.png" role="img" bindtap="onNavigateToUpdate"></image>
       </view>
       <view class="box">
         <view class="title">
@@ -33,8 +33,8 @@
           data-text="{{userInfo.cellphone}}"
         ><image class="icon" src="../images/person-phone.png" ></image></view>
         <view 
-          wx:if="{{userInfo.job_title}}" 
-          data-text="{{userInfo.job_title}}"
+          wx:if="{{userInfo.email}}" 
+          data-text="{{userInfo.email}}"
         ><image class="icon" src="../images/person-email.png" ></image></view>
       </view>
     </view>
