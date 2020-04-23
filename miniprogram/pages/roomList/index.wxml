@@ -41,8 +41,13 @@
         <view class="footer-fil"></view>
     </scroll-view>
 </view>
-<center wx:elif="{{state=='center'}}" role="{{role}}" roomList="{{replayList}}"  bind:delRoom="delReplay" bindonPersonUpdate="onPersonUpdate"></center>
-<tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
+<center 
+  wx:elif="{{state=='center'}}" 
+  anchor_uid="{{userInfo.uid}}"   
+  bindonPersonUpdate="onPersonUpdate"
+  isAnchor="{{role==='admin'||role==='anchor'}}"
+></center>
+<tabbar wx:if="{{role==='admin'||role==='anchor'}}" class="tabbar" current="{{state == 'list'?0:1}}" list="{{list}}" bindchange="tabChange" bind:btnClick="createRoom"></tabbar>
 
 <navigator wx:if="{{false}}" class="audience-nav" url="/pages/register/index" hover-class="audience-navigator-hover" open-type="navigate">
     成为主播

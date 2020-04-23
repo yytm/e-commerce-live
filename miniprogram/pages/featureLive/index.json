@@ -1,6 +1,9 @@
 {
   "usingComponents": {
     "room-feature": "/components/room-feature/index",
+    "settingBox":"/components/feature-setting-box/index",
+    "activety": "/components/activety/index",
+    "alert": "/components/alert-modal/index",
     "goodsList": "/components/anchor-goods-list/index"
   },
   "navigationBarBackgroundColor": "#F2034C",

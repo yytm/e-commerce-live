@@ -1,11 +1,8 @@
 {
   "component": true,
   "usingComponents": {
-    "checkbox": "/components/room-checkbox/index",
     "roomInput": "/components/room-input/index",
     "roomAvatar": "/components/room-avatar/index",
-    "goodsList": "/components/anchor-goods-list/index",
-    "back": "/components/page-back/index",
-    "picker": "/components/picker/index"
+    "back": "/components/page-back/index"
   }
 }

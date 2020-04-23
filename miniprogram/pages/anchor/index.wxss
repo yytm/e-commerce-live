@@ -1,0 +1,7 @@
+/* miniprogram/pages/anchor/index.wxss */
+back{
+  position: fixed;
+  z-index:2;
+  left:30rpx;
+  top:87rpx;
+}

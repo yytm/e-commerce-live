@@ -22,16 +22,14 @@
             inputText="{{nickName}}"
         ></roomInput>
         <view class="input-title" data-red-text="*">性别</view>
-        <roomInput 
-            placeholder="{{'请选择性别'}}"
-            class="mg-btn-24"
-            bindinput="roomPasswdHold"
-            maxlength="6"
-            inputType="{{'number'}}"
-            inputText="{{room_password}}"
-            placeholderStyle="color:rgba(178,180,185,0.8);font-size: 28rpx;"
-            extStyle="color:#161718;font-size:28rpx;"
-        ></roomInput>
+        <picker 
+            mode="selector" 
+            range="{{['男','女']}}" 
+            bindchange="genderHold"
+            value="{{gender==2?1:0}}"
+        >
+            <text class="dropvalue close" data-icon=">">{{gender==2?'女':'男'}}</text>
+        </picker>
         <view class="input-title">头衔</view>
         <roomInput 
             placeholder="{{'请输入职位头衔'}}"

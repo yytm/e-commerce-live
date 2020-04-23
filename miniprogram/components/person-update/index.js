@@ -143,6 +143,13 @@ Component({
         email:val
       })
     },
+    /**
+     * 性别选择
+     */
+    genderHold(e){
+      const val = e.detail.value
+      this.setData({ gender:val == 1? 2 : 1 })
+    },
 
     /**
      * 更新主播信息
@@ -186,7 +193,7 @@ Component({
       CallWxFunction('showLoading',{ title:'加载中' })
       //请求后台接口 创建房间
       requestUpdateAnchor({
-        nickName, cellphone, avatar: tempfile,job_title,wechat_id,email
+        nickName, cellphone, avatar: tempfile,job_title,wechat_id,email,gender
       }).then(response => {
         let { room_id } = response
         app.globalData.userInfo = {

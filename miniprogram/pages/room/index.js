@@ -704,7 +704,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title: `${this.data.roomInfo.anchor_name || ''}正在直播 快来观看`,
+      title: `${this.data.roomInfo.anchor_name || ''}邀请你观看直播`,
       path: `/pages/room/index?roomID=${this.data.roomid}`,
       imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }

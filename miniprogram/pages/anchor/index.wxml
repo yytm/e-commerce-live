@@ -1,0 +1,12 @@
+<!--miniprogram/pages/anchor/index.wxml-->
+<back 
+    id="backBtn"
+    bindback="onUnload" 
+    isAutoBack="{{!isAnchor}}" 
+    bindonBackTap="onBackTap"
+    style="top:{{top}}"
+></back>
+<center 
+  anchor_uid="{{anchorID}}"  
+  isAnchor="{{false}}"
+></center>

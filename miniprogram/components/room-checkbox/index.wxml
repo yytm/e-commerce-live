@@ -10,18 +10,18 @@
     <text style="{{checkboxTextStyle}}">{{ innerText }}</text>
     <slot catchtap="showTips"></slot>
     <image 
-      wx:if="{{isShowICon}}" 
+      wx:if="{{isShowICon}}"
       role="img" 
       class="checkbox-icon" 
       src="{{iconPath}}"
       catchtap="showTips"
-      wx:if="{{isShowMessageIcon}}"
     ></image>
     <view class="tips" wx:if="{{isShowTips}}">
       <image 
         role="img"
         src="../images/icon-message.png"
         class="checkbox-message-icon"
+        wx:if="{{isShowMessageIcon}}"
       ></image>
       <text class="tips-text">{{tipsText}}</text>
     </view>

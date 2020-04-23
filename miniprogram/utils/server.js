@@ -565,6 +565,42 @@ let chkInvitCode = function (options = {}){
 }
 
 /**
+ * 获取主播信息
+ * @param {*} uid 
+ */
+let getDetailAnchorInfo = function (options = {}){
+  let { uid } = options
+  //session信息
+  let session_id = wx.getStorageSync('sessionId')
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/get_anchor_detail`,
+    method:'POST',
+    data:{ session_id,anchor_id:uid,live_appid: liveAppID }
+  })
+}
+
+/**
+ * 获取主播活动列表
+ * @param {*} uid 
+ */
+let getActivityList = function (options = {}){
+  let { uid = wx.getStorageSync('uid') || '' } = options
+  //session信息
+  let session_id = wx.getStorageSync('sessionId')
+
+  //请求数据
+  return request({
+    //请求地址
+    url:`${BaseUrl}/app/get_activity_list`,
+    method:'POST',
+    data:{ session_id,uid,live_appid: liveAppID }
+  })
+}
+
+/**
  * 格式化业务返回的数据
  * @param {*} response  wx.request 返回的数据
  */
@@ -634,6 +670,8 @@ export let requestUpdateRoom = wrap(updateRoom)
 export let requestGetInvitCode = wrap(getInvitCode)
 export let requestChkInvitCode = wrap(chkInvitCode)
 export let requestUpdateAnchor = wrap(updateAnchor)
+export let requestGetDetailAnchorInfo = wrap(getDetailAnchorInfo)
+export let requestGetActivityList = wrap(getActivityList)
 
 
 //监听事件

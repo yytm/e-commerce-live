@@ -1,2 +1,47 @@
 <!--miniprogram/pages/register/index.wxml-->
-<view>正在加载中...</view>
+<view class="user-container">
+    <!-- <view class="user-info">
+        <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+        <text class="user-text">
+            {{userInfo.nickName}}
+        </text>
+    </view> -->
+    <view class="operate">
+        <!-- <view class="invi-code"> -->
+            <image class="invite-img" src="../../resource/invited.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+            </image>
+            <view class="tips">
+                <text class="tip-head">您被邀请成为主播</text>
+                <text class="tip-text">请输入六位绑定码</text>
+            </view>
+            <view class='password-input-box'>
+                <view class='input' bindtap='getFocus'>
+                    <view wx:for="{{Length}}" wx:key="item" class='input-content'>
+                        <input value="{{inputValue.length>=index+1?inputValue[index]:''}}" 
+                        disabled password='{{ispassword}}' catchtap='Tap'></input>
+                    </view>
+                </view>
+                <input name="password" password="{{true}}" class='password-input' maxlength="{{Length}}" focus="{{isFocus}}"   bindinput="passwordInput"></input>
+            </view>
+            <!-- <input value="{{inviCode}}" bindinput="bindKeyInput" placeholder="请输入6位邀请码"
+                    placeholder-style='color: #b3b3b3; font-size: 14px;'/> -->
+            <view class="{{comp?'submit-btn':'disable-btn'}}" bindtap="authorize">
+                确定
+            </view>
+        <!-- </view> -->
+    </view>
+</view>
+<authroze-modal 
+    isShow="{{isShowModal}}"
+    id='dialog'
+    title='微信授权'
+    subTitle='小程序申请获取以下权限'
+    content='获取到你公开信息(呢称，头像等)'
+    confirmText='授权登录'
+    bind:GetUserInfo='bindGetUserInfo'>
+</authroze-modal>
+<!-- <view wx:else class="">
+    <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">登录</button>
+    <view wx:else class="">请升级微信版本</view>
+</view> -->
+

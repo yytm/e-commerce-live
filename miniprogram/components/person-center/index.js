@@ -1,6 +1,6 @@
 // components/person-center/index.js
 import { CallWxFunction,throttleByPromise,getCurrentPageWithArgs } from '../../components/lib/wx-utils'
-import { requestListGoods,requestDeletePlayback,loginApp } from "../../utils/server.js"
+import { requestListGoods,requestGetRoomList,requestDeletePlayback,loginApp,requestGetDetailAnchorInfo } from "../../utils/server.js"
 const app = getApp()
 
 Component({
@@ -8,20 +8,20 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    roomList:{
-      type:Array,
-      value:[],
-      observer(list){
-        let lives = [],backs = []
-        list.forEach(room => {
-          let { status } = room
-          status == 32 || status <= 2? lives.push(room) : backs.push(room)
-        })
-        //区分预告和回放列表
-        this.setData({ liveList:lives,playBackList:backs })
-        //请求商品列表
-        this.onPersonUpdate().then(this.getGoodsList.bind(this))
+    //主播uid
+    anchor_uid:{
+      type:String,
+      //如果外部没有传递uid  默认使用自己的uid
+      value:wx.getStorageSync('uid'),
+      //监听数据变化
+      observer(uid){
+        uid && this.refreshList(Number(uid))
       }
+    },
+    //是否是主播 控制显示邀请主播 分享 设置等
+    isAnchor:{
+      type:Boolean,
+      value:true
     }
   },
 
@@ -38,6 +38,7 @@ Component({
     //用户信息
     userInfo:{},
 
+    isShowConfirm:false,
     top:'174'
   },
 
@@ -46,11 +47,48 @@ Component({
    */
   methods: {
     /**
+     * 刷新预告 直播 回放 以及 商品列表 和 个人数据
+     */
+    refreshList(uid = Number(this.data.anchor_uid)){
+      CallWxFunction('showLoading',{ mask:true })
+      Promise.all([this.getRoomList(uid),this.getGoodsList(uid),this.onPersonUpdate(uid)])
+        .then(response => {
+          CallWxFunction('hideLoading')
+        })
+        .catch((error = {}) => {
+          CallWxFunction('hideLoading')
+          let { ret = {} } = error
+          let { msg,message } = ret
+          let errorText = msg || message || '获取信息失败 请稍后重试'
+          CallWxFunction('showToast',{ title:errorText,icon:'none' })
+        })
+    },
+    /**
+     * 获取主播直播列表
+     */
+    getRoomList(uid = this.data.anchor_uid){
+      return requestGetRoomList({ uid }) 
+        .then(res => {
+          let { room_list = [] } = res
+          //临时记录预告主播和回放的列表
+          let lives = [],backs = []
+          room_list.forEach(room => {
+            let { status } = room
+            if(room.start_live_time){
+              let time = new Date(room.start_live_time)
+              room.start_live_time = `${time.getMonth() + 1}月${time.getDate()}日  ${time.getHours()}:${time.getMinutes()}`
+            }
+            status == 32 || status <= 2? lives.push(room) : backs.push(room)
+          })
+          //区分预告和回放列表
+          this.setData({ liveList:lives,playBackList:backs })
+          return Promise.resolve(room_list)
+        })
+    },
+    /**
      * 获取商品列表
      */
-    getGoodsList(){
-      //主播id
-      let uid = wx.getStorageSync('uid') 
+    getGoodsList(uid = this.data.anchor_uid){
       //获取商品列表
       return requestListGoods({
         uid,page:1,count:3
@@ -62,14 +100,58 @@ Component({
     /**
      * 当个人中心被修改
      */
-    onPersonUpdate(){
+    onPersonUpdate(uid = this.data.anchor_uid){
       return app.getUserInfo()
         //业务逻辑登陆
         .then(userInfo => loginApp())
-        .then(role => {
+        .then(() => requestGetDetailAnchorInfo({ uid:Number(uid) }))
+        .then(userInfo => {
+          let { anchor_info } = userInfo
+          anchor_info = anchor_info || userInfo
+          app.globalData.userInfo = {
+            ...app.globalData.userInfo,
+            ...anchor_info
+          }
           this.setData({ userInfo:app.globalData.userInfo })
-          return Promise.resolve(role)
-        });
+          return Promise.resolve(userInfo)
+        })
+    },
+    onCancel(){
+      this.setData({ isShowConfirm:false })
+    },
+    onConfirm(){
+      let res = this.delInfo
+      this.setData({ isShowConfirm:false })
+      if(!res || !(res instanceof Promise)){ return }
+
+      res.then(room => {
+        return requestDeletePlayback({ room_id:room.room_id })
+      })
+      // .then(() => {
+      //   return CallWxFunction('showToast',{ title:'删除成功',icon:'none' })
+      // })
+      .then(() => {
+        //this.refreshHandler = setTimeout(this.refreshList.bind(this), 1000)
+        this.refreshList()
+      })
+      .catch((error = { }) => {
+        console.error(error)
+        let { ret = {} } = error
+        let { msg,message } = ret
+        let errorText = msg || message || '删除失败'
+        CallWxFunction('hideLoading')
+        CallWxFunction('showToast',{ title:errorText,icon:'none' })
+        return Promise.resolve([])
+      })
+
+    },
+    /**
+     * 被点击了删除回放
+     */
+    onDel(e){
+      let { currentTarget:{ dataset:{ item:room = {} } } } = e
+      this.delInfo = new Promise((res) => res(room))
+      this.setData({ isShowConfirm:true })
     },
     /**
      * 当直播动态被点击
@@ -134,8 +216,7 @@ Component({
   //页面生命周期
   pageLifetimes: {
     // 组件所在页面的生命周期函数
-    show() {  
-      
+    show() { 
       this.onPersonUpdate().then(this.getGoodsList.bind(this))
     },
     hide() { 
@@ -150,13 +231,12 @@ Component({
     //在组件实例进入页面节点树时执行
     attached(){
       this.initDomReander()
-      console.log('加载')
       this.onPersonUpdate = throttleByPromise(this.onPersonUpdate.bind(this))
       this.getGoodsList = throttleByPromise(this.getGoodsList.bind(this))
     },
     //在组件实例被从页面节点树移除时执行
     detached(){
-      console.log('消失')
+      
     }
   }
 })

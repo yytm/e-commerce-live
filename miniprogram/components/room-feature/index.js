@@ -162,18 +162,6 @@ Component({
       }).then(nextTick).catch(nextTick)
     },
     /**
-     * 界面的删除按钮被点击
-     */
-    onTapDelete(){
-      this.setData({ isShowConfirm:true })
-    },
-    /**
-     * 删除确认弹窗 点击了取消按钮
-     */
-    onCancel(){
-      this.setData({ isShowConfirm:false })
-    },
-    /**
      * 主播进入直播间
      */
     onEnterRoom(){
@@ -204,34 +192,6 @@ Component({
       if (timeSpan && now - timeSpan <= 1500){ return }
       this.timeSpan = now
       CallWxFunction('navigateTo', { url: `/pages/updateRoom/index?roomID=${this.data.roomInfo.room_id}` })
-    },
-    /**
-     * 删除预告
-     */
-    deleteFeatureLive(){
-      CallWxFunction('showLoading')
-      //隐藏弹窗
-      this.onCancel()
-      return requestDeleteFeatureLive({ room_id:this.data.roomInfo.room_id })
-        .then(() => {
-          CallWxFunction('hideLoading')
-          return CallWxFunction('showModal',{
-            title: '提示',
-            confirmText:'确定',
-            showCancel:false,
-            content:'删除成功'
-          })
-        })
-        .then(() => {
-          return CallWxFunction('reLaunch',{ url:`/pages/roomList/index` })
-        })
-        .catch(error => {
-          let { ret = {} } = error || {}
-          let { msg,message } = ret
-          let errorText = msg || message || '系统错误 请稍后重试'
-          CallWxFunction('hideLoading')
-          CallWxFunction('showToast',{ title:errorText,icon:'none' })
-        })
     }
   },
 

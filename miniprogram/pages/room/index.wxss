@@ -148,7 +148,6 @@ live,.room-leave{
   height:88rpx;
   width:88rpx;
   margin-right:19rpx;
-  background: green;
 }
 .shop-container .shop-detail-container{
   width:433rpx;

@@ -37,11 +37,13 @@
 
     <view class="room-checkbox-container">
       <checkbox 
-        isCheck="{{need_playback}}" 
         innerText="直播录制"
+        isShowICon="{{false}}"
         bindcheck="roomPlayback"
         class="left"
-        isShowICon="{{false}}"
+        checkboxStyle=""
+        checkboxTextStyle=""
+        isCheck="{{need_playback}}"
       ></checkbox>
 
       <checkbox 

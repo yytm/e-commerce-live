@@ -31,4 +31,29 @@
       bindbuttomTap="buttomTap"
       bindgoodsTap="goodsTap"
     ></goodsList>
+
+    <activety 
+      is_close="{{activityBox.is_close_activity_box}}"
+    ></activety>
+
+    <view wx:if="{{isAnchor}}" class="setting-btn" catchtap="showSettingBox">设置 ></view>
+
+    <settingBox
+      is_show_setting_box="{{settingBox.is_show_setting_box}}"
+      enable_link="{{settingBox.enable_link}}"
+      room_password="{{roomInfo.room_password}}"
+      bindonSetActivity="onSetActivity"
+      bindonDel="onFeatureDel"
+    ></settingBox>
+
+    <alert
+      isShow="{{isShowConfirm}}"
+      confirmText="删除预告"
+      cancelText="取消"
+      content="是否删除预告"
+      showCancel="{{true}}"
+      bindclose="onCancel"
+      bindcancel="onCancel"
+      bindconfirm="deleteFeatureLive"
+    ></alert>
 </view>

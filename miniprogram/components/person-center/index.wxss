@@ -51,7 +51,6 @@ view.body{
   width:134rpx;
   height:134rpx;
   border-radius:50%;
-  background: green;
   left:48rpx;
   top:-52rpx;
 }
@@ -62,12 +61,15 @@ view.body{
   padding-top:34rpx;
   padding-right:40rpx;
 }
-.setting image{
+.setting image,.setting button{
   width:48rpx;
   height:48rpx;
   float: right;
   margin-left:40rpx;
+  padding:0;
+  background:none;
 }
+
 .box{
   width:100%;
   box-sizing: border-box;
@@ -159,7 +161,6 @@ text.job_title{
   height:148rpx;
   width:148rpx;
   margin-right:19rpx;
-  background: green;
 }
 .shop-container .shop-detail-container{
   height:100%;
@@ -377,4 +378,11 @@ swiper{
   font-family: PingFang SC;
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
+}
+
+image.del{
+  width:30rpx;
+  height:30rpx;
+  float:right;
+  margin-right:0;
 }

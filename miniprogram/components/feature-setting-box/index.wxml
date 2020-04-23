@@ -1,0 +1,54 @@
+<!--components/setting-box/index.wxml-->
+<view class="setting-content" wx:if="{{is_show_setting_box}}">
+  <view class="setting-bg" catchtap="close"></view>
+
+  <view class="setting-box-container" wx:if="{{!is_show_beauty_box}}">
+    <view class="setting-container" >
+      <view class="setting-header"><text>设置</text></view>
+
+      <view class="setting-image-container" catchtap="onSetActivity">
+        <view class="setting-image-item">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="../images/setup_activity_icon.png"
+          ></image>
+          <text>活动设置</text>
+        </view>
+
+        <view class="setting-image-item" wx:if="{{false}}" catchtap="onEnableLink">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="{{enable_link? '../images/setup_link_on_icon.png':'../images/setup_link_off_icon.png'}}"
+          ></image>
+          <text>连麦<text class="icon">{{enable_link?'/开':'/关'}}</text></text>
+        </view>
+
+        <view class="setting-image-item" catchtap="onDel">
+          <image 
+            class="setting-item-img" 
+            role="img" 
+            src="../images/setup_del_icon.png"
+          ></image>
+          <text>删除预告</text>
+        </view>
+      </view>
+
+      <view class="setting-footer" wx:if="{{!!room_password}}">
+        <image 
+          role="img" 
+          src="../images/setting-pwd.png" 
+          class="setting-pwd-img"
+        ></image>
+        <text class="setting-footer-title">直播密码</text>
+        <view class="setting-space"></view>
+        <text class="setting-pwd-text">{{room_password}}</text>
+        <text class="setting-pwd-button" catchtap="setCopy">复制</text>
+      </view>
+
+    </view>
+  </view>
+</view>
+
+

@@ -34,7 +34,6 @@ Page({
     replayList: []
   },
   onLoad: function (options) {
-    console.log('onLoad', options);
     let systemInfo = wx.getSystemInfoSync()
     let rect = wx.getMenuButtonBoundingClientRect()
 
@@ -42,12 +41,13 @@ Page({
     const top = rect.top;
     const height = rect.height;
     let navigateHeight = statusBarHeight + height + top
-    this.setData({ top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' });
+    this.setData({ 
+      top, height, statusBarHeight, navigateHeight: String(navigateHeight < 75 ? 75 : navigateHeight) + 'px' 
+    });
 
     this.gotoAuthrozePage = throttleByPromise(this.gotoAuthrozePage)
   },
   onShow: function () {
-    //if(this.data.state !== 'list'){ return }
     this.revertHandler && clearTimeout(this.revertHandler)
     //app.js 里面首先会试探有没有权限获取用户信息  如果没有权限就会跳转到授权信息获取页面
     //允许获取用户信息后 页面会跳转回来 重新触发onShow流程
@@ -81,9 +81,6 @@ Page({
    */
   gotoAuthrozePage(){
     return app.gotoAuthrozePage()
-  },
-  onUnload: function () {
-    this.stopRefresh();
   },
   /**
    * 当个人中心被修改
@@ -139,17 +136,12 @@ Page({
    * 请求数据
    */
   fetchRooms(state = this.data.state) {
-    //是否个人中心
-    let isCenter = state === 'center'
-    //个人的uid  如果请求的是列表 那么uid为null
-    let uid = isCenter? wx.getStorageSync('uid') : null
-    //个人中心 state = 0x10 + 0x2, 列表 state = 0x10
-    let queryState = isCenter? null : 18
+    //status = 0x10 + 0x2, 列表 state = 0x10
     //请求数据
-    return this.getRoomList(queryState,uid)
+    return this.getRoomList()
       .then(room_list => {
         //更新列表
-        this.setData({ [isCenter? 'replayList':'roomList']:room_list,refreshStatus:false,isShowAfter:true })
+        this.setData({ roomList:room_list,refreshStatus:false,isShowAfter:true })
       })
       .catch(error => {
         this.setData({ isShowAfter:true })
@@ -162,9 +154,8 @@ Page({
    * @param {*} status 1未开始; 2 直播中; 4 已结束; 8 禁播; 16 可回放, 多个累加
    */
   getRoomList(status = undefined, uid = undefined) {
-    let self = this;
     CallWxFunction('showLoading',{ title:'获取房间列表',mask:true })
-    return requestGetRoomList({ uid })
+    return requestGetRoomList({ uid,status })
       .then(res => {
         let { room_list = [] } = res
         //room_list = room_list.filter(room => room.status === 20? !!room.playback_url : true) 
@@ -185,10 +176,6 @@ Page({
     console.log('>>>[liveroom-roomList] refresh');
     this.fetchRooms();
   },
-  stopRefresh() {
-    wx.hideLoading();
-    wx.stopPullDownRefresh();
-  },
   // 点击进入房间
   onClickItem(e) {
     const { currentTarget:{ dataset:{ item } } } = e
@@ -200,6 +187,15 @@ Page({
     this.tapTime = nowTime
 
     this.enterRoom(item)
+  },
+  /**
+   * 创建直播间
+   */
+  createRoom() {
+    console.log('createRoom');
+    wx.navigateTo({
+      url: '../enterLive/index?role=anchor'
+    })
   },
   /**
    * 进入房间
@@ -219,32 +215,22 @@ Page({
     //跳转页面
     CallWxFunction('navigateTo',{ url })
   },
-  createRoom() {
-    console.log('createRoom');
-    wx.navigateTo({
-      url: '../enterLive/index?role=anchor'
-    })
-  },
-  
-  
+  /**
+   * 切换tab
+   * @param {*} e 
+   */
   tabChange(e) {
     const { index, item } = e.detail;
-    console.log('tab change', e)
     const state = this.data.list[index].id;
-    this.setData({ state }, this.fetchRooms.bind(this));
-  },
-  delReplay(e) {
-    const { room_id } = e.detail.content;
-    requestDeletePlayback({ room_id })
-      .then(res => this.fetchRooms())
-      .catch(error => console.error('del playback fail', e))
+    this.setData({ state }, () => {
+      state == 'list' && this.fetchRooms()
+    })
   },
 
   /**
-   * 用户点击右上角分享
+   * 邀请主播
    */
-  onShareAppMessage: function () {
-    //requestGetInvitCode
+  inviteAnchor(){
     let invite_code = this.data.invit_code
     let isAnchor = this.data.role === 'admin' || this.data.role === 'anchor'
     let isRegister = isAnchor && this.data.state == 'center'
@@ -256,5 +242,26 @@ Page({
       path,
       imageUrl: this.data.userInfo && this.data.userInfo.avatarUrl || '../..resource/invi.png',
     }
+  },
+  /**
+   * 分享个人中心
+   */
+  sharePerson(){
+    return {
+      title:`${this.data.userInfo && this.data.userInfo.nickName || '主播'}的个人主页`,
+      path:`/pages/anchor/index?anchor=${this.data.userInfo && this.data.userInfo.uid}`,
+      imageUrl: this.data.userInfo && this.data.userInfo.avatarUrl || '../..resource/invi.png'
+    }
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (e) {
+    let { from,target = {} } = e
+    //主播邀请 或者 分享直播列表
+    if(from != 'button' || target.id == 'invite'){ return this.inviteAnchor() }
+    //个人中心分享
+    return this.sharePerson()
   }
 });

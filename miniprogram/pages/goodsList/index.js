@@ -55,6 +55,20 @@ Page({
       CallWxFunction('showToast',{title: '提示',icon:'none'})
     })
   },
+  /**
+   * 跳转到商品
+   * @param {*} goodsObj 
+   */
+  onShopTap(e){
+    let { currentTarget:{ dataset:{ item:goodsObj = {} } } } = e
+    //观众前往购买商品
+    let { url_type = 1,goods_url = "",app_id } = goodsObj
+    //url
+    if(Number(url_type) === 1){
+      return CallWxFunction('navigateTo',{ url:`/pages/web/index?url=${encodeURIComponent(goods_url)}` })
+    }
+    CallWxFunction('navigateToMiniProgram',{ appId:app_id,path:goods_url })
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

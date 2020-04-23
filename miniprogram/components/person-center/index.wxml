@@ -3,16 +3,18 @@
   <view class="person-background">
     <view class="inner-background"></view>
   </view>
-  <button open-type="share" class="invite-btn" style="top:{{top}};">
+  <button wx:if="{{isAnchor}}" open-type="share" id="invite" class="invite-btn" style="top:{{top}};">
       <image src="../images/create-img.png" class="create-img"></image>
       <text class="create-txt">邀请主播</text>
   </button>
   <view class="content">
     <view class="header">
       <image src="{{userInfo.avatarUrl || '/resource/per_center.png'}}" class="avatar"></image>
-      <view class="setting">
-        <image src="../images/person-share.png" role="img" ></image>
-        <image src="../images/person-update.png" role="img" bindtap="onNavigateToUpdate"></image>
+      <view class="setting" >
+        <button wx:if="{{isAnchor}}" open-type="share" id="person" >
+          <image src="../images/person-share.png" role="img" ></image>
+        </button>
+        <image wx:if="{{isAnchor}}" src="../images/person-update.png" role="img" bindtap="onNavigateToUpdate"></image>
       </view>
       <view class="box">
         <view class="title">
@@ -48,7 +50,8 @@
                 <image role="img" src="{{item.room_img||'../../resource/invi.png'}}"></image>
                 <view class="shop-detail-container">
                   <text>{{item.room_name}}</text>
-                  <text>{{item.user_count}}</text>
+                  <text wx:if="{{item.stauts <= 2}}">{{item.user_count}}人观看</text>
+                  <text wx:else>{{item.start_live_time}}开播</text>
                 </view>
             </view>
           </swiper-item>
@@ -101,8 +104,12 @@
                     </view>
                 </view>
                 <view class="room-info-container">
-                      <view class="room-name">{{item.room_name}}</view>
-                    <view class="anchor-name"><image role="img" src="{{item.avatar}}"></image>{{item.anchor_name}}</view>
+                    <view class="room-name">{{item.room_name}}</view>
+                    <view class="anchor-name">
+                      <image role="img" src="{{item.avatar}}"></image>
+                      {{item.anchor_name}}
+                      <image wx:if="{{isAnchor}}" class="del" catchtap="onDel" data-item="{{item}}"  role="img" src="../images/person-del.png"></image>
+                    </view>
                 </view>
             </view>
 
@@ -111,5 +118,17 @@
     </view>
 
   </view>
+
+
+  <alert
+    isShow="{{isShowConfirm}}"
+    confirmText="删除回放"
+    cancelText="取消"
+    content="是否删除回放视频"
+    showCancel="{{true}}"
+    bindclose="onCancel"
+    bindcancel="onCancel"
+    bindconfirm="onConfirm"
+  ></alert>
 </view>
 

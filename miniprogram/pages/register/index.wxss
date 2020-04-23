@@ -1,8 +1,144 @@
 /* miniprogram/pages/register/index.wxss */
-view{
-    height:100vh;
-    width:100vw;
-    line-height:100vh;
-    font-size:28rpx;
-    text-align:center;
+.user-container {
+    /* padding: 40rpx 40rpx 0; */
 }
+.user-info {
+    display: flex;
+    justify-content: flex-start;
+}
+.user-info .avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    margin-right: 16rpx;
+}
+.user-text {
+    margin-right: 30rpx;
+    font-weight: 500;
+}
+.operate {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 180rpx;
+}
+.invite-img {
+    width: 240rpx;
+    height: 240rpx;
+}
+/* .invi-btn {
+    width: 240rpx;
+    margin: 0;
+    display: flex;
+}
+.invi-btn button {
+    width: 100%;
+    background-color: #F2034C;
+    font-size: 32rpx;
+} */
+.tips {
+    display: flex;
+    flex-direction: column;
+}
+.tip-head {
+    margin-top: 40rpx;
+    font-size:32rpx;
+    font-family:PingFang SC;
+    font-weight:500;
+    color:rgba(28,29,30,1);
+    line-height: 1;
+}
+.tip-text {
+    margin-top: 35rpx;
+    margin-bottom: 20rpx;
+    font-size:24rpx;
+    font-family:PingFang SC;
+    font-weight:400;
+    color:rgba(126,128,130,1);
+    text-align: center;
+    line-height: 1;
+}
+.invi-code {
+    display: flex;
+    align-items: center;
+    margin-top: 20rpx;
+}
+.disable-btn {
+    margin-top: 36rpx;
+    width:376rpx;
+    height:88rpx;
+    line-height: 88rpx;
+    text-align: center;
+    border-radius:8rpx;
+    font-size: 28rpx;
+    color:rgba(232,187,201,1);
+    background:rgba(244,225,231,1);
+}
+.submit-btn {
+    margin-top: 36rpx;
+    width:376rpx;
+    height:88rpx;
+    line-height: 88rpx;
+    text-align: center;
+    border-radius:8rpx;
+    font-size: 28rpx;
+    color: #fff;
+    background:rgba(242,3,76,1);
+}
+
+.password-input-box{
+    margin: auto;
+    /* position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0; */
+    z-index: 1002;
+    border-radius: 30rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* padding: 40rpx; */
+    box-sizing: border-box;
+    height: 100rpx;
+  }
+  
+  .input-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .input{
+    height:88rpx;  
+    width: 100%;
+    /* border: 1px solid #BBB; */
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+    text-align: center;
+  }
+  
+  /* .input>view:nth-child(6){
+     border-right: none;
+  } */
+  
+  .input > view{
+    height: 100%;
+    width: 66rpx;
+    /* border-right: 1px solid #BBB; */
+    background:rgba(255,255,255,1);
+    /* border:5rpx solid rgba(255, 223, 233, 1); */
+    border:1px solid rgba(216,218,225,1);
+    border-right: 1px solid rgba(216,218,225,1);
+    border-radius:8rpx;
+    margin-right: 12rpx;
+  }
+  
+  .password-input{  
+    width: 0;  
+    height: 0;  
+  }  

@@ -64,7 +64,7 @@
 					"id": 0,
 					"name": "pages/roomList/index",
 					"pathName": "pages/roomList/index",
-					"query": "",
+					"query": "anchor=84&state=center",
 					"scene": null
 				},
 				{
@@ -141,12 +141,21 @@
 					"id": -1,
 					"name": "pages/personUpdate/index",
 					"pathName": "pages/personUpdate/index",
+					"query": "",
 					"scene": null
 				},
 				{
 					"id": -1,
 					"name": "pages/web/index",
 					"pathName": "pages/web/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/anchor/index",
+					"pathName": "pages/anchor/index",
+					"query": "anchor=84",
 					"scene": null
 				}
 			]

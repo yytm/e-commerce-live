@@ -1,0 +1,11 @@
+{
+  "navigationBarBackgroundColor": "#F2034C",
+  "navigationBarTitleText": "电商直播间",
+  "navigationBarTextStyle": "white",
+  "navigationStyle": "custom",
+  "disableScroll": true,
+  "usingComponents": {
+    "center": "/components/person-center/index",
+    "back": "/components/page-back/index"
+  }
+}

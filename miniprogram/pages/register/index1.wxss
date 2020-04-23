@@ -1,0 +1,8 @@
+/* miniprogram/pages/register/index.wxss */
+view{
+    height:100vh;
+    width:100vw;
+    line-height:100vh;
+    font-size:28rpx;
+    text-align:center;
+}

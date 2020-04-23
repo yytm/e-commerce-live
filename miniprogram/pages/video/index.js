@@ -230,7 +230,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title: `${this.data.roomInfo.anchor_name || ''}的回放直播 快来观看`,
+      title: `${this.data.roomInfo.anchor_name || ''}邀你观看精彩视频`,
       path: `/pages/video/index?roomID=${this.data.roomInfo.room_id}`,
       imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }

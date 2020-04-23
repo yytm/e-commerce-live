@@ -44,21 +44,5 @@
       wx:if="{{isAnchor}}"
       bindtap="onEditRoom"
     >编辑预告</view>
-    <view 
-      class="button delete-button" 
-      wx:if="{{isAnchor}}" 
-      bindtap="onTapDelete"
-    >删除预告</view>
   </view>
-
-  <alert
-    isShow="{{isShowConfirm}}"
-    confirmText="删除预告"
-    cancelText="取消"
-    content="是否删除预告"
-    showCancel="{{true}}"
-    bindclose="onCancel"
-    bindcancel="onCancel"
-    bindconfirm="deleteFeatureLive"
-  ></alert>
 </view>

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "half-screen-dialog": "/components/half-screen-dialog/index"
+  }
+}

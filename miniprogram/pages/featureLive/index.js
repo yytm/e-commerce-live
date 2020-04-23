@@ -1,6 +1,7 @@
 // miniprogram/pages/featureLive/index.js
 import { 
-  requestGetRoomList
+  requestGetRoomList,
+  requestDeleteFeatureLive
 } from '../../utils/server'
 import { CallWxFunction } from '../../components/lib/wx-utils'
 
@@ -19,7 +20,16 @@ Page({
     //商品列表配置
     goodsBox:{
       is_show_goods_list:false
-    }
+    },
+    settingBox:{
+      is_show_setting_box:false,
+      enable_link:false
+    },
+    activityBox:{
+      is_close_activity_box:true
+    },
+
+    isShowConfirm:false
   },
   /**
    * 初始化房间数据
@@ -85,7 +95,12 @@ Page({
   onGoodsListHidden(e){
     this.setData({ goodsBox:{ ...this.data.goodsBox,is_show_goods_list:false } })
   },
-
+  /**
+   * 展示设置
+   */
+  showSettingBox(){
+    this.setData({ settingBox:{ ...this.data.settingBox,is_show_setting_box:true } })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -95,6 +110,58 @@ Page({
     console.log('page load',roomID)
     this.setData({ roomid:roomID })
     //this.initRoomList(roomID)
+  },
+  /**
+   * 删除预告
+   */
+  onFeatureDel(){
+    this.setData({ isShowConfirm:true })
+  },
+  /**
+   * 界面的删除按钮被点击
+   */
+  onTapDelete(){
+    this.setData({ isShowConfirm:true })
+  },
+  /**
+   * 删除确认弹窗 点击了取消按钮
+   */
+  onCancel(){
+    this.setData({ isShowConfirm:false })
+  },
+  /**
+   * 删除预告
+   */
+  deleteFeatureLive(){
+    CallWxFunction('showLoading')
+    //隐藏弹窗
+    this.onCancel()
+    return requestDeleteFeatureLive({ room_id:this.data.roomInfo.room_id })
+      .then(() => {
+        CallWxFunction('hideLoading')
+        return CallWxFunction('showModal',{
+          title: '提示',
+          confirmText:'确定',
+          showCancel:false,
+          content:'删除成功'
+        })
+      })
+      .then(() => {
+        return CallWxFunction('reLaunch',{ url:`/pages/roomList/index` })
+      })
+      .catch(error => {
+        let { ret = {} } = error || {}
+        let { msg,message } = ret
+        let errorText = msg || message || '系统错误 请稍后重试'
+        CallWxFunction('hideLoading')
+        CallWxFunction('showToast',{ title:errorText,icon:'none' })
+      })
+  },
+  /**
+   * 展示活动设置列表
+   */
+  onSetActivity(){
+    this.setData({ 'activityBox.is_close_activity_box':false })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -143,7 +210,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title: `${this.data.roomInfo.anchor_name || ''}正在直播 快来观看`,
+      title: `${this.data.roomInfo.anchor_name || ''}-直播即将开始`,
       path: `/pages/featureLive/index?roomID=${this.data.roomid}`,
       imageUrl: this.data.roomInfo.room_img || '../..resource/invi.png',
     }

@@ -59,7 +59,6 @@ back{
   height:148rpx;
   width:148rpx;
   margin-right:19rpx;
-  background: green;
 }
 .shop-container .shop-detail-container{
   height:100%;

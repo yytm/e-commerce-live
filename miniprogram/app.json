@@ -10,7 +10,8 @@
     "pages/featureLive/index",
     "pages/updateRoom/index",
     "pages/goodsList/index",
-    "pages/personUpdate/index"
+    "pages/personUpdate/index",
+    "pages/anchor/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

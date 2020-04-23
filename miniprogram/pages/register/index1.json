@@ -1,0 +1,10 @@
+{
+  "navigationBarBackgroundColor": "#F2034C",
+  "navigationBarTitleText": "主播注册",
+  "navigationBarTextStyle": "white",
+  "navigationStyle": "custom",
+  "disableScroll": true,
+  "usingComponents": {
+
+  }
+}

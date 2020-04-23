@@ -1,0 +1,25 @@
+<!--components/activety/index.wxml-->
+<half-screen-dialog
+  id="dialog"
+  title="{{title}}"
+  is_close="{{is_close}}"
+  bindclose="close"
+>
+  <view class="activety-content">
+    <view 
+      class="activity-item" 
+      wx:for="{{activities}}" 
+      wx:key="id"
+      data-item="{{item}}"
+      bindtap="onActivityTap"
+    >
+      <image src="{{item.image_uri}}" role="img"></image>
+      <text>{{name}}</text>
+      <view class="checkbox {{item.id == selectedID? 'check' : ''}}"></view>
+    </view>
+  </view>
+  <view class="picker-view-botton-box">
+    <view class="picker-view-botton" catchtap="close">{{cencalText}}</view>
+    <view class="picker-view-botton" catchtap="sure">{{confirmText}}</view>
+  </view>
+</half-screen-dialog>

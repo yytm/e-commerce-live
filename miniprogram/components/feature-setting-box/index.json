@@ -1,6 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "alert": "/components/alert-modal/index"
+    "setScope": "/components/setting-scope/index"
   }
 }

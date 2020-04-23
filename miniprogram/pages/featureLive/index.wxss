@@ -41,3 +41,19 @@ room-feature{
   top:0;
   background:none;
 }
+
+.setting-btn{
+  position: fixed;
+  z-index:2;
+  width:70rpx;
+  height:44rpx;
+  background:rgba(0,0,0,0.2);
+  border-radius:16rpx;
+  right:30rpx;
+  top:200rpx;
+  line-height:44rpx;
+  text-align:center;
+  font-size:18rpx;
+  font-weight:500;
+  color:rgba(255,255,255,1);
+}
